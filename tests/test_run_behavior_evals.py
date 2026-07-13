@@ -70,6 +70,15 @@ class FailsThenSucceeds:
         return fake_success_executor(context)
 
 
+class CapturingSuccessExecutor:
+    def __init__(self) -> None:
+        self.command: list[str] = []
+
+    def __call__(self, context: object) -> subprocess.CompletedProcess[str]:
+        self.command = list(context.command)
+        return fake_success_executor(context)
+
+
 class RunBehaviorEvalTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temp_dir = tempfile.TemporaryDirectory()
@@ -112,6 +121,14 @@ class RunBehaviorEvalTests(unittest.TestCase):
         self.assertIn("skill-under-test/SKILL.md", prompt)
         self.assertIn("Do not read or search for manifest.json", prompt)
         self.assertNotIn("forbidden_patterns", prompt)
+
+    def test_command_allows_an_isolated_non_git_sandbox(self) -> None:
+        executor = CapturingSuccessExecutor()
+
+        result = run_with_retry(self.make_spec(), executor=executor)
+
+        self.assertEqual(result.infrastructure_status, "valid")
+        self.assertIn("--skip-git-repo-check", executor.command)
 
     def test_run_layout_is_skill_creator_compatible(self) -> None:
         result = run_with_retry(

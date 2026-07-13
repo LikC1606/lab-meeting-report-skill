@@ -233,6 +233,7 @@ def _build_command(
         "exec",
         "--ephemeral",
         "--ignore-user-config",
+        "--skip-git-repo-check",
         "--sandbox",
         "workspace-write",
         "--model",

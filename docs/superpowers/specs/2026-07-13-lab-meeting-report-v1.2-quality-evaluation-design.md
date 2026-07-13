@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-13
 
-**Status:** User-approved design, pending written-spec review
+**Status:** Approved by user after written-spec review
 
 **Target release:** `v1.2.0`
 
@@ -219,7 +219,7 @@ Raw repeated-run workspaces and transient review files remain outside the commit
 5. at least one predefined adversarial case shows a measurable improvement: the baseline has one or more hard-gate failures while all three candidate runs pass, or, when both versions pass all hard gates for that case, the candidate wins at least two of three paired blinded reviews without a hard-gate regression;
 6. unit tests, repository validation, official skill validation, sensitive-data scans, and fresh-clone verification pass.
 
-If `v1.1.0` passes every accepted case, strengthen the adversarial suite before changing the prompt. If no defensible behavioral difference emerges, retain the current skill instructions and publish only the evaluation infrastructure without claiming improved report quality.
+If `v1.1.0` passes every accepted case, strengthen the adversarial suite before changing the prompt. If no defensible behavioral difference emerges, retain the current skill instructions and merge only the evaluation infrastructure without creating a `v1.2.0` release or claiming improved report quality.
 
 ## Release Communication
 

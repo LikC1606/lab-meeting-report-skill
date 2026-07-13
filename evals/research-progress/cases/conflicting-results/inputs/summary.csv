@@ -1,0 +1,3 @@
+Synthetic example
+run_id,samples,metric,value
+run-alpha,500,macro_f1,0.842

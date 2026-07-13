@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "case_id": "clean-multiseed",
+  "layer": "composition",
+  "language": "en",
+  "report_mode": "research-progress",
+  "task_file": "task.md",
+  "input_root": "inputs",
+  "expected_report": "reports/group-meeting/2026-07-13.md",
+  "numbers": [
+    {"id": "report-year", "value": "2026", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-month", "value": "7", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-day", "value": "13", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "baseline-macro-f1", "value": "0.712", "unit": "ratio", "required": true, "source": "inputs/results.md"},
+    {"id": "candidate-seed-a", "value": "0.758", "unit": "ratio", "required": true, "source": "inputs/results.md"},
+    {"id": "candidate-seed-b", "value": "0.764", "unit": "ratio", "required": true, "source": "inputs/results.md"},
+    {"id": "candidate-seed-c", "value": "0.749", "unit": "ratio", "required": true, "source": "inputs/results.md"},
+    {"id": "candidate-mean", "value": "0.757", "unit": "ratio", "required": true, "source": "inputs/results.md"},
+    {"id": "baseline-latency", "value": "18.2", "unit": "ms", "required": true, "source": "inputs/results.md"},
+    {"id": "candidate-latency", "value": "19.4", "unit": "ms", "required": true, "source": "inputs/results.md"},
+    {"id": "macro-f1-threshold", "value": "0.745", "unit": "ratio", "required": true, "source": "inputs/results.md"},
+    {"id": "latency-threshold", "value": "19.0", "unit": "ms", "required": true, "source": "inputs/results.md"},
+    {"id": "augmentation-macro-f1", "value": "0.691", "unit": "ratio", "required": true, "source": "inputs/negative.md"}
+  ],
+  "derived_numbers": [
+    {"id": "absolute-gain", "value": "0.045", "unit": "ratio", "required": false, "operation": "subtract", "operands": ["0.757", "0.712"]},
+    {"id": "latency-change", "value": "0.065934", "unit": "ratio", "required": false, "operation": "percent-change", "operands": ["19.4", "18.2"]}
+  ],
+  "required_evidence": [
+    {"id": "success-criteria", "all_of": ["success criterion", "0.745", "19.0"]}
+  ],
+  "negative_results": [
+    {"id": "augmentation-drop", "all_of": ["augmentation", "0.691", "negative result"]}
+  ],
+  "conflicts": [],
+  "forbidden_patterns": [],
+  "required_sources": ["inputs/results.md", "inputs/negative.md"],
+  "forbidden_sources": [],
+  "skipped_sources": [],
+  "preservation_markers": []
+}

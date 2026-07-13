@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "case_id": "conflicting-results",
+  "layer": "composition",
+  "language": "en",
+  "report_mode": "research-progress",
+  "task_file": "task.md",
+  "input_root": "inputs",
+  "expected_report": "reports/group-meeting/2026-07-13.md",
+  "numbers": [
+    {"id": "report-year", "value": "2026", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-month", "value": "7", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-day", "value": "13", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "summary-macro-f1", "value": "0.842", "unit": "ratio", "required": true, "source": "inputs/summary.csv"},
+    {"id": "log-macro-f1", "value": "0.824", "unit": "ratio", "required": true, "source": "inputs/run-log.md"},
+    {"id": "sample-count", "value": "500", "unit": "samples", "required": true, "source": "inputs/summary.csv"}
+  ],
+  "derived_numbers": [],
+  "required_evidence": [
+    {"id": "unresolved-authority", "all_of": ["unresolved", "no authority rule"]}
+  ],
+  "negative_results": [],
+  "conflicts": [
+    {"id": "macro-f1", "values": ["0.842", "0.824"], "source_tokens": ["inputs/summary.csv", "inputs/run-log.md"], "max_distance": 600}
+  ],
+  "forbidden_patterns": [
+    {"id": "unsupported-final-value", "pattern": "(?:final|authoritative) (?:macro-f1|value) (?:is|was)"},
+    {"id": "unsupported-average", "pattern": "averag(?:e|ed|ing) (?:the|these|both)"}
+  ],
+  "required_sources": ["inputs/summary.csv", "inputs/run-log.md"],
+  "forbidden_sources": [],
+  "skipped_sources": [],
+  "preservation_markers": []
+}

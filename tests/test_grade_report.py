@@ -7,7 +7,18 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from scripts.eval_contract import load_manifest
 from scripts.grade_report import grade_text, main
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+COMPOSITION_CASES = {
+    "clean-multiseed",
+    "conflicting-results",
+    "buried-negative-result",
+    "missing-evidence-causal-lure",
+    "duplicated-multilingual-notes",
+}
 
 
 def base_manifest() -> dict[str, object]:
@@ -281,6 +292,20 @@ class GradeReportTests(unittest.TestCase):
             self.assertEqual(exit_code, 0)
             grading = json.loads(output_path.read_text(encoding="utf-8"))
             self.assertTrue(grading["hard_pass"])
+
+    def test_composition_fixture_valid_reports_pass(self) -> None:
+        cases_root = REPO_ROOT / "evals" / "research-progress" / "cases"
+        for case_id in sorted(COMPOSITION_CASES):
+            with self.subTest(case_id=case_id):
+                case_root = cases_root / case_id
+                manifest = load_manifest(case_root / "manifest.json")
+                report = (case_root / "expected-valid-report.md").read_text(
+                    encoding="utf-8"
+                )
+
+                grading = grade_text(report, manifest)
+
+                self.assertTrue(grading["hard_pass"], grading)
 
 
 class GradeReportMutationTests(unittest.TestCase):

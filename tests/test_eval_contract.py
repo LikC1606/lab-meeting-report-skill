@@ -6,10 +6,23 @@ import unittest
 from copy import deepcopy
 from pathlib import Path
 
-from scripts.eval_contract import ContractError, hash_tree, load_manifest
+from scripts.eval_contract import (
+    ContractError,
+    hash_tree,
+    iter_case_manifests,
+    load_manifest,
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+
+COMPOSITION_CASES = {
+    "clean-multiseed",
+    "conflicting-results",
+    "buried-negative-result",
+    "missing-evidence-causal-lure",
+    "duplicated-multilingual-notes",
+}
 
 VALID_MANIFEST = {
     "schema_version": 1,
@@ -97,6 +110,19 @@ class ContractTests(unittest.TestCase):
             self.assertEqual(first, hash_tree(root))
             (root / "a.txt").write_text("two", encoding="utf-8")
             self.assertNotEqual(first, hash_tree(root))
+
+    def test_composition_case_inventory_loads(self) -> None:
+        root = REPO_ROOT / "evals" / "research-progress" / "cases"
+        manifests = [
+            load_manifest(path) for path in iter_case_manifests(root)
+        ]
+        loaded = {
+            item["case_id"]
+            for item in manifests
+            if item["layer"] == "composition"
+        }
+
+        self.assertEqual(loaded, COMPOSITION_CASES)
 
 
 if __name__ == "__main__":

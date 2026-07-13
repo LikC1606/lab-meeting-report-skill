@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "case_id": "buried-negative-result",
+  "layer": "composition",
+  "language": "en",
+  "report_mode": "research-progress",
+  "task_file": "task.md",
+  "input_root": "inputs",
+  "expected_report": "reports/group-meeting/2026-07-13.md",
+  "numbers": [
+    {"id": "report-year", "value": "2026", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-month", "value": "7", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-day", "value": "13", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "baseline-macro-f1", "value": "0.742", "unit": "ratio", "required": true, "source": "inputs/main-results.md"},
+    {"id": "candidate-mean", "value": "0.781", "unit": "ratio", "required": true, "source": "inputs/main-results.md"},
+    {"id": "failed-seed", "value": "29", "unit": "seed", "required": true, "source": "inputs/archive/note.md"},
+    {"id": "failed-macro-f1", "value": "0.603", "unit": "ratio", "required": true, "source": "inputs/archive/note.md"},
+    {"id": "timeout", "value": "300", "unit": "s", "required": true, "source": "inputs/archive/note.md"}
+  ],
+  "derived_numbers": [],
+  "required_evidence": [
+    {"id": "robustness-status", "all_of": ["robustness", "unresolved"]}
+  ],
+  "negative_results": [
+    {"id": "collapsed-seed", "all_of": ["seed 29", "0.603", "300 s", "negative result"]}
+  ],
+  "conflicts": [],
+  "forbidden_patterns": [],
+  "required_sources": ["inputs/main-results.md", "inputs/archive/note.md"],
+  "forbidden_sources": [],
+  "skipped_sources": [],
+  "preservation_markers": []
+}

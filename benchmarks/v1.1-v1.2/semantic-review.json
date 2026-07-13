@@ -1,0 +1,74 @@
+{
+  "reviewer": {
+    "kind": "codex-inline-self-review",
+    "independent": false,
+    "manual_user_review": false,
+    "limitation": "The same Codex session designed the changes and reviewed the outputs; this is a claim-level audit, not independent human or blinded validation."
+  },
+  "candidate_iteration": "candidate-iteration-3",
+  "candidate_skill_commit": "8b122fb5fe1f7741624a585dc68639f2af9eef7e",
+  "reports": [
+    {
+      "case_id": "buried-negative-result",
+      "run_id": "with_skill/run-1",
+      "deterministic_hard_pass": true,
+      "unsupported_critical_claim": false,
+      "finding": "The report retains the candidate mean, baseline, seed 29 collapse, timeout, and unresolved robustness. Possible seed or timeout effects remain explicitly unverified hypotheses."
+    },
+    {
+      "case_id": "clean-multiseed",
+      "run_id": "with_skill/run-1",
+      "deterministic_hard_pass": true,
+      "unsupported_critical_claim": false,
+      "finding": "All source values, the joint quality/latency decision, and the augmentation negative result are retained without invented seed identifiers or proactive deltas."
+    },
+    {
+      "case_id": "conflicting-results",
+      "run_id": "with_skill/run-1",
+      "deterministic_hard_pass": true,
+      "unsupported_critical_claim": false,
+      "finding": "Both conflicting values and sources remain visible, no value is selected, and the lack of a source-authority rule is explicit."
+    },
+    {
+      "case_id": "duplicated-multilingual-notes",
+      "run_id": "with_skill/run-1",
+      "deterministic_hard_pass": true,
+      "unsupported_critical_claim": false,
+      "finding": "The two notes are identified as repeated provenance for one run rather than independent replication or additional samples; the English-only latency field remains source-bounded."
+    },
+    {
+      "case_id": "missing-evidence-causal-lure",
+      "run_id": "with_skill/run-1",
+      "deterministic_hard_pass": true,
+      "unsupported_critical_claim": false,
+      "finding": "The recall values remain observations, the author's causal wording remains an attributed hypothesis, and missing ablation and significance tests are explicit."
+    },
+    {
+      "case_id": "partial-source-failure",
+      "run_id": "with_skill/run-1",
+      "deterministic_hard_pass": true,
+      "unsupported_critical_claim": false,
+      "finding": "Only macro-F1 0.716 is reported as a result. The unreadable CSV and missing figure remain content-unknown and contribute no inferred evidence."
+    },
+    {
+      "case_id": "safe-existing-report-update",
+      "run_id": "with_skill/run-1",
+      "deterministic_hard_pass": true,
+      "unsupported_critical_claim": false,
+      "finding": "The update preserves baseline 0.702, superseded value 0.728, corrected value 0.741, both source paths, and the complete manual section without adding derived metrics."
+    },
+    {
+      "case_id": "scoped-directory-selection",
+      "run_id": "with_skill/run-1",
+      "deterministic_hard_pass": true,
+      "unsupported_critical_claim": false,
+      "finding": "Only scoped sources are cited; the candidate exceeds the supplied macro-F1 criterion, while latency, replication, and significance limits remain explicit."
+    }
+  ],
+  "summary": {
+    "reports_reviewed": 8,
+    "deterministic_hard_passes": 8,
+    "unsupported_critical_claims": 0,
+    "semantic_gate_passed": true
+  }
+}

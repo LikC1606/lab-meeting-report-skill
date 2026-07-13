@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "review_mode": "codex-inline-self-review",
+  "selected_blocks": [
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "P1",
+    "P2"
+  ],
+  "iterations": [
+    {
+      "version": "candidate-iteration-1",
+      "parent_commit": "4f0d43dec7a46764019899f3a42c50674a85d8dc",
+      "benchmark_sha256": "c756c845f2e7d49214129a487e56e7fd08e48a9cf1503954cac3aaa2c2013bd5",
+      "feedback_path_hash": null,
+      "semantic_review_sha256": null,
+      "hard_pass_count": 0,
+      "per_case_hard_pass": {
+        "buried-negative-result": false,
+        "clean-multiseed": false,
+        "conflicting-results": false,
+        "duplicated-multilingual-notes": false,
+        "missing-evidence-causal-lure": false,
+        "partial-source-failure": false,
+        "safe-existing-report-update": false,
+        "scoped-directory-selection": false
+      },
+      "outcome": "lost"
+    },
+    {
+      "version": "candidate-iteration-2",
+      "parent_commit": "3ae7d36c5f2a397947cef0aa6b7aef0d599342ca",
+      "benchmark_sha256": "ea91e2f83673e5dbb152c1e408fc1410fce83e0301e7ffd1d650af372bfd44ce",
+      "feedback_path_hash": null,
+      "semantic_review_sha256": null,
+      "hard_pass_count": 4,
+      "per_case_hard_pass": {
+        "buried-negative-result": true,
+        "clean-multiseed": false,
+        "conflicting-results": true,
+        "duplicated-multilingual-notes": false,
+        "missing-evidence-causal-lure": false,
+        "partial-source-failure": true,
+        "safe-existing-report-update": true,
+        "scoped-directory-selection": false
+      },
+      "outcome": "lost"
+    },
+    {
+      "version": "candidate-iteration-3",
+      "parent_commit": "8b122fb5fe1f7741624a585dc68639f2af9eef7e",
+      "benchmark_sha256": "3a7a2536132a5031ab3e37b01f2977ed9000652a754b57b160c4b2eb03bf36ad",
+      "feedback_path_hash": null,
+      "semantic_review_sha256": "a27e44a692837b502b315a130ba6e4c6b370051de2e9c64861ed2a1150398eef",
+      "hard_pass_count": 8,
+      "per_case_hard_pass": {
+        "buried-negative-result": true,
+        "clean-multiseed": true,
+        "conflicting-results": true,
+        "duplicated-multilingual-notes": true,
+        "missing-evidence-causal-lure": true,
+        "partial-source-failure": true,
+        "safe-existing-report-update": true,
+        "scoped-directory-selection": true
+      },
+      "outcome": "won"
+    }
+  ]
+}

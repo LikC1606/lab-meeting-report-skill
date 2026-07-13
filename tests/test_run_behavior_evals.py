@@ -119,10 +119,16 @@ class RunBehaviorEvalTests(unittest.TestCase):
                 configuration="without_skill",
                 run_number=run_number,
                 candidate_skill=None,
-                baseline_ref="v1.1.0",
+                baseline_ref="HEAD",
             )
-            run_with_retry(candidate, executor=fake_success_executor)
-            run_with_retry(baseline, executor=fake_success_executor)
+            candidate_result = run_with_retry(
+                candidate, executor=fake_success_executor
+            )
+            baseline_result = run_with_retry(
+                baseline, executor=fake_success_executor
+            )
+            self.assertEqual(candidate_result.infrastructure_status, "valid")
+            self.assertEqual(baseline_result.infrastructure_status, "valid")
 
     def test_prompt_names_exact_skill_and_hides_manifest(self) -> None:
         prompt = build_prompt(

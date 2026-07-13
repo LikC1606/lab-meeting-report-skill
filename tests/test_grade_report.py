@@ -305,6 +305,42 @@ class GradeReportTests(unittest.TestCase):
 
         self.assertTrue(grading["hard_pass"], grading)
 
+    def test_negated_unsupported_claims_do_not_fail_forbidden_gate(self) -> None:
+        manifest = base_manifest()
+        manifest["forbidden_patterns"] = [
+            {
+                "id": "causal",
+                "pattern": "hard negatives produced",
+            },
+            {
+                "id": "significance",
+                "pattern": "statistically significant",
+            },
+        ]
+        report = (
+            "The evidence does not show that hard negatives produced the "
+            "change or that the change is statistically significant."
+        )
+
+        grading = grade_text(report, manifest)
+
+        self.assertTrue(grading["hard_pass"], grading)
+
+    def test_positive_significance_claim_fails_forbidden_gate(self) -> None:
+        manifest = base_manifest()
+        manifest["forbidden_patterns"] = [
+            {
+                "id": "significance",
+                "pattern": "statistically significant",
+            }
+        ]
+
+        grading = grade_text(
+            "The observed change is statistically significant.", manifest
+        )
+
+        self.assert_expectation_failed(grading, "forbidden:significance")
+
     def test_cli_writes_grading_json_and_returns_success(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

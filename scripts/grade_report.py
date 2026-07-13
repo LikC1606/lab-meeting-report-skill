@@ -198,6 +198,28 @@ def conflict_expectation(
     )
 
 
+def _forbidden_match_is_negated(text: str, match: re.Match[str]) -> bool:
+    clause_start = max(
+        text.rfind(boundary, 0, match.start())
+        for boundary in (".", "!", "?", ";")
+    )
+    prefix = text[clause_start + 1 : match.start()]
+    contrasts = list(
+        re.finditer(r"\b(?:but|however|yet|nevertheless)\b", prefix)
+    )
+    if contrasts:
+        prefix = prefix[contrasts[-1].end() :]
+    context = prefix[-160:]
+    return re.search(
+        r"\b(?:"
+        r"(?:does|do|did|is|are|was|were|has|have|had|can|could|would|should)"
+        r"\s+not|cannot|can't|neither|no evidence|without evidence|"
+        r"fails? to|insufficient to"
+        r")\b",
+        context,
+    ) is not None
+
+
 def semantic_expectations(
     text: str, manifest: dict[str, object]
 ) -> list[Expectation]:
@@ -216,7 +238,14 @@ def semantic_expectations(
 
     for rule in manifest["forbidden_patterns"]:
         pattern = re.compile(str(rule["pattern"]), re.IGNORECASE)
-        match = pattern.search(normalized)
+        match = next(
+            (
+                candidate
+                for candidate in pattern.finditer(normalized)
+                if not _forbidden_match_is_negated(normalized, candidate)
+            ),
+            None,
+        )
         expectations.append(
             Expectation(
                 f"forbidden:{rule['id']}",

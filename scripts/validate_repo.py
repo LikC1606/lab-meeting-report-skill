@@ -60,6 +60,7 @@ BLOCKED_PATTERNS = {
     ),
     "Windows user path": re.compile(r"[A-Za-z]:\\Users\\", re.IGNORECASE),
 }
+ENCODING_GUARD_TERM = "Treat text encoding as protected content."
 EVAL_CASE_IDS = {
     "clean-multiseed",
     "conflicting-results",
@@ -317,6 +318,11 @@ def validate_repo(root: Path) -> list[str]:
         for term in sorted(LANGUAGE_TERMS):
             if term not in skill_text:
                 errors.append(f"Missing adaptive language instruction: {term}")
+        if ENCODING_GUARD_TERM not in skill_text:
+            errors.append(
+                "Missing existing-report encoding guard: "
+                f"{ENCODING_GUARD_TERM}"
+            )
 
     metadata_file = skill_root / "agents" / "openai.yaml"
     if metadata_file.is_file():

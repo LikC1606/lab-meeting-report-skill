@@ -217,6 +217,27 @@ class ValidateRepoTests(unittest.TestCase):
                 (result.stdout + result.stderr).lower(),
             )
 
+    def test_existing_report_encoding_guard_is_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            skill_file = fixture / "lab-meeting-report" / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(
+                content.replace(
+                    "Treat text encoding as protected content.", "", 1
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "encoding guard",
+                (result.stdout + result.stderr).lower(),
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

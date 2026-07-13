@@ -59,14 +59,16 @@
       "failed_runs": [
         "safe-existing-report-update/run-1",
         "safe-existing-report-update/run-2",
-        "safe-existing-report-update/run-3"
+        "safe-existing-report-update/run-3",
+        "final/safe-existing-report-update/run-1",
+        "final/safe-existing-report-update/run-3"
       ],
       "expectations": [
         "required-number:baseline-macro-f1",
         "preserve:## 导师反馈（手写）",
         "preserve:保留这个消融实验，不要删除。"
       ],
-      "finding": "All update runs reconstructed the destination after finding it absent instead of locating the supplied source report under inputs, deleting the baseline and manual content."
+      "finding": "All baseline update runs reconstructed the destination after finding it absent instead of locating the supplied source report under inputs, deleting the baseline and manual content. The initial final benchmark later exposed a second E4 failure mode: Windows PowerShell default decoding turned protected UTF-8 Chinese text into mojibake in two of three runs. Encoding is therefore protected explicitly and verified after writing."
     },
     {
       "block_id": "E5",

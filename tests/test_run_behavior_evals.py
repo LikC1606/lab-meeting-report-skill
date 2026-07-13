@@ -167,6 +167,9 @@ base_url = "https://example.invalid/v1"
 wire_api = "responses"
 requires_openai_auth = true
 
+[windows]
+sandbox = "elevated"
+
 [projects.'ignored-project']
 trust_level = "trusted"
 """.strip(),
@@ -183,6 +186,7 @@ trust_level = "trusted"
         command = " ".join(executor.command)
         self.assertIn("model_provider", command)
         self.assertIn("example.invalid", command)
+        self.assertIn('windows.sandbox="elevated"', command)
         self.assertNotIn("ignored-project", command)
         metadata = json.loads(
             (result.run_dir / "run_metadata.json").read_text(

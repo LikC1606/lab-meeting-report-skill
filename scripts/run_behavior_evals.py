@@ -60,6 +60,7 @@ class NetworkProvider:
     base_url: str
     wire_api: str
     requires_openai_auth: bool
+    windows_sandbox: str | None
 
 
 @dataclass(frozen=True)
@@ -148,12 +149,22 @@ def load_network_provider(path: Path) -> NetworkProvider | None:
         raise ContractError("behavior evaluation requires responses wire_api")
     if not isinstance(requires_openai_auth, bool):
         raise ContractError("requires_openai_auth must be boolean")
+    windows_sandbox: str | None = None
+    windows = data.get("windows")
+    if isinstance(windows, dict) and "sandbox" in windows:
+        value = windows["sandbox"]
+        if value != "elevated":
+            raise ContractError(
+                "behavior evaluation only permits windows.sandbox=elevated"
+            )
+        windows_sandbox = value
     return NetworkProvider(
         key=key,
         name=name,
         base_url=base_url,
         wire_api=wire_api,
         requires_openai_auth=requires_openai_auth,
+        windows_sandbox=windows_sandbox,
     )
 
 
@@ -166,6 +177,7 @@ def _provider_hash(provider: NetworkProvider | None) -> str:
         "base_url": provider.base_url,
         "wire_api": provider.wire_api,
         "requires_openai_auth": provider.requires_openai_auth,
+        "windows_sandbox": provider.windows_sandbox,
     }
     return _sha256_bytes(
         json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -191,6 +203,13 @@ def _provider_arguments(provider: NetworkProvider | None) -> list[str]:
             f"model_providers.{provider.key}.requires_openai_auth={auth}",
         ]
     )
+    if provider.windows_sandbox is not None:
+        arguments.extend(
+            [
+                "--config",
+                f"windows.sandbox={json.dumps(provider.windows_sandbox)}",
+            ]
+        )
     return arguments
 
 

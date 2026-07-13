@@ -241,6 +241,16 @@ http_headers = { Authorization = "must-not-load" }
             )
         )
         self.assertEqual(metadata["attempts"], 2)
+        first_attempt = result.run_dir / "attempts" / "attempt-1"
+        second_attempt = result.run_dir / "attempts" / "attempt-2"
+        self.assertIn(
+            "synthetic failure",
+            (first_attempt / "stderr.txt").read_text(encoding="utf-8"),
+        )
+        self.assertIn(
+            "turn.completed",
+            (second_attempt / "stdout.jsonl").read_text(encoding="utf-8"),
+        )
 
     def test_second_infrastructure_failure_is_invalid_not_quality_failure(
         self,

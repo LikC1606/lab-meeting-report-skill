@@ -303,6 +303,33 @@ def _write_json(path: Path, value: object) -> None:
     )
 
 
+def _subprocess_text(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
+
+
+def _write_attempt_logs(
+    run_dir: Path,
+    attempt: int,
+    *,
+    stdout: str | bytes | None,
+    stderr: str | bytes | None,
+    status: str,
+) -> None:
+    attempt_dir = run_dir / "attempts" / f"attempt-{attempt}"
+    attempt_dir.mkdir(parents=True, exist_ok=True)
+    (attempt_dir / "stdout.jsonl").write_text(
+        _subprocess_text(stdout), encoding="utf-8"
+    )
+    (attempt_dir / "stderr.txt").write_text(
+        _subprocess_text(stderr), encoding="utf-8"
+    )
+    _write_json(attempt_dir / "status.json", {"status": status})
+
+
 def _copy_case_to_sandbox(
     case_root: Path, manifest: dict[str, object], sandbox: Path
 ) -> None:
@@ -508,6 +535,8 @@ def run_with_retry(
         last_message = run_dir / "last-message.txt"
         if last_message.exists():
             last_message.unlink()
+        attempt_stdout: str | bytes | None = None
+        attempt_stderr: str | bytes | None = None
         try:
             _copy_case_to_sandbox(case_root, manifest, sandbox)
             skill_root = _materialize_skill(spec, sandbox)
@@ -532,6 +561,8 @@ def run_with_retry(
                 timeout_seconds=spec.timeout_seconds,
             )
             completed = executor(context)
+            attempt_stdout = completed.stdout
+            attempt_stderr = completed.stderr
             last_exit_status = completed.returncode
             total_tokens = max(
                 total_tokens, _extract_total_tokens(completed.stdout or "")
@@ -552,11 +583,25 @@ def run_with_retry(
                 encoding="utf-8", errors="strict"
             )
             grading = grade_text(report_text, manifest)
+            _write_attempt_logs(
+                run_dir,
+                attempts,
+                stdout=attempt_stdout,
+                stderr=attempt_stderr,
+                status="valid",
+            )
             infrastructure_error = ""
             break
         except subprocess.TimeoutExpired as exc:
             last_exit_status = "timeout"
             infrastructure_error = f"timeout after {exc.timeout} seconds"
+            _write_attempt_logs(
+                run_dir,
+                attempts,
+                stdout=exc.stdout,
+                stderr=exc.stderr,
+                status="timeout",
+            )
         except (
             ContractError,
             OSError,
@@ -566,6 +611,17 @@ def run_with_retry(
         ) as exc:
             last_exit_status = "exception"
             infrastructure_error = f"{type(exc).__name__}: {exc}"
+            diagnostic = _subprocess_text(attempt_stderr)
+            if diagnostic and not diagnostic.endswith("\n"):
+                diagnostic += "\n"
+            diagnostic += infrastructure_error + "\n"
+            _write_attempt_logs(
+                run_dir,
+                attempts,
+                stdout=attempt_stdout,
+                stderr=diagnostic,
+                status="exception",
+            )
 
     elapsed_ms = round((time.perf_counter() - started) * 1000)
     timing = {

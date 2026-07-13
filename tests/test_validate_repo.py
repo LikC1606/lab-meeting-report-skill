@@ -72,6 +72,72 @@ class ValidateRepoTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("missing skill file", (result.stdout + result.stderr).lower())
 
+    def test_missing_eval_manifest_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            manifest = (
+                fixture
+                / "evals"
+                / "research-progress"
+                / "cases"
+                / "clean-multiseed"
+                / "manifest.json"
+            )
+            manifest.unlink()
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "missing evaluation manifest",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_non_synthetic_eval_text_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            task = (
+                fixture
+                / "evals"
+                / "research-progress"
+                / "cases"
+                / "clean-multiseed"
+                / "task.md"
+            )
+            task.write_text("Create a report.", encoding="utf-8")
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "synthetic example", (result.stdout + result.stderr).lower()
+            )
+
+    def test_corrupt_eval_fixture_hash_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            corrupt = (
+                fixture
+                / "evals"
+                / "research-progress"
+                / "cases"
+                / "partial-source-failure"
+                / "inputs"
+                / "results"
+                / "secondary.csv"
+            )
+            corrupt.write_bytes(corrupt.read_bytes() + b"changed")
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "corrupt csv hash", (result.stdout + result.stderr).lower()
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

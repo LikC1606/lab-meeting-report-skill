@@ -1,11 +1,17 @@
 from __future__ import annotations
 
+import hashlib
 import re
 import struct
 import sys
 from pathlib import Path
 
 import yaml
+
+try:
+    from scripts.eval_contract import ContractError, load_manifest
+except ModuleNotFoundError:
+    from eval_contract import ContractError, load_manifest
 
 
 SKILL_NAME = "lab-meeting-report"
@@ -53,6 +59,33 @@ BLOCKED_PATTERNS = {
     ),
     "Windows user path": re.compile(r"[A-Za-z]:\\Users\\", re.IGNORECASE),
 }
+EVAL_CASE_IDS = {
+    "clean-multiseed",
+    "conflicting-results",
+    "buried-negative-result",
+    "missing-evidence-causal-lure",
+    "duplicated-multilingual-notes",
+    "scoped-directory-selection",
+    "safe-existing-report-update",
+    "partial-source-failure",
+}
+EVAL_REQUIRED_CODE = {
+    Path("scripts/eval_contract.py"),
+    Path("scripts/grade_report.py"),
+    Path("scripts/run_behavior_evals.py"),
+    Path("tests/test_eval_contract.py"),
+    Path("tests/test_grade_report.py"),
+    Path("tests/test_run_behavior_evals.py"),
+    Path("evals/research-progress/schema/manifest.schema.json"),
+}
+CORRUPT_CSV = Path(
+    "evals/research-progress/cases/partial-source-failure/"
+    "inputs/results/secondary.csv"
+)
+CORRUPT_CSV_SHA256 = (
+    "c90d4efb69ec99c28d449dbfb3e53a5aba0eb40b0ea686c3e58378067a9a5908"
+)
+EVAL_TEXT_SUFFIXES = {".md", ".txt", ".csv"}
 
 
 def read_utf8(path: Path) -> str:
@@ -117,6 +150,78 @@ def validate_png(path: Path, errors: list[str]) -> None:
         errors.append(
             f"Unexpected preview dimensions: {width}x{height}; expected 1440x960"
         )
+
+
+def validate_evaluation_assets(root: Path, errors: list[str]) -> None:
+    for relative in sorted(EVAL_REQUIRED_CODE):
+        if not (root / relative).is_file():
+            errors.append(f"Missing evaluation code: {relative.as_posix()}")
+
+    cases_root = root / "evals" / "research-progress" / "cases"
+    if not cases_root.is_dir():
+        errors.append("Missing evaluation cases directory")
+        return
+    actual_cases = {
+        path.name for path in cases_root.iterdir() if path.is_dir()
+    }
+    for case_id in sorted(EVAL_CASE_IDS - actual_cases):
+        errors.append(f"Missing evaluation case: {case_id}")
+    for case_id in sorted(actual_cases - EVAL_CASE_IDS):
+        errors.append(f"Unexpected evaluation case: {case_id}")
+
+    for case_id in sorted(EVAL_CASE_IDS & actual_cases):
+        case_root = cases_root / case_id
+        manifest_path = case_root / "manifest.json"
+        if not manifest_path.is_file():
+            errors.append(
+                f"Missing evaluation manifest: {case_id}/manifest.json"
+            )
+        else:
+            try:
+                load_manifest(manifest_path)
+            except ContractError as exc:
+                errors.append(f"Invalid evaluation manifest {case_id}: {exc}")
+        for name, kind in (
+            ("task.md", "file"),
+            ("inputs", "directory"),
+            ("expected-valid-report.md", "file"),
+        ):
+            path = case_root / name
+            exists = path.is_file() if kind == "file" else path.is_dir()
+            if not exists:
+                errors.append(
+                    f"Missing evaluation {kind}: {case_id}/{name}"
+                )
+
+        for path in sorted(case_root.rglob("*")):
+            if not path.is_file() or path.suffix.lower() not in EVAL_TEXT_SUFFIXES:
+                continue
+            relative = path.relative_to(root)
+            if relative == CORRUPT_CSV:
+                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                if digest != CORRUPT_CSV_SHA256:
+                    errors.append(
+                        "Corrupt CSV hash mismatch: "
+                        f"{relative.as_posix()} expected "
+                        f"{CORRUPT_CSV_SHA256}, got {digest}"
+                    )
+                continue
+            try:
+                text = read_utf8(path)
+            except UnicodeDecodeError as exc:
+                errors.append(
+                    f"Invalid UTF-8 evaluation fixture {relative.as_posix()}: {exc}"
+                )
+                continue
+            if "Synthetic example" not in text:
+                errors.append(
+                    "Evaluation fixture lacks Synthetic example label: "
+                    f"{relative.as_posix()}"
+                )
+
+    corrupt_path = root / CORRUPT_CSV
+    if not corrupt_path.is_file():
+        errors.append(f"Missing corrupt CSV fixture: {CORRUPT_CSV.as_posix()}")
 
 
 def validate_repo(root: Path) -> list[str]:
@@ -196,6 +301,7 @@ def validate_repo(root: Path) -> list[str]:
             errors.append(f"Example lacks Synthetic example label: {relative.as_posix()}")
 
     validate_png(root / "assets" / "lab-meeting-report-preview.png", errors)
+    validate_evaluation_assets(root, errors)
 
     old_name = SKILL_NAME + "-md"
     scaffold_pattern = re.compile(r"\b(?:T[O]DO|T[B]D|F[I]XME)\b")

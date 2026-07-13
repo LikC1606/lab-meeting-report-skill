@@ -12,6 +12,7 @@ from scripts.grade_report import grade_text, main
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+CASES_ROOT = REPO_ROOT / "evals" / "research-progress" / "cases"
 COMPOSITION_CASES = {
     "clean-multiseed",
     "conflicting-results",
@@ -268,6 +269,39 @@ class GradeReportTests(unittest.TestCase):
         report = "1. Review the evidence.\n2. Decide next steps.\nScore: 0.757."
 
         grading = grade_text(report, manifest_with_required_ratio("0.757"))
+
+        self.assertTrue(grading["hard_pass"], grading)
+
+    def test_hyphenated_technical_identifiers_are_not_experimental_values(
+        self,
+    ) -> None:
+        report = "Strict UTF-8 decoding failed. Score: 0.757."
+
+        grading = grade_text(report, manifest_with_required_ratio("0.757"))
+
+        self.assertTrue(grading["hard_pass"], grading)
+
+    def test_source_authority_wording_satisfies_conflict_boundary(self) -> None:
+        case = CASES_ROOT / "conflicting-results"
+        manifest = load_manifest(case / "manifest.json")
+        report = (case / "expected-valid-report.md").read_text(encoding="utf-8")
+        report = report.replace(
+            "no authority rule", "no source-authority rule", 1
+        )
+
+        grading = grade_text(report, manifest)
+
+        self.assertTrue(grading["hard_pass"], grading)
+
+    def test_historical_wording_satisfies_supersession_boundary(self) -> None:
+        case = CASES_ROOT / "safe-existing-report-update"
+        manifest = load_manifest(case / "manifest.json")
+        report = (case / "expected-valid-report.md").read_text(encoding="utf-8")
+        report = report.replace(
+            "retaining it as history", "retaining it as a historical value", 1
+        )
+
+        grading = grade_text(report, manifest)
 
         self.assertTrue(grading["hard_pass"], grading)
 

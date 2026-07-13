@@ -17,7 +17,7 @@
   ],
   "derived_numbers": [],
   "required_evidence": [
-    {"id": "supersession", "all_of": ["0.741", "supersedes", "0.728", "history"]}
+    {"id": "supersession", "all_of": ["0.741", "supersedes", "0.728", "histor"]}
   ],
   "negative_results": [],
   "conflicts": [],

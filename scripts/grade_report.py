@@ -38,11 +38,20 @@ def _is_markdown_ordered_list_marker(text: str, match: re.Match[str]) -> bool:
     return not prefix.strip() and re.match(r"[.)]\s", suffix) is not None
 
 
+def _is_hyphenated_technical_identifier(
+    text: str, match: re.Match[str]
+) -> bool:
+    prefix = text[: match.start()]
+    return re.search(r"[A-Za-z][A-Za-z0-9]*-$", prefix) is not None
+
+
 def extract_numbers(text: str) -> list[tuple[str, Decimal]]:
     values: list[tuple[str, Decimal]] = []
     normalized = unicodedata.normalize("NFKC", text)
     for match in NUMBER_RE.finditer(normalized):
-        if _is_markdown_ordered_list_marker(normalized, match):
+        if _is_markdown_ordered_list_marker(
+            normalized, match
+        ) or _is_hyphenated_technical_identifier(normalized, match):
             continue
         token = match.group(0).strip()
         raw_value = token.rstrip("% ")

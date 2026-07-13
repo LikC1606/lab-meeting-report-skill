@@ -17,7 +17,7 @@
   ],
   "derived_numbers": [],
   "required_evidence": [
-    {"id": "unresolved-authority", "all_of": ["unresolved", "no authority rule"]}
+    {"id": "unresolved-authority", "all_of": ["unresolved", "no", "authority rule"]}
   ],
   "negative_results": [],
   "conflicts": [

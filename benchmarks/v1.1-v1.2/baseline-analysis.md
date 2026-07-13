@@ -8,7 +8,7 @@
 - Infrastructure outcome: 24 valid runs, zero infrastructure-invalid runs.
 - Review method: deterministic grading plus an inline Codex semantic and transcript audit. The user explicitly declined manual review, so this analysis is not independent human validation.
 
-The benchmark's mean pass rate of `0.799` is an expectation-level average. It must not be read as a run pass rate: all 24 reports failed at least one deterministic hard gate.
+The benchmark's mean pass rate of `0.812` is an expectation-level average. It must not be read as a run pass rate: all 24 reports failed at least one deterministic hard gate.
 
 ## Failure inventory
 

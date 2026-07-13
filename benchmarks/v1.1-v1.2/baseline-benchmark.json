@@ -3,7 +3,7 @@
     "skill_name": "lab-meeting-report",
     "executor_model": "gpt-5.6-sol",
     "analyzer_model": "human-blind-review",
-    "timestamp": "2026-07-13T16:16:25+00:00",
+    "timestamp": "2026-07-13T16:36:39+00:00",
     "evals_run": [
       1,
       2,
@@ -512,9 +512,9 @@
       "configuration": "without_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.8,
-        "passed": 8,
-        "failed": 2,
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
         "total": 10,
         "time_seconds": 126.622,
         "tokens": 257142,
@@ -544,8 +544,8 @@
         },
         {
           "text": "evidence:unresolved-authority",
-          "passed": false,
-          "evidence": "missing: no authority rule"
+          "passed": true,
+          "evidence": "all required terms found"
         },
         {
           "text": "conflict:macro-f1",
@@ -581,9 +581,9 @@
       "configuration": "without_skill",
       "run_number": 2,
       "result": {
-        "pass_rate": 0.8,
-        "passed": 8,
-        "failed": 2,
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
         "total": 10,
         "time_seconds": 278.523,
         "tokens": 870230,
@@ -613,8 +613,8 @@
         },
         {
           "text": "evidence:unresolved-authority",
-          "passed": false,
-          "evidence": "missing: no authority rule"
+          "passed": true,
+          "evidence": "all required terms found"
         },
         {
           "text": "conflict:macro-f1",
@@ -650,9 +650,9 @@
       "configuration": "without_skill",
       "run_number": 3,
       "result": {
-        "pass_rate": 0.8,
-        "passed": 8,
-        "failed": 2,
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
         "total": 10,
         "time_seconds": 282.772,
         "tokens": 394801,
@@ -682,8 +682,8 @@
         },
         {
           "text": "evidence:unresolved-authority",
-          "passed": false,
-          "evidence": "missing: no authority rule"
+          "passed": true,
+          "evidence": "all required terms found"
         },
         {
           "text": "conflict:macro-f1",
@@ -1692,8 +1692,8 @@
   "run_summary": {
     "without_skill": {
       "pass_rate": {
-        "mean": 0.799206,
-        "stddev": 0.158055,
+        "mean": 0.811706,
+        "stddev": 0.161689,
         "min": 0.428571,
         "max": 0.933333
       },

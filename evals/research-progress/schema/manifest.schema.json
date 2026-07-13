@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LikC1606/lab-meeting-report-skill/evals/research-progress/schema/manifest.schema.json",
+  "title": "Lab meeting research-progress evaluation case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "case_id",
+    "layer",
+    "language",
+    "report_mode",
+    "task_file",
+    "input_root",
+    "expected_report",
+    "numbers",
+    "derived_numbers",
+    "required_evidence",
+    "negative_results",
+    "conflicts",
+    "forbidden_patterns",
+    "required_sources",
+    "forbidden_sources",
+    "skipped_sources",
+    "preservation_markers"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "case_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "layer": {"enum": ["composition", "end-to-end"]},
+    "language": {"enum": ["en", "zh-CN"]},
+    "report_mode": {"const": "research-progress"},
+    "task_file": {"type": "string", "minLength": 1},
+    "input_root": {"type": "string", "minLength": 1},
+    "expected_report": {"type": "string", "minLength": 1},
+    "numbers": {"type": "array", "items": {"$ref": "#/$defs/number"}},
+    "derived_numbers": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/derived"}
+    },
+    "required_evidence": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/termRule"}
+    },
+    "negative_results": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/termRule"}
+    },
+    "conflicts": {"type": "array", "items": {"$ref": "#/$defs/conflict"}},
+    "forbidden_patterns": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/patternRule"}
+    },
+    "required_sources": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "forbidden_sources": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "skipped_sources": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/termRule"}
+    },
+    "preservation_markers": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {
+    "number": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "value", "unit", "required", "source"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "value": {"type": "string", "minLength": 1},
+        "unit": {"type": "string", "minLength": 1},
+        "required": {"type": "boolean"},
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "derived": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "value",
+        "unit",
+        "required",
+        "operation",
+        "operands"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "value": {"type": "string", "minLength": 1},
+        "unit": {"type": "string", "minLength": 1},
+        "required": {"type": "boolean"},
+        "operation": {
+          "enum": [
+            "add",
+            "subtract",
+            "multiply",
+            "divide",
+            "mean",
+            "percent-change"
+          ]
+        },
+        "operands": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "termRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "all_of"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "all_of": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "values", "source_tokens", "max_distance"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "values": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "source_tokens": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "max_distance": {"type": "integer", "minimum": 1}
+      }
+    },
+    "patternRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "pattern"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "pattern": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

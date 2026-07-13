@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import struct
 import sys
@@ -86,6 +87,24 @@ CORRUPT_CSV_SHA256 = (
     "c90d4efb69ec99c28d449dbfb3e53a5aba0eb40b0ea686c3e58378067a9a5908"
 )
 EVAL_TEXT_SUFFIXES = {".md", ".txt", ".csv"}
+CANDIDATE_SELECTION = Path(
+    "benchmarks/v1.1-v1.2/candidate-selection.json"
+)
+CANDIDATE_BLOCKS = {
+    "E1": (Path("lab-meeting-report/SKILL.md"), "<!-- E1 -->"),
+    "E2": (Path("lab-meeting-report/SKILL.md"), "<!-- E2 -->"),
+    "E3": (Path("lab-meeting-report/SKILL.md"), "<!-- E3 -->"),
+    "E4": (Path("lab-meeting-report/SKILL.md"), "<!-- E4 -->"),
+    "E5": (Path("lab-meeting-report/SKILL.md"), "<!-- E5 -->"),
+    "P1": (
+        Path("lab-meeting-report/references/progress-report.md"),
+        "<!-- P1 -->",
+    ),
+    "P2": (
+        Path("lab-meeting-report/references/progress-report.md"),
+        "<!-- P2 -->",
+    ),
+}
 
 
 def read_utf8(path: Path) -> str:
@@ -224,6 +243,43 @@ def validate_evaluation_assets(root: Path, errors: list[str]) -> None:
         errors.append(f"Missing corrupt CSV fixture: {CORRUPT_CSV.as_posix()}")
 
 
+def validate_candidate_selection(root: Path, errors: list[str]) -> None:
+    selection_path = root / CANDIDATE_SELECTION
+    if not selection_path.is_file():
+        return
+
+    try:
+        selection = json.loads(read_utf8(selection_path))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        errors.append(f"Invalid candidate selection: {exc}")
+        return
+
+    selected_raw = (
+        selection.get("selected_blocks")
+        if isinstance(selection, dict)
+        else None
+    )
+    if not isinstance(selected_raw, list) or not all(
+        isinstance(block_id, str) for block_id in selected_raw
+    ):
+        errors.append("Candidate selection selected_blocks must be a string array")
+        return
+
+    selected = set(selected_raw)
+    for block_id in sorted(selected - CANDIDATE_BLOCKS.keys()):
+        errors.append(f"Unknown selected block {block_id}")
+
+    for block_id, (relative, marker) in CANDIDATE_BLOCKS.items():
+        path = root / relative
+        count = read_utf8(path).count(marker) if path.is_file() else 0
+        if block_id in selected and count == 0:
+            errors.append(f"Selected block {block_id} is missing")
+        elif block_id in selected and count > 1:
+            errors.append(f"Selected block {block_id} appears more than once")
+        elif block_id not in selected and count:
+            errors.append(f"Unselected block {block_id} is present")
+
+
 def validate_repo(root: Path) -> list[str]:
     root = root.resolve()
     errors: list[str] = []
@@ -302,6 +358,7 @@ def validate_repo(root: Path) -> list[str]:
 
     validate_png(root / "assets" / "lab-meeting-report-preview.png", errors)
     validate_evaluation_assets(root, errors)
+    validate_candidate_selection(root, errors)
 
     old_name = SKILL_NAME + "-md"
     scaffold_pattern = re.compile(r"\b(?:T[O]DO|T[B]D|F[I]XME)\b")

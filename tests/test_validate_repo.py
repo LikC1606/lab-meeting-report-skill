@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import shutil
 import subprocess
 import sys
@@ -28,6 +29,24 @@ def copy_fixture(destination: Path) -> None:
         REPO_ROOT,
         destination,
         ignore=shutil.ignore_patterns(".git", "__pycache__", "tmp"),
+    )
+
+
+def write_candidate_selection(root: Path, selected_blocks: list[str]) -> None:
+    path = root / "benchmarks" / "v1.1-v1.2" / "candidate-selection.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "baseline_commit": "76a800c3fdd843b2513ea7270086a05ff7f5c47e",
+                "baseline_benchmark_sha256": "0" * 64,
+                "selected_blocks": selected_blocks,
+                "evidence": [],
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
     )
 
 
@@ -136,6 +155,66 @@ class ValidateRepoTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn(
                 "corrupt csv hash", (result.stdout + result.stderr).lower()
+            )
+
+    def test_selected_candidate_block_must_exist(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            write_candidate_selection(
+                fixture, ["E1", "E2", "E3", "E4", "E5", "P1", "P2"]
+            )
+            skill_file = fixture / "lab-meeting-report" / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(
+                content.replace("<!-- E1 -->\n", "", 1),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "selected block e1 is missing",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_unselected_candidate_block_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            write_candidate_selection(fixture, [])
+            skill_file = fixture / "lab-meeting-report" / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(
+                content.replace(
+                    "### 3. Select one report mode",
+                    "<!-- E1 -->\n\n### 3. Select one report mode",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "unselected block e1 is present",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_unknown_candidate_block_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            write_candidate_selection(fixture, ["E9"])
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "unknown selected block e9",
+                (result.stdout + result.stderr).lower(),
             )
 
 

@@ -90,3 +90,9 @@ Writing rules:
 - Preserve negative results because they constrain the next decision.
 - Compare results with a baseline or prior state when the source permits it.
 - Do not imply statistical significance without supplied evidence.
+
+<!-- P1 -->
+- Treat duplicated or translated notes about the same run as repeated provenance, not independent replication or additional sample count.
+
+<!-- P2 -->
+- A source author's causal wording is still an attributed claim when no isolating test is supplied; preserve it as an interpretation or hypothesis, not a verified mechanism.

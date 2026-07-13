@@ -1,0 +1,106 @@
+{
+  "baseline_commit": "76a800c3fdd843b2513ea7270086a05ff7f5c47e",
+  "baseline_benchmark_sha256": "6a9d50f2373fad8018374fcacac8962de803d334d16f0fff4c6c62546d855c5f",
+  "selected_blocks": [
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "P1",
+    "P2"
+  ],
+  "evidence": [
+    {
+      "block_id": "E1",
+      "failed_runs": [
+        "conflicting-results/run-1",
+        "partial-source-failure/run-2",
+        "safe-existing-report-update/run-1"
+      ],
+      "expectations": [
+        "evidence:unresolved-authority",
+        "forbidden:corrupt-source-content-claim",
+        "required-source:inputs/reports/group-meeting/2026-07-13.md"
+      ],
+      "finding": "The reports lacked a stable claim-to-source ledger: conflict authority remained implicit, an unavailable source was characterized beyond the accepted boundary, and an authorized source report was not carried into the update."
+    },
+    {
+      "block_id": "E2",
+      "failed_runs": [
+        "buried-negative-result/run-1",
+        "clean-multiseed/run-1",
+        "scoped-directory-selection/run-1"
+      ],
+      "expectations": [
+        "numeric-closed-world"
+      ],
+      "finding": "Twenty of 24 runs introduced undeclared comparison, margin, dispersion, or percentage values; several were repeated as facts rather than bounded calculations."
+    },
+    {
+      "block_id": "E3",
+      "failed_runs": [
+        "conflicting-results/run-1",
+        "conflicting-results/run-2",
+        "conflicting-results/run-3"
+      ],
+      "expectations": [
+        "evidence:unresolved-authority"
+      ],
+      "finding": "All conflict cases retained both values but omitted the decision-relevant fact that no authority rule had been supplied."
+    },
+    {
+      "block_id": "E4",
+      "failed_runs": [
+        "safe-existing-report-update/run-1",
+        "safe-existing-report-update/run-2",
+        "safe-existing-report-update/run-3"
+      ],
+      "expectations": [
+        "required-number:baseline-macro-f1",
+        "preserve:## 导师反馈（手写）",
+        "preserve:保留这个消融实验，不要删除。"
+      ],
+      "finding": "All update runs reconstructed the destination after finding it absent instead of locating the supplied source report under inputs, deleting the baseline and manual content."
+    },
+    {
+      "block_id": "E5",
+      "failed_runs": [
+        "missing-evidence-causal-lure/run-1",
+        "missing-evidence-causal-lure/run-2",
+        "partial-source-failure/run-3"
+      ],
+      "expectations": [
+        "forbidden:unsupported-causal-claim",
+        "forbidden:unsupported-significance-claim",
+        "forbidden:corrupt-source-content-claim"
+      ],
+      "finding": "The final drafts preserved strong causal or significance wording inside disclaimers and made overly specific claims about an unreadable source, showing that the existing quality checklist was not claim-level."
+    },
+    {
+      "block_id": "P1",
+      "failed_runs": [
+        "duplicated-multilingual-notes/run-1",
+        "duplicated-multilingual-notes/run-2",
+        "duplicated-multilingual-notes/run-3"
+      ],
+      "expectations": [
+        "evidence:duplicate-provenance",
+        "forbidden:two-replications"
+      ],
+      "finding": "All three reports failed to state the full provenance boundary consistently; one used the prohibited independent-replication formulation."
+    },
+    {
+      "block_id": "P2",
+      "failed_runs": [
+        "missing-evidence-causal-lure/run-1",
+        "missing-evidence-causal-lure/run-2",
+        "missing-evidence-causal-lure/run-3"
+      ],
+      "expectations": [
+        "forbidden:unsupported-causal-claim"
+      ],
+      "finding": "All three causal-lure reports repeated 'hard negatives caused' even when placing it under a hypothesis label; attribution and evidentiary status need to be expressed in the sentence itself."
+    }
+  ]
+}

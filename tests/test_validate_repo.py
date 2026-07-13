@@ -113,6 +113,31 @@ class ValidateRepoTests(unittest.TestCase):
                 (result.stdout + result.stderr).lower(),
             )
 
+    def test_missing_safe_update_source_fixture_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            existing_report = (
+                fixture
+                / "evals"
+                / "research-progress"
+                / "cases"
+                / "safe-existing-report-update"
+                / "inputs"
+                / "reports"
+                / "group-meeting"
+                / "2026-07-13.md"
+            )
+            existing_report.unlink()
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "source not found",
+                (result.stdout + result.stderr).lower(),
+            )
+
     def test_non_synthetic_eval_text_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"

@@ -7,4 +7,6 @@ __pycache__/
 *.tmp
 tmp/
 reports/
+!evals/research-progress/cases/safe-existing-report-update/inputs/reports/
+!evals/research-progress/cases/safe-existing-report-update/inputs/reports/**
 .worktrees/

@@ -30,24 +30,28 @@
       "failed_runs": [
         "buried-negative-result/run-1",
         "clean-multiseed/run-1",
-        "scoped-directory-selection/run-1"
+        "scoped-directory-selection/run-1",
+        "candidate-iteration-1/buried-negative-result/run-1",
+        "candidate-iteration-1/clean-multiseed/run-1",
+        "candidate-iteration-1/scoped-directory-selection/run-1"
       ],
       "expectations": [
         "numeric-closed-world"
       ],
-      "finding": "Twenty of 24 runs introduced undeclared comparison, margin, dispersion, or percentage values; several were repeated as facts rather than bounded calculations."
+      "finding": "Twenty of 24 baseline runs introduced undeclared comparison, margin, dispersion, or percentage values. Candidate iteration 1 still failed this gate in seven of eight cases because the initial rule allowed any calculation with supplied operands; the revised rule therefore defaults to no proactive experimental arithmetic."
     },
     {
       "block_id": "E3",
       "failed_runs": [
         "conflicting-results/run-1",
         "conflicting-results/run-2",
-        "conflicting-results/run-3"
+        "conflicting-results/run-3",
+        "candidate-iteration-1/conflicting-results/run-1"
       ],
       "expectations": [
         "evidence:unresolved-authority"
       ],
-      "finding": "All conflict cases retained both values but omitted the decision-relevant fact that no authority rule had been supplied."
+      "finding": "All baseline conflict cases omitted the decision-relevant fact that no authority rule had been supplied. Candidate iteration 1 expressed the idea as 'no source-authority rule' but still missed the stable boundary, so the rule now requires an explicit no-authority statement."
     },
     {
       "block_id": "E4",
@@ -68,39 +72,43 @@
       "failed_runs": [
         "missing-evidence-causal-lure/run-1",
         "missing-evidence-causal-lure/run-2",
-        "partial-source-failure/run-3"
+        "partial-source-failure/run-3",
+        "candidate-iteration-1/missing-evidence-causal-lure/run-1",
+        "candidate-iteration-1/partial-source-failure/run-1"
       ],
       "expectations": [
         "forbidden:unsupported-causal-claim",
         "forbidden:unsupported-significance-claim",
         "forbidden:corrupt-source-content-claim"
       ],
-      "finding": "The final drafts preserved strong causal or significance wording inside disclaimers and made overly specific claims about an unreadable source, showing that the existing quality checklist was not claim-level."
+      "finding": "Baseline and candidate iteration 1 preserved strong causal wording inside hypothesis labels and made overly specific claims about an unreadable source. The revised audit requires uncertainty in the sentence body and treats reliably unreadable source contents as wholly unknown."
     },
     {
       "block_id": "P1",
       "failed_runs": [
         "duplicated-multilingual-notes/run-1",
         "duplicated-multilingual-notes/run-2",
-        "duplicated-multilingual-notes/run-3"
+        "duplicated-multilingual-notes/run-3",
+        "candidate-iteration-1/duplicated-multilingual-notes/run-1"
       ],
       "expectations": [
         "evidence:duplicate-provenance",
         "forbidden:two-replications"
       ],
-      "finding": "All three reports failed to state the full provenance boundary consistently; one used the prohibited independent-replication formulation."
+      "finding": "All three baseline reports failed to state the full provenance boundary consistently. Candidate iteration 1 correctly recognized one run but printed a counterfactual combined sample count, so the revised rule prohibits computing or restating an invalid combined count."
     },
     {
       "block_id": "P2",
       "failed_runs": [
         "missing-evidence-causal-lure/run-1",
         "missing-evidence-causal-lure/run-2",
-        "missing-evidence-causal-lure/run-3"
+        "missing-evidence-causal-lure/run-3",
+        "candidate-iteration-1/missing-evidence-causal-lure/run-1"
       ],
       "expectations": [
         "forbidden:unsupported-causal-claim"
       ],
-      "finding": "All three causal-lure reports repeated 'hard negatives caused' even when placing it under a hypothesis label; attribution and evidentiary status need to be expressed in the sentence itself."
+      "finding": "All three baseline reports and candidate iteration 1 repeated strong causal wording under a hypothesis label. The revised rule requires an attributed modal construction so evidentiary status is expressed in the claim itself."
     }
   ]
 }

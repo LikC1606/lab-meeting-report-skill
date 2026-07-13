@@ -92,7 +92,7 @@ Writing rules:
 - Do not imply statistical significance without supplied evidence.
 
 <!-- P1 -->
-- Treat duplicated or translated notes about the same run as repeated provenance, not independent replication or additional sample count.
+- Treat duplicated or translated notes about the same run as repeated provenance for one run, not independent replication or additional sample count. State the boundary directly without calculating or printing a counterfactual combined count.
 
 <!-- P2 -->
-- A source author's causal wording is still an attributed claim when no isolating test is supplied; preserve it as an interpretation or hypothesis, not a verified mechanism.
+- A source author's causal wording is still an attributed claim when no isolating test is supplied. Put the uncertainty inside the sentence, for example, “the source suggests X may explain Y”; a `Hypothesis` label does not make “X caused Y” evidence-safe.

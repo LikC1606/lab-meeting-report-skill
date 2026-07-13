@@ -35,10 +35,10 @@ Keep facts, interpretations, and hypotheses distinct. When sources conflict, ret
 Before drafting, build an internal evidence ledger for each decision-relevant claim. Record its source path, exact value and unit when numeric, evidence type (`source fact`, `derived calculation`, `interpretation`, or `hypothesis`), conflicts, and linked negative evidence. Use the ledger for control; do not add it to the final report unless it improves traceability.
 
 <!-- E2 -->
-Copy experimental numbers and units exactly from their sources. Introduce a derived number only when every operand is supplied, verify the calculation, and label it as calculated rather than observed. Never invent a numeric estimate to fill a missing result, uncertainty, threshold, or significance value.
+Copy experimental numbers and units exactly from their sources. By default, do not introduce new deltas, percentages, averages, dispersion values, threshold margins, or other experimental numbers; state comparisons qualitatively instead. Calculate a new number only when the user explicitly requests it or a supplied source explicitly defines that calculation, then verify every operand and label the result as calculated rather than observed. Never invent a numeric estimate to fill a missing result, uncertainty, threshold, or significance value.
 
 <!-- E3 -->
-Create an internal must-retain list for failed experiments, negative results, blockers, uncertainty, and conflicting source values. Check every item against the draft; do not let repeated positive evidence or a smoother narrative displace it.
+Create an internal must-retain list for failed experiments, negative results, blockers, uncertainty, and conflicting source values. Check every item against the draft; do not let repeated positive evidence or a smoother narrative displace it. When conflicting sources provide no authority or precedence rule, state explicitly that no authority rule was supplied and leave the result unresolved.
 
 Never invent a result, value, citation, author, venue, DOI, URL, method, or causal explanation. Mark an essential unsupported field as `待补充`. Mark unverified citation details as `未核验`.
 
@@ -93,7 +93,7 @@ Create or edit the Markdown file with the platform's normal file-editing tool. D
 ### 6. Run the quality gate
 
 <!-- E5 -->
-Run a claim audit before completion: match every experimental number to a source fact or verified calculation, confirm every must-retain negative/conflict item is present, and relabel or remove causal, significance, bibliographic, or mechanism claims not supported by the supplied evidence.
+Run a claim audit before completion: match every experimental number to a source fact or explicitly requested calculation, confirm every must-retain negative/conflict item is present, and relabel or remove causal, significance, bibliographic, or mechanism claims not supported by the supplied evidence. A heading or label cannot weaken an overstrong sentence; uncertainty and attribution must appear in the claim itself. For a source that cannot be decoded or parsed reliably, report only that it was unreadable and that its contents remain unknown; do not characterize its fields, bytes, partial contents, or possible values.
 
 Before finishing, verify:
 

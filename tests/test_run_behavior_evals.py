@@ -19,6 +19,7 @@ from scripts.run_behavior_evals import (
     check_release_gate,
     execute_codex,
     hash_run_environment,
+    load_network_provider,
     parse_review_feedback,
     prepare_blind_review,
     run_with_retry,
@@ -153,6 +154,61 @@ class RunBehaviorEvalTests(unittest.TestCase):
             execute_codex(context)
 
         self.assertIs(run.call_args.kwargs["stdin"], subprocess.DEVNULL)
+
+    def test_provider_config_is_replayed_under_ignore_user_config(self) -> None:
+        config = Path(self.temp_dir.name) / "config.toml"
+        config.write_text(
+            """
+model_provider = "test_provider"
+
+[model_providers.test_provider]
+name = "Synthetic provider"
+base_url = "https://example.invalid/v1"
+wire_api = "responses"
+requires_openai_auth = true
+
+[projects.'ignored-project']
+trust_level = "trusted"
+""".strip(),
+            encoding="utf-8",
+        )
+        provider = load_network_provider(config)
+        executor = CapturingSuccessExecutor()
+        spec = replace(self.make_spec(), network_provider=provider)
+
+        result = run_with_retry(spec, executor=executor)
+
+        self.assertEqual(result.infrastructure_status, "valid")
+        self.assertIn("--ignore-user-config", executor.command)
+        command = " ".join(executor.command)
+        self.assertIn("model_provider", command)
+        self.assertIn("example.invalid", command)
+        self.assertNotIn("ignored-project", command)
+        metadata = json.loads(
+            (result.run_dir / "run_metadata.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertRegex(metadata["provider_hash"], r"^[0-9a-f]{64}$")
+
+    def test_provider_config_rejects_unsafe_extra_fields(self) -> None:
+        config = Path(self.temp_dir.name) / "config.toml"
+        config.write_text(
+            """
+model_provider = "unsafe"
+
+[model_providers.unsafe]
+name = "Unsafe"
+base_url = "https://example.invalid/v1"
+wire_api = "responses"
+requires_openai_auth = true
+http_headers = { Authorization = "must-not-load" }
+""".strip(),
+            encoding="utf-8",
+        )
+
+        with self.assertRaisesRegex(ContractError, "unsupported fields"):
+            load_network_provider(config)
 
     def test_run_layout_is_skill_creator_compatible(self) -> None:
         result = run_with_retry(

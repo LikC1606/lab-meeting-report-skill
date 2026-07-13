@@ -82,15 +82,15 @@ The manifest is the grading contract, not a model prompt. The agent sees the sou
 1. Resolve the baseline from Git tag `v1.1.0` or the candidate from an explicit directory.
 2. Hash the complete skill package and copy it into a fresh case workspace.
 3. Copy the case inputs into that workspace without exposing the manifest assertions to the agent.
-4. Require an explicit model ID, then invoke `codex exec --ephemeral --ignore-user-config --sandbox workspace-write --model <model-id>` with the skill path explicitly named in the task.
+4. Require an explicit model ID, then invoke `codex exec --ephemeral --ignore-user-config --sandbox workspace-write --model <model-id>` with the skill path explicitly named in the task. When the active local configuration selects a custom model provider, replay only its allowlisted transport fields (`name`, `base_url`, `wire_api`, and `requires_openai_auth`) as explicit CLI overrides; reject provider tables with any additional field. This preserves access to the configured transport without inheriting projects, hooks, plugins, prompts, or other user behavior settings.
 5. Require the run to read that exact copied `SKILL.md`, ignore any same-named global installation, use only the supplied local sources, and not perform network research.
 6. Require the report at the case's expected relative path.
-7. Save output, exit status, duration, model, Codex CLI version, Git commit, prompt hash, run number, and skill hash.
+7. Save output, exit status, duration, model, Codex CLI version, Git commit, prompt hash, run number, skill hash, and a SHA-256 of the isolated provider transport configuration. Do not save provider URLs, auth data, headers, or environment values.
 8. Grade only after the process exits and the expected output can be read as UTF-8 Markdown.
 
 The global installed skill is never edited by the runner. Each run receives an independent directory and cannot overwrite fixtures, baselines, or another run.
 
-Development runs execute each case once per version. The final release benchmark executes every case three times for `v1.1.0` and three times for the candidate. Frozen baseline results may be reused only when the skill hash, model ID, Codex CLI version, runner hash, grader hash, prompt hash, and case hash all match the candidate comparison environment; otherwise the baseline is rerun.
+Development runs execute each case once per version. The final release benchmark executes every case three times for `v1.1.0` and three times for the candidate. Frozen baseline results may be reused only when the skill hash, provider hash, model ID, Codex CLI version, runner hash, grader hash, prompt hash, and case hash all match the candidate comparison environment; otherwise the baseline is rerun.
 
 ## Deterministic Hard Gates
 

@@ -14,11 +14,13 @@ import sys
 import tarfile
 import tempfile
 import time
+import tomllib
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from statistics import fmean, median, stdev
 from typing import Callable
+from urllib.parse import urlsplit
 
 from scripts.eval_contract import (
     ContractError,
@@ -43,6 +45,21 @@ CONFIGURATION_SKILL_DIR = {
     "with_skill": "with_skill",
     "without_skill": "without_skill",
 }
+PROVIDER_FIELDS = {
+    "name",
+    "base_url",
+    "wire_api",
+    "requires_openai_auth",
+}
+
+
+@dataclass(frozen=True)
+class NetworkProvider:
+    key: str
+    name: str
+    base_url: str
+    wire_api: str
+    requires_openai_auth: bool
 
 
 @dataclass(frozen=True)
@@ -57,6 +74,7 @@ class RunSpec:
     candidate_skill: Path | None = None
     baseline_ref: str | None = None
     eval_index: int = 1
+    network_provider: NetworkProvider | None = None
 
 
 @dataclass(frozen=True)
@@ -78,6 +96,102 @@ class RunResult:
 
 
 Executor = Callable[[ExecutionContext], subprocess.CompletedProcess[str]]
+
+
+def load_network_provider(path: Path) -> NetworkProvider | None:
+    if not path.is_file():
+        return None
+    try:
+        data = tomllib.loads(path.read_text(encoding="utf-8", errors="strict"))
+    except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
+        raise ContractError(f"cannot read provider config {path}: {exc}") from exc
+    key = data.get("model_provider")
+    providers = data.get("model_providers")
+    if not isinstance(key, str) or not isinstance(providers, dict):
+        return None
+    raw = providers.get(key)
+    if raw is None:
+        return None
+    if not re.fullmatch(r"[A-Za-z0-9_]+", key):
+        raise ContractError("model provider key must be alphanumeric or underscore")
+    if not isinstance(raw, dict):
+        raise ContractError(f"model provider {key} must be a table")
+    extra = set(raw) - PROVIDER_FIELDS
+    missing = PROVIDER_FIELDS - set(raw)
+    if extra:
+        raise ContractError(
+            f"model provider {key} has unsupported fields: {sorted(extra)}"
+        )
+    if missing:
+        raise ContractError(
+            f"model provider {key} is missing fields: {sorted(missing)}"
+        )
+    name = raw["name"]
+    base_url = raw["base_url"]
+    wire_api = raw["wire_api"]
+    requires_openai_auth = raw["requires_openai_auth"]
+    if not isinstance(name, str) or not name.strip():
+        raise ContractError("model provider name must be a non-empty string")
+    if not isinstance(base_url, str):
+        raise ContractError("model provider base_url must be a string")
+    parsed = urlsplit(base_url)
+    if (
+        parsed.scheme not in {"http", "https"}
+        or not parsed.hostname
+        or parsed.username
+        or parsed.password
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise ContractError("model provider base_url is not a safe HTTP URL")
+    if wire_api != "responses":
+        raise ContractError("behavior evaluation requires responses wire_api")
+    if not isinstance(requires_openai_auth, bool):
+        raise ContractError("requires_openai_auth must be boolean")
+    return NetworkProvider(
+        key=key,
+        name=name,
+        base_url=base_url,
+        wire_api=wire_api,
+        requires_openai_auth=requires_openai_auth,
+    )
+
+
+def _provider_hash(provider: NetworkProvider | None) -> str:
+    if provider is None:
+        return _sha256_bytes(b"builtin-default-provider")
+    value = {
+        "key": provider.key,
+        "name": provider.name,
+        "base_url": provider.base_url,
+        "wire_api": provider.wire_api,
+        "requires_openai_auth": provider.requires_openai_auth,
+    }
+    return _sha256_bytes(
+        json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    )
+
+
+def _provider_arguments(provider: NetworkProvider | None) -> list[str]:
+    if provider is None:
+        return []
+    values = (
+        ("model_provider", provider.key),
+        (f"model_providers.{provider.key}.name", provider.name),
+        (f"model_providers.{provider.key}.base_url", provider.base_url),
+        (f"model_providers.{provider.key}.wire_api", provider.wire_api),
+    )
+    arguments: list[str] = []
+    for key, value in values:
+        arguments.extend(["--config", f"{key}={json.dumps(value)}"])
+    auth = str(provider.requires_openai_auth).lower()
+    arguments.extend(
+        [
+            "--config",
+            f"model_providers.{provider.key}.requires_openai_auth={auth}",
+        ]
+    )
+    return arguments
 
 
 def _sha256_bytes(value: bytes) -> str:
@@ -233,6 +347,7 @@ def _build_command(
         "exec",
         "--ephemeral",
         "--ignore-user-config",
+        *_provider_arguments(spec.network_provider),
         "--skip-git-repo-check",
         "--sandbox",
         "workspace-write",
@@ -379,6 +494,7 @@ def run_with_retry(
     environment_hashes = {
         "case_hash": hash_tree(case_root),
         "skill_hash": "unavailable",
+        "provider_hash": _provider_hash(spec.network_provider),
         "prompt_hash": _sha256_bytes(prompt.encode("utf-8")),
         "runner_hash": _sha256_file(runner_path),
         "grader_hash": _sha256_file(grader_path),
@@ -395,12 +511,14 @@ def run_with_retry(
         try:
             _copy_case_to_sandbox(case_root, manifest, sandbox)
             skill_root = _materialize_skill(spec, sandbox)
-            environment_hashes = hash_run_environment(
-                case_root=case_root,
-                skill_root=skill_root,
-                prompt=prompt,
-                runner_path=runner_path,
-                grader_path=grader_path,
+            environment_hashes.update(
+                hash_run_environment(
+                    case_root=case_root,
+                    skill_root=skill_root,
+                    prompt=prompt,
+                    runner_path=runner_path,
+                    grader_path=grader_path,
+                )
             )
             command = _build_command(
                 spec, sandbox, last_message.resolve(), prompt
@@ -608,6 +726,7 @@ def _validate_workspace_matrix(
             stable_fields = (
                 "case_hash",
                 "skill_hash",
+                "provider_hash",
                 "prompt_hash",
                 "runner_hash",
                 "grader_hash",
@@ -1422,6 +1541,10 @@ def run_command(args: argparse.Namespace) -> int:
         if args.candidate_skill is not None
         else None
     )
+    network_provider = load_network_provider(
+        Path(args.provider_config).expanduser().resolve()
+    )
+    print(f"Network provider hash: {_provider_hash(network_provider)}")
     valid_runs = 0
     invalid_runs = 0
     quality_failures = 0
@@ -1439,6 +1562,7 @@ def run_command(args: argparse.Namespace) -> int:
                 candidate_skill=candidate,
                 baseline_ref=args.baseline_ref,
                 eval_index=index,
+                network_provider=network_provider,
             )
             run_dir = _run_dir(spec, case_id)
             if run_dir.exists() and any(run_dir.iterdir()):
@@ -1534,6 +1658,14 @@ def build_parser() -> argparse.ArgumentParser:
     source.add_argument("--baseline-ref")
     source.add_argument("--candidate-skill")
     run_parser.add_argument("--model", required=True)
+    run_parser.add_argument(
+        "--provider-config",
+        default=str(Path.home() / ".codex" / "config.toml"),
+        help=(
+            "Read only the active model provider's allowlisted transport "
+            "fields from this TOML file"
+        ),
+    )
     run_parser.add_argument("--runs", type=int, default=1)
     run_parser.add_argument("--timeout-seconds", type=int, default=900)
     run_parser.add_argument("--resume", action="store_true")

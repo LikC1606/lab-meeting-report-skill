@@ -8,11 +8,16 @@ import unittest
 from dataclasses import replace
 from pathlib import Path
 
-from scripts.eval_contract import load_manifest
+from scripts.eval_contract import ContractError, load_manifest
 from scripts.run_behavior_evals import (
     RunSpec,
+    aggregate_workspace,
+    apply_human_review,
     build_prompt,
+    check_release_gate,
     hash_run_environment,
+    parse_review_feedback,
+    prepare_blind_review,
     run_with_retry,
 )
 
@@ -85,6 +90,19 @@ class RunBehaviorEvalTests(unittest.TestCase):
             candidate_skill=SKILL_ROOT,
             eval_index=1,
         )
+
+    def build_paired_workspace(self) -> None:
+        for run_number in (1, 2):
+            candidate = replace(self.make_spec(), run_number=run_number)
+            baseline = replace(
+                self.make_spec(),
+                configuration="without_skill",
+                run_number=run_number,
+                candidate_skill=None,
+                baseline_ref="v1.1.0",
+            )
+            run_with_retry(candidate, executor=fake_success_executor)
+            run_with_retry(baseline, executor=fake_success_executor)
 
     def test_prompt_names_exact_skill_and_hides_manifest(self) -> None:
         prompt = build_prompt(
@@ -214,6 +232,278 @@ class RunBehaviorEvalTests(unittest.TestCase):
             "grader_hash",
         ):
             self.assertIn(field, metadata)
+
+    def test_benchmark_uses_exact_skill_creator_fields(self) -> None:
+        self.build_paired_workspace()
+
+        benchmark = aggregate_workspace(
+            self.workspace, model="gpt-5.6-sol"
+        )
+
+        run = benchmark["runs"][0]
+        self.assertEqual(
+            set(run),
+            {
+                "eval_id",
+                "eval_name",
+                "configuration",
+                "run_number",
+                "result",
+                "expectations",
+                "notes",
+            },
+        )
+        self.assertIn("pass_rate", run["result"])
+        self.assertEqual(benchmark["metadata"]["runs_per_configuration"], 2)
+        self.assertEqual(
+            set(benchmark["run_summary"]),
+            {"with_skill", "without_skill", "delta"},
+        )
+
+    def test_blind_review_contains_one_pair_per_case_run(self) -> None:
+        self.build_paired_workspace()
+        review_workspace = Path(self.temp_dir.name) / "review"
+
+        mapping = prepare_blind_review(
+            self.workspace, review_workspace, seed=1200
+        )
+
+        self.assertEqual(len(mapping["pairs"]), 2)
+        pair = (
+            review_workspace
+            / "eval-01-clean-multiseed"
+            / "pair-1"
+            / "outputs"
+        )
+        self.assertTrue((pair / "source-packet.md").is_file())
+        self.assertTrue((pair / "A-report.md").is_file())
+        self.assertTrue((pair / "B-report.md").is_file())
+        self.assertNotEqual(
+            mapping["pairs"][0]["A"], mapping["pairs"][0]["B"]
+        )
+        anonymous = json.loads(
+            (review_workspace / "benchmark.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(
+            {run["configuration"] for run in anonymous["runs"]}, {"A", "B"}
+        )
+        self.assertNotIn("skill_hash", json.dumps(anonymous))
+
+    def test_structured_feedback_requires_scores_and_preference(self) -> None:
+        self.build_paired_workspace()
+        review_workspace = Path(self.temp_dir.name) / "review"
+        mapping = prepare_blind_review(
+            self.workspace, review_workspace, seed=1200
+        )
+        reviews = []
+        for pair in mapping["pairs"]:
+            reviews.append(
+                {
+                    "run_id": pair["review_run_id"],
+                    "feedback": json.dumps(
+                        {
+                            "semantic_failure": "none",
+                            "A": {
+                                "evidence_clarity": 4,
+                                "information_selection": 4,
+                                "decision_usefulness": 4,
+                                "readability": 4,
+                            },
+                            "B": {
+                                "evidence_clarity": 3,
+                                "information_selection": 3,
+                                "decision_usefulness": 3,
+                                "readability": 3,
+                            },
+                            "preference": "A",
+                            "notes": "Synthetic review",
+                        }
+                    ),
+                }
+            )
+
+        summary = parse_review_feedback(
+            {"reviews": reviews, "status": "complete"}, mapping
+        )
+
+        self.assertEqual(summary["pairs_reviewed"], 2)
+        self.assertIn(
+            summary["preference_counts"]["candidate"], {0, 1, 2}
+        )
+
+    def test_structured_feedback_rejects_out_of_range_scores(self) -> None:
+        mapping = {
+            "pairs": [
+                {
+                    "review_run_id": "eval-01-pair-1",
+                    "eval_id": 1,
+                    "eval_name": "clean-multiseed",
+                    "run_number": 1,
+                    "A": "with_skill",
+                    "B": "without_skill",
+                }
+            ]
+        }
+        feedback = {
+            "status": "complete",
+            "reviews": [
+                {
+                    "run_id": "eval-01-pair-1",
+                    "feedback": json.dumps(
+                        {
+                            "semantic_failure": "none",
+                            "A": {
+                                "evidence_clarity": 6,
+                                "information_selection": 4,
+                                "decision_usefulness": 4,
+                                "readability": 4,
+                            },
+                            "B": {
+                                "evidence_clarity": 3,
+                                "information_selection": 3,
+                                "decision_usefulness": 3,
+                                "readability": 3,
+                            },
+                            "preference": "A",
+                            "notes": "",
+                        }
+                    ),
+                }
+            ]
+        }
+
+        with self.assertRaisesRegex(ContractError, "between 1 and 5"):
+            parse_review_feedback(feedback, mapping)
+
+    def test_structured_feedback_requires_complete_submission(self) -> None:
+        mapping = {"pairs": []}
+
+        with self.assertRaisesRegex(ContractError, "status must be complete"):
+            parse_review_feedback(
+                {"reviews": [], "status": "in_progress"}, mapping
+            )
+
+    def test_semantic_failure_is_written_back_to_reviewed_benchmark(
+        self,
+    ) -> None:
+        benchmark = make_release_benchmark()
+        human_review = make_passing_human_review()
+        human_review["semantic_failures"]["candidate"] = [
+            {"eval_id": 1, "eval_name": "case-1", "run_number": 1}
+        ]
+
+        reviewed = apply_human_review(benchmark, human_review)
+
+        candidate = next(
+            run
+            for run in reviewed["runs"]
+            if run["configuration"] == "with_skill"
+            and run["eval_id"] == 1
+            and run["run_number"] == 1
+        )
+        self.assertEqual(candidate["result"]["pass_rate"], 0.0)
+        self.assertEqual(
+            candidate["result"]["failed"], candidate["result"]["total"]
+        )
+
+    def test_release_gate_requires_all_approved_conditions(self) -> None:
+        passing_benchmark = make_release_benchmark()
+        passing_human_review = make_passing_human_review()
+
+        self.assertEqual(
+            check_release_gate(passing_benchmark, passing_human_review), []
+        )
+        failing_benchmark = make_release_benchmark(candidate_failure=True)
+        errors = check_release_gate(
+            failing_benchmark, passing_human_review
+        )
+        self.assertIn(
+            "candidate hard gates: expected 24/24", "\n".join(errors)
+        )
+        incomplete_review = make_passing_human_review()
+        incomplete_review["pairs_reviewed"] = 23
+        errors = check_release_gate(passing_benchmark, incomplete_review)
+        self.assertIn("human review: expected 24/24", "\n".join(errors))
+
+
+def make_release_benchmark(
+    *, candidate_failure: bool = False
+) -> dict[str, object]:
+    runs: list[dict[str, object]] = []
+    for eval_id in range(1, 9):
+        for run_number in range(1, 4):
+            for configuration in ("with_skill", "without_skill"):
+                passed = not (
+                    configuration == "without_skill"
+                    and eval_id == 1
+                    and run_number == 1
+                )
+                if (
+                    candidate_failure
+                    and configuration == "with_skill"
+                    and eval_id == 1
+                    and run_number == 1
+                ):
+                    passed = False
+                runs.append(
+                    {
+                        "eval_id": eval_id,
+                        "eval_name": f"case-{eval_id}",
+                        "configuration": configuration,
+                        "run_number": run_number,
+                        "result": {
+                            "pass_rate": 1.0 if passed else 0.0,
+                            "passed": 1 if passed else 0,
+                            "failed": 0 if passed else 1,
+                            "total": 1,
+                            "time_seconds": 1.0,
+                            "tokens": 10,
+                            "tool_calls": 0,
+                            "errors": 0,
+                        },
+                        "expectations": [],
+                        "notes": [],
+                    }
+                )
+    return {
+        "metadata": {
+            "skill_name": "lab-meeting-report",
+            "executor_model": "gpt-5.6-sol",
+            "analyzer_model": "human-blind-review",
+            "evals_run": list(range(1, 9)),
+            "runs_per_configuration": 3,
+        },
+        "runs": runs,
+        "run_summary": {},
+        "notes": [],
+    }
+
+
+def make_passing_human_review() -> dict[str, object]:
+    return {
+        "pairs_reviewed": 24,
+        "preference_counts": {"candidate": 2, "baseline": 0, "tie": 22},
+        "semantic_failures": {"candidate": [], "baseline": []},
+        "global_medians": {
+            "candidate": {"overall": 4.0},
+            "baseline": {"overall": 3.5},
+        },
+        "per_case": {
+            f"case-{eval_id}": {
+                "candidate": {"overall": 4.0},
+                "baseline": {"overall": 3.5},
+                "preference_counts": {
+                    "candidate": 2 if eval_id == 1 else 0,
+                    "baseline": 0,
+                    "tie": 1 if eval_id == 1 else 3,
+                },
+            }
+            for eval_id in range(1, 9)
+        },
+        "reviews": [],
+    }
 
 
 if __name__ == "__main__":

@@ -92,7 +92,7 @@ Writing rules:
 - Do not imply statistical significance without supplied evidence.
 
 <!-- P1 -->
-- Treat duplicated or translated notes about the same run as repeated provenance for one run, not independent replication or additional sample count. State the boundary directly without calculating or printing a counterfactual combined count.
+- Treat duplicated or translated notes about the same run as repeated provenance for one run, not independent replication or additional sample count. State the full boundary directly without calculating a counterfactual count. In Chinese, use the unambiguous form `同一次运行的重复来源，并非独立复现`; translate that complete meaning in other report languages.
 
 <!-- P2 -->
-- A source author's causal wording is still an attributed claim when no isolating test is supplied. Put the uncertainty inside the sentence, for example, “the source suggests X may explain Y”; a `Hypothesis` label does not make “X caused Y” evidence-safe.
+- A source author's causal wording is still an attributed claim when no isolating test is supplied. Put the uncertainty inside the sentence, for example, “the source suggests X may explain Y”; a `Hypothesis` label does not make “X caused Y” evidence-safe. State each missing check directly and separately, for example, `No ablation was supplied. No significance test was supplied.` Do not say a result is “not statistically significant” when no test was performed; significance is untested.

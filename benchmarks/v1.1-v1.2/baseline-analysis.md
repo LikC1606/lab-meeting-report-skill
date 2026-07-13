@@ -8,7 +8,7 @@
 - Infrastructure outcome: 24 valid runs, zero infrastructure-invalid runs.
 - Review method: deterministic grading plus an inline Codex semantic and transcript audit. The user explicitly declined manual review, so this analysis is not independent human validation.
 
-The benchmark's mean pass rate of `0.786` is an expectation-level average. It must not be read as a run pass rate: all 24 reports failed at least one deterministic hard gate.
+The benchmark's mean pass rate of `0.799` is an expectation-level average. It must not be read as a run pass rate: all 24 reports failed at least one deterministic hard gate.
 
 ## Failure inventory
 
@@ -25,7 +25,7 @@ The benchmark's mean pass rate of `0.786` is an expectation-level average. It mu
 
 ## Cross-run patterns
 
-- `numeric-closed-world` failed in 20/24 runs. Most failures contain substantive undeclared calculations; a few tokens such as numbered-list ordinals are conservative scorer noise.
+- `numeric-closed-world` failed in 17/24 runs after the grader was corrected to exclude Markdown ordered-list markers. The remaining failures contain substantive undeclared calculations or identifiers.
 - All three conflict runs, duplicate-note runs, causal-lure runs, partial-source runs, and safe-update runs failed their case-specific boundary.
 - The most consequential behavior is the safe-update failure because it removed user-authored content and a baseline value in every repetition.
 - `partial-source-failure/run-1` took `1017.845 s` and required a second attempt, making it a resource outlier even though the final run was infrastructure-valid.
@@ -33,7 +33,7 @@ The benchmark's mean pass rate of `0.786` is an expectation-level average. It mu
 
 ## Grader limitations
 
-The deterministic rules are intentionally conservative. Regex checks do not fully understand negation or section labels, so phrases such as “not statistically significant” or “not two independent replications” can still match a forbidden pattern. Numeric extraction can also surface list ordinals. These limitations are recorded rather than reinterpreted as fabrication. Candidate reports must nevertheless avoid ambiguous strong wording and undeclared experimental arithmetic, while semantic review checks that a hard pass was not achieved by deleting decision-relevant content.
+The deterministic rules are intentionally conservative. Regex checks do not fully understand negation or section labels, so phrases such as “not statistically significant” or “not two independent replications” can still match a forbidden pattern. Markdown ordered-list markers are excluded from numeric grading, while inline run, seed, priority, and measurement numbers remain checked. These limitations are recorded rather than reinterpreted as fabrication. Candidate reports must nevertheless avoid ambiguous strong wording and undeclared experimental arithmetic, while semantic review checks that a hard pass was not achieved by deleting decision-relevant content.
 
 ## Selection decision
 

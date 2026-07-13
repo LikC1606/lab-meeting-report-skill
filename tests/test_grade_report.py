@@ -264,6 +264,13 @@ class GradeReportTests(unittest.TestCase):
 
         self.assertTrue(grading["hard_pass"], grading)
 
+    def test_markdown_ordered_list_numbers_are_not_experimental_values(self) -> None:
+        report = "1. Review the evidence.\n2. Decide next steps.\nScore: 0.757."
+
+        grading = grade_text(report, manifest_with_required_ratio("0.757"))
+
+        self.assertTrue(grading["hard_pass"], grading)
+
     def test_cli_writes_grading_json_and_returns_success(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

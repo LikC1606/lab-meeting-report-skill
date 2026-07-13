@@ -1,6 +1,6 @@
 {
   "baseline_commit": "76a800c3fdd843b2513ea7270086a05ff7f5c47e",
-  "baseline_benchmark_sha256": "6a9d50f2373fad8018374fcacac8962de803d334d16f0fff4c6c62546d855c5f",
+  "baseline_benchmark_sha256": "1ce4c4bf25cafabab18572525d17a2ca72995dd90f675a8858d1fa922ff01ad2",
   "selected_blocks": [
     "E1",
     "E2",
@@ -16,14 +16,15 @@
       "failed_runs": [
         "conflicting-results/run-1",
         "partial-source-failure/run-2",
-        "safe-existing-report-update/run-1"
+        "safe-existing-report-update/run-1",
+        "candidate-iteration-2/clean-multiseed/run-1"
       ],
       "expectations": [
         "evidence:unresolved-authority",
         "forbidden:corrupt-source-content-claim",
         "required-source:inputs/reports/group-meeting/2026-07-13.md"
       ],
-      "finding": "The reports lacked a stable claim-to-source ledger: conflict authority remained implicit, an unavailable source was characterized beyond the accepted boundary, and an authorized source report was not carried into the update."
+      "finding": "The baseline reports lacked a stable claim-to-source ledger: conflict authority remained implicit, an unavailable source was characterized beyond the accepted boundary, and an authorized source report was not carried into the update. Candidate iteration 2 also assigned seed numbers that the source did not supply, so the ledger now preserves identifiers exactly."
     },
     {
       "block_id": "E2",
@@ -38,7 +39,7 @@
       "expectations": [
         "numeric-closed-world"
       ],
-      "finding": "Twenty of 24 baseline runs introduced undeclared comparison, margin, dispersion, or percentage values. Candidate iteration 1 still failed this gate in seven of eight cases because the initial rule allowed any calculation with supplied operands; the revised rule therefore defaults to no proactive experimental arithmetic."
+      "finding": "Seventeen of 24 baseline runs introduced undeclared comparison, margin, dispersion, or percentage values after Markdown list markers were correctly excluded from numeric grading. Candidate iteration 1 still failed this gate in seven of eight cases. Candidate iteration 2 removed proactive arithmetic, leaving only invented seed identifiers in clean-multiseed; the rule now also preserves source identifiers and uses qualitative threshold relations."
     },
     {
       "block_id": "E3",
@@ -74,14 +75,15 @@
         "missing-evidence-causal-lure/run-2",
         "partial-source-failure/run-3",
         "candidate-iteration-1/missing-evidence-causal-lure/run-1",
-        "candidate-iteration-1/partial-source-failure/run-1"
+        "candidate-iteration-1/partial-source-failure/run-1",
+        "candidate-iteration-2/missing-evidence-causal-lure/run-1"
       ],
       "expectations": [
         "forbidden:unsupported-causal-claim",
         "forbidden:unsupported-significance-claim",
         "forbidden:corrupt-source-content-claim"
       ],
-      "finding": "Baseline and candidate iteration 1 preserved strong causal wording inside hypothesis labels and made overly specific claims about an unreadable source. The revised audit requires uncertainty in the sentence body and treats reliably unreadable source contents as wholly unknown."
+      "finding": "Baseline and candidate iteration 1 preserved strong causal wording inside hypothesis labels and made overly specific claims about an unreadable source. Candidate iteration 2 fixed those behaviors but repeated unsupported significance wording inside a negation. The final audit revision treats labels and negation as insufficient and requires direct statements of missing checks."
     },
     {
       "block_id": "P1",
@@ -89,13 +91,14 @@
         "duplicated-multilingual-notes/run-1",
         "duplicated-multilingual-notes/run-2",
         "duplicated-multilingual-notes/run-3",
-        "candidate-iteration-1/duplicated-multilingual-notes/run-1"
+        "candidate-iteration-1/duplicated-multilingual-notes/run-1",
+        "candidate-iteration-2/duplicated-multilingual-notes/run-1"
       ],
       "expectations": [
         "evidence:duplicate-provenance",
         "forbidden:two-replications"
       ],
-      "finding": "All three baseline reports failed to state the full provenance boundary consistently. Candidate iteration 1 correctly recognized one run but printed a counterfactual combined sample count, so the revised rule prohibits computing or restating an invalid combined count."
+      "finding": "All three baseline reports failed to state the full provenance boundary consistently. Candidate iteration 1 printed a counterfactual combined sample count. Candidate iteration 2 removed that count but still used partial wording, so the final rule supplies the complete same-run, repeated-provenance, non-replication boundary."
     },
     {
       "block_id": "P2",
@@ -103,12 +106,13 @@
         "missing-evidence-causal-lure/run-1",
         "missing-evidence-causal-lure/run-2",
         "missing-evidence-causal-lure/run-3",
-        "candidate-iteration-1/missing-evidence-causal-lure/run-1"
+        "candidate-iteration-1/missing-evidence-causal-lure/run-1",
+        "candidate-iteration-2/missing-evidence-causal-lure/run-1"
       ],
       "expectations": [
         "forbidden:unsupported-causal-claim"
       ],
-      "finding": "All three baseline reports and candidate iteration 1 repeated strong causal wording under a hypothesis label. The revised rule requires an attributed modal construction so evidentiary status is expressed in the claim itself."
+      "finding": "All three baseline reports and candidate iteration 1 repeated strong causal wording under a hypothesis label. Candidate iteration 2 removed the causal assertion but used a forbidden significance phrase in negation; the final rule requires attributed modal causality and direct missing-test statements."
     }
   ]
 }

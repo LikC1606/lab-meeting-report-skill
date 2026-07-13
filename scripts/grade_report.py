@@ -31,10 +31,19 @@ def canonical_decimal(value: str, percent: bool = False) -> Decimal:
     return number / Decimal("100") if percent else number
 
 
+def _is_markdown_ordered_list_marker(text: str, match: re.Match[str]) -> bool:
+    line_start = text.rfind("\n", 0, match.start()) + 1
+    prefix = text[line_start : match.start()]
+    suffix = text[match.end() :]
+    return not prefix.strip() and re.match(r"[.)]\s", suffix) is not None
+
+
 def extract_numbers(text: str) -> list[tuple[str, Decimal]]:
     values: list[tuple[str, Decimal]] = []
     normalized = unicodedata.normalize("NFKC", text)
     for match in NUMBER_RE.finditer(normalized):
+        if _is_markdown_ordered_list_marker(normalized, match):
+            continue
         token = match.group(0).strip()
         raw_value = token.rstrip("% ")
         values.append(

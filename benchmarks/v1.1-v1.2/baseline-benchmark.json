@@ -3,7 +3,7 @@
     "skill_name": "lab-meeting-report",
     "executor_model": "gpt-5.6-sol",
     "analyzer_model": "human-blind-review",
-    "timestamp": "2026-07-13T15:01:26+00:00",
+    "timestamp": "2026-07-13T16:16:25+00:00",
     "evals_run": [
       1,
       2,
@@ -431,7 +431,7 @@
         {
           "text": "numeric-closed-world",
           "passed": false,
-          "evidence": "unexpected numeric tokens: 0.4, 0.012, 0.4, 1, 2, 3, 6.32%, 0.015, 1.2, 6.59%, 0.021, 0.054, 3, 0.015, 0.021, 0.054, 1, 2"
+          "evidence": "unexpected numeric tokens: 0.4, 0.012, 0.4, 1, 2, 3, 6.32%, 0.015, 1.2, 6.59%, 0.021, 0.054, 3, 0.015, 0.021, 0.054"
         },
         {
           "text": "required-number:baseline-macro-f1",
@@ -525,7 +525,7 @@
         {
           "text": "numeric-closed-world",
           "passed": false,
-          "evidence": "unexpected numeric tokens: 1, 0.018"
+          "evidence": "unexpected numeric tokens: 0.018"
         },
         {
           "text": "required-number:summary-macro-f1",
@@ -594,7 +594,7 @@
         {
           "text": "numeric-closed-world",
           "passed": false,
-          "evidence": "unexpected numeric tokens: 1, 0.018"
+          "evidence": "unexpected numeric tokens: 0.018"
         },
         {
           "text": "required-number:summary-macro-f1",
@@ -663,7 +663,7 @@
         {
           "text": "numeric-closed-world",
           "passed": false,
-          "evidence": "unexpected numeric tokens: 0.018, 1, 2"
+          "evidence": "unexpected numeric tokens: 0.018"
         },
         {
           "text": "required-number:summary-macro-f1",
@@ -857,9 +857,9 @@
       "configuration": "without_skill",
       "run_number": 3,
       "result": {
-        "pass_rate": 0.7,
-        "passed": 7,
-        "failed": 3,
+        "pass_rate": 0.8,
+        "passed": 8,
+        "failed": 2,
         "total": 10,
         "time_seconds": 268.036,
         "tokens": 1128067,
@@ -869,8 +869,8 @@
       "expectations": [
         {
           "text": "numeric-closed-world",
-          "passed": false,
-          "evidence": "unexpected numeric tokens: 1, 2"
+          "passed": true,
+          "evidence": "all numeric tokens are declared"
         },
         {
           "text": "required-number:sample-count",
@@ -939,7 +939,7 @@
         {
           "text": "numeric-closed-world",
           "passed": false,
-          "evidence": "unexpected numeric tokens: 0.08, 13.8%, 0.08, 13.8%, 1, 2"
+          "evidence": "unexpected numeric tokens: 0.08, 13.8%, 0.08, 13.8%"
         },
         {
           "text": "required-number:old-recall",
@@ -993,7 +993,7 @@
         {
           "text": "numeric-closed-world",
           "passed": false,
-          "evidence": "unexpected numeric tokens: 0.08, 0.08, 0.08, 1, 2"
+          "evidence": "unexpected numeric tokens: 0.08, 0.08, 0.08"
         },
         {
           "text": "required-number:old-recall",
@@ -1088,9 +1088,9 @@
       "configuration": "without_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.7777777777777778,
-        "passed": 7,
-        "failed": 2,
+        "pass_rate": 0.8888888888888888,
+        "passed": 8,
+        "failed": 1,
         "total": 9,
         "time_seconds": 1017.845,
         "tokens": 397225,
@@ -1100,8 +1100,8 @@
       "expectations": [
         {
           "text": "numeric-closed-world",
-          "passed": false,
-          "evidence": "unexpected numeric tokens: 1, 2, 3"
+          "passed": true,
+          "evidence": "all numeric tokens are declared"
         },
         {
           "text": "required-number:primary-macro-f1",
@@ -1216,9 +1216,9 @@
       "configuration": "without_skill",
       "run_number": 3,
       "result": {
-        "pass_rate": 0.7777777777777778,
-        "passed": 7,
-        "failed": 2,
+        "pass_rate": 0.8888888888888888,
+        "passed": 8,
+        "failed": 1,
         "total": 9,
         "time_seconds": 104.433,
         "tokens": 313914,
@@ -1228,8 +1228,8 @@
       "expectations": [
         {
           "text": "numeric-closed-world",
-          "passed": false,
-          "evidence": "unexpected numeric tokens: 1, 2"
+          "passed": true,
+          "evidence": "all numeric tokens are declared"
         },
         {
           "text": "required-number:primary-macro-f1",
@@ -1293,7 +1293,7 @@
         {
           "text": "numeric-closed-world",
           "passed": false,
-          "evidence": "unexpected numeric tokens: 0.013, 1, 2"
+          "evidence": "unexpected numeric tokens: 0.013"
         },
         {
           "text": "required-number:baseline-macro-f1",
@@ -1569,7 +1569,7 @@
         {
           "text": "numeric-closed-world",
           "passed": false,
-          "evidence": "unexpected numeric tokens: 0.035, 5.0%, 0.009, 0.035, 0.009, 1, 2, 3"
+          "evidence": "unexpected numeric tokens: 0.035, 5.0%, 0.009, 0.035, 0.009"
         },
         {
           "text": "required-number:baseline-macro-f1",
@@ -1638,7 +1638,7 @@
         {
           "text": "numeric-closed-world",
           "passed": false,
-          "evidence": "unexpected numeric tokens: 0.035, 0.009, 1, 0.035, 0.009, 0.035, 0.009"
+          "evidence": "unexpected numeric tokens: 0.035, 0.009, 0.035, 0.009, 0.035, 0.009"
         },
         {
           "text": "required-number:baseline-macro-f1",
@@ -1692,8 +1692,8 @@
   "run_summary": {
     "without_skill": {
       "pass_rate": {
-        "mean": 0.78578,
-        "stddev": 0.156722,
+        "mean": 0.799206,
+        "stddev": 0.158055,
         "min": 0.428571,
         "max": 0.933333
       },

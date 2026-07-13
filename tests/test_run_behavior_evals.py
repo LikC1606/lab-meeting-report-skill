@@ -23,6 +23,7 @@ from scripts.run_behavior_evals import (
     parse_review_feedback,
     prepare_blind_review,
     run_with_retry,
+    write_benchmark_markdown,
 )
 
 
@@ -369,6 +370,26 @@ http_headers = { Authorization = "must-not-load" }
         self.assertEqual(
             set(benchmark["run_summary"]),
             {"with_skill", "without_skill", "delta"},
+        )
+
+    def test_benchmark_records_explicit_semantic_analyzer(self) -> None:
+        self.build_paired_workspace()
+
+        benchmark = aggregate_workspace(
+            self.workspace,
+            model="gpt-5.6-sol",
+            analyzer_model="codex-inline-self-review",
+        )
+
+        self.assertEqual(
+            benchmark["metadata"]["analyzer_model"],
+            "codex-inline-self-review",
+        )
+        output = Path(self.temp_dir.name) / "benchmark.md"
+        write_benchmark_markdown(benchmark, output)
+        self.assertIn(
+            "Analyzer: `codex-inline-self-review`",
+            output.read_text(encoding="utf-8"),
         )
 
     def test_blind_review_contains_one_pair_per_case_run(self) -> None:

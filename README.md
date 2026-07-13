@@ -98,6 +98,19 @@ The skill reads only material placed in scope. It does not scan unrelated direct
 - Mark essential missing information as `待补充` and unverified citation data as `未核验`.
 - Preserve manually written content when updating an existing report.
 
+## Measured v1.2 Quality
+
+The v1.2 candidate was evaluated three times on each of eight public synthetic research-progress cases covering numeric fidelity, conflicting sources, buried negative results, unsupported causal language, duplicated notes, scoped directory reading, safe report updates, and unavailable sources.
+
+| Configuration | Strict hard passes | Mean expectation pass rate |
+|---|---:|---:|
+| v1.2 candidate | 24/24 | 1.000 |
+| Frozen v1.1 baseline | 0/24 | 0.818 |
+
+The hard gate requires every deterministic expectation in a report to pass. Codex also audited all 24 candidate reports claim by claim and found no unsupported critical claim. This audit was performed by the same authoring agent, so it is neither independent nor blinded and does not establish reviewer preference. Results are limited to this synthetic corpus and do not prove universal hallucination prevention.
+
+See the [evaluation design](docs/superpowers/specs/2026-07-13-lab-meeting-report-v1.2-quality-evaluation-design.md), [public cases](evals/research-progress/cases), [versioned benchmark](benchmarks/v1.1-v1.2/benchmark.md), and [claim-level self-audit](benchmarks/v1.1-v1.2/semantic-review-final.json).
+
 ## Optional Feishu/Lark Integration
 
 Local Markdown generation works without Feishu/Lark.
@@ -187,6 +200,10 @@ npx skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 - 不把推测写成事实
 - 不默认扫描全部飞书资源
 - 不静默覆盖或删除远程文档
+
+### v1.2 质量评测
+
+v1.2 候选版本在 8 个公开合成科研进展场景上各运行 3 次，严格门槛结果为 `24/24`，冻结的 v1.1 基线为 `0/24`；逐项期望平均通过率分别为 `1.000` 与 `0.818`。Codex 对 24 份候选报告逐声明自审，未发现无证据支撑的关键声明。该审阅由同一编写代理完成，不独立、非盲评，结论只适用于当前合成评测集，不能外推为普遍的幻觉消除能力。
 
 问题和使用讨论可进入 [GitHub Discussions](https://github.com/LikC1606/lab-meeting-report-skill/discussions)，Bug、功能建议和示例投稿请使用仓库的结构化 Issue 表单。
 

@@ -238,6 +238,71 @@ class ValidateRepoTests(unittest.TestCase):
                 (result.stdout + result.stderr).lower(),
             )
 
+    def test_missing_final_benchmark_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            benchmark = (
+                fixture / "benchmarks" / "v1.1-v1.2" / "benchmark.json"
+            )
+            benchmark.unlink()
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "missing final benchmark",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_candidate_final_benchmark_failure_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            benchmark_path = (
+                fixture / "benchmarks" / "v1.1-v1.2" / "benchmark.json"
+            )
+            benchmark = json.loads(benchmark_path.read_text(encoding="utf-8"))
+            candidate = next(
+                run
+                for run in benchmark["runs"]
+                if run["configuration"] == "with_skill"
+            )
+            candidate["result"]["pass_rate"] = 0.9
+            candidate["result"]["failed"] = 1
+            benchmark_path.write_text(
+                json.dumps(benchmark, indent=2) + "\n", encoding="utf-8"
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "candidate benchmark run failed",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_final_benchmark_requires_codex_self_review_label(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            benchmark_path = (
+                fixture / "benchmarks" / "v1.1-v1.2" / "benchmark.json"
+            )
+            benchmark = json.loads(benchmark_path.read_text(encoding="utf-8"))
+            benchmark["metadata"]["analyzer_model"] = "human-blind-review"
+            benchmark_path.write_text(
+                json.dumps(benchmark, indent=2) + "\n", encoding="utf-8"
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "analyzer model",
+                (result.stdout + result.stderr).lower(),
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

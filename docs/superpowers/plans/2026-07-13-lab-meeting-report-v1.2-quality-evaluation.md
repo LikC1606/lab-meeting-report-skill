@@ -1389,11 +1389,11 @@ git commit -m "test: record candidate evaluation history"
 - Create: `benchmarks/v1.1-v1.2/benchmark.md`
 - Create: `benchmarks/v1.1-v1.2/semantic-review-final.json`
 
-- [ ] **Step 1: Reuse or rerun the frozen baseline**
+- [x] **Step 1: Reuse or rerun the frozen baseline**
 
 Compare skill, model, Codex CLI, runner, prompt, input, and provider hashes between `baseline-final` and the current final environment. Grader-only and hidden-manifest semantic-equivalence corrections may regrade the unchanged raw baseline reports when documented by a tested design addendum; any change visible to the generation process requires rerunning all 24 baseline runs.
 
-- [ ] **Step 2: Run 24 candidate evaluations**
+- [x] **Step 2: Run 24 candidate evaluations**
 
 ```powershell
 $evalRoot = Join-Path $env:TEMP 'lab-meeting-report-v1.2-evals'
@@ -1411,15 +1411,15 @@ $final = Join-Path $evalRoot 'final'
 
 Expected: 24 valid candidate runs; all deterministic hard gates must pass before semantic review.
 
-- [ ] **Step 3: Run the final inline claim-level semantic audit**
+- [x] **Step 3: Run the final inline claim-level semantic audit**
 
 Read every candidate report against its supplied inputs. Write `semantic-review-final.json` with reviewer kind `codex-inline-self-review`, the non-independent limitation, one finding per run, and a hard failure for every unsupported critical claim.
 
-- [ ] **Step 4: Enforce the non-human release gate**
+- [x] **Step 4: Enforce the non-human release gate**
 
 `check-release` must exit nonzero unless all 24 candidate runs hard-pass, no run is invalid, the semantic review records zero unsupported critical claims, and at least one case has a baseline hard failure with all three candidate runs passing. No blinded preference or soft-score claim is made.
 
-- [ ] **Step 5: Commit final evidence**
+- [x] **Step 5: Commit final evidence**
 
 Copy the final benchmark as `benchmarks/v1.1-v1.2/benchmark.json` and `benchmark.md`, and copy `semantic-review-final.json`. Mechanically copy run 1 for each candidate case to `representative-outputs/v1.2/`. Run `check-release` against the committed paths, then:
 
@@ -1437,31 +1437,31 @@ git commit -m "test: publish v1.2 behavior benchmark"
 - Modify when selected blocks exist: `$installedSkill\SKILL.md`, where `$installedSkill = Join-Path $env:USERPROFILE '.codex\skills\lab-meeting-report'`
 - Modify when P1/P2 exists: `$installedSkill\references\progress-report.md`
 
-- [ ] **Step 1: Add a bounded README evaluation section**
+- [x] **Step 1: Add a bounded README evaluation section**
 
 Add this English text after `## Evidence And Safety Rules`:
 
 ```markdown
 ## Behavioral Evaluation
 
-The repository includes eight public synthetic research-progress cases covering numeric fidelity, conflicting sources, negative results, unsupported causal language, duplicate notes, scoped directory reading, safe report updates, and partial source failures. Deterministic hard gates and blinded human review compare the current Skill with `v1.1.0`.
+The repository includes eight public synthetic research-progress cases covering numeric fidelity, conflicting sources, negative results, unsupported causal language, duplicate notes, scoped directory reading, safe report updates, and partial source failures. Deterministic hard gates compare the current Skill with `v1.1.0`, followed by a non-independent Codex claim-level self-audit of the candidate reports.
 
 See the [evaluation design](docs/superpowers/specs/2026-07-13-lab-meeting-report-v1.2-quality-evaluation-design.md), [case corpus](evals/research-progress/cases), and [versioned benchmark](benchmarks/v1.1-v1.2/benchmark.md). Results apply only to these synthetic research-progress cases and do not establish universal hallucination prevention.
 ```
 
 Add a concise equivalent under `### 可靠性原则`, preserving the same scope limitation.
 
-- [ ] **Step 2: Require final benchmark assets in repository validation**
+- [x] **Step 2: Require final benchmark assets in repository validation**
 
-Require `benchmark.json`, `benchmark.md`, `human-review.json`, `candidate-selection.json`, `iteration-history.json`, eight v1.1 representative reports, and eight v1.2 representative reports. Validate JSON structure, model `gpt-5.6-sol`, eight eval IDs, three runs per configuration, and no candidate release-gate failure.
+Require `benchmark.json`, `benchmark.md`, `semantic-review-final.json`, `candidate-selection.json`, `iteration-history.json`, eight v1.1 representative reports, and eight v1.2 representative reports. Validate JSON structure, model `gpt-5.6-sol`, analyzer `codex-inline-self-review`, eight eval IDs, three runs per configuration, and no candidate release-gate failure.
 
 Add a regression test that removes `benchmark.json` and one that changes a candidate hard pass to false; both must fail repository validation.
 
-- [ ] **Step 3: Synchronize only changed installed Skill files**
+- [x] **Step 3: Synchronize only changed installed Skill files**
 
 Copy selected changed package files from the repository into `$installedSkill = Join-Path $env:USERPROFILE '.codex\skills\lab-meeting-report'`. Compare SHA-256 for all six package files and require exact equality. Do not copy evaluation or benchmark files into the installed Skill.
 
-- [ ] **Step 4: Run the complete fresh local gate**
+- [x] **Step 4: Run the complete fresh local gate**
 
 Run:
 
@@ -1473,13 +1473,13 @@ $installedSkill = Join-Path $env:USERPROFILE '.codex\skills\lab-meeting-report'
 & $python scripts/validate_repo.py .
 & $python $quickValidate lab-meeting-report
 & $python $quickValidate $installedSkill
-& $python -m scripts.run_behavior_evals check-release --benchmark benchmarks/v1.1-v1.2/benchmark.json --human-review benchmarks/v1.1-v1.2/human-review.json
+& $python -m scripts.run_behavior_evals check-release --benchmark benchmarks/v1.1-v1.2/benchmark.json --semantic-review benchmarks/v1.1-v1.2/semantic-review-final.json
 git diff --check
 ```
 
 Also parse every repository YAML/JSON file, verify all fixture labels, scan for credentials, Lark IDs, absolute user paths, stale names, scaffold markers, and real DOI/author/venue claims.
 
-- [ ] **Step 5: Commit the release candidate**
+- [x] **Step 5: Commit the release candidate**
 
 Stage only approved v1.2 files, run staged-content scans, and commit:
 
@@ -1488,7 +1488,7 @@ git add README.md scripts tests evals benchmarks lab-meeting-report
 git commit -m "feat: add evidence-fidelity evaluation"
 ```
 
-Use `superpowers:requesting-code-review` and resolve all blocking findings before the commit is treated as releasable.
+Perform an inline Codex diff audit and resolve all blocking findings before the commit is treated as releasable. This audit is not independent review.
 
 ### Task 15: Push, Verify CI, Publish v1.2.0, And Re-Clone
 

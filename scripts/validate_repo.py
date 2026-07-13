@@ -106,6 +106,12 @@ CANDIDATE_BLOCKS = {
         "<!-- P2 -->",
     ),
 }
+FINAL_BENCHMARK_DIR = Path("benchmarks/v1.1-v1.2")
+FINAL_BENCHMARK_FILES = {
+    Path("benchmark.json"),
+    Path("benchmark.md"),
+    Path("semantic-review-final.json"),
+}
 
 
 def read_utf8(path: Path) -> str:
@@ -281,6 +287,168 @@ def validate_candidate_selection(root: Path, errors: list[str]) -> None:
             errors.append(f"Unselected block {block_id} is present")
 
 
+def load_json_object(
+    path: Path, label: str, errors: list[str]
+) -> dict[str, object] | None:
+    try:
+        value = json.loads(read_utf8(path))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        errors.append(f"Invalid {label}: {exc}")
+        return None
+    if not isinstance(value, dict):
+        errors.append(f"Invalid {label}: expected a JSON object")
+        return None
+    return value
+
+
+def validate_final_benchmark(root: Path, errors: list[str]) -> None:
+    benchmark_root = root / FINAL_BENCHMARK_DIR
+    for relative in sorted(FINAL_BENCHMARK_FILES):
+        if not (benchmark_root / relative).is_file():
+            errors.append(
+                "Missing final benchmark asset: "
+                f"{(FINAL_BENCHMARK_DIR / relative).as_posix()}"
+            )
+
+    benchmark_path = benchmark_root / "benchmark.json"
+    if not benchmark_path.is_file():
+        errors.append("Missing final benchmark: benchmark.json")
+        return
+    benchmark = load_json_object(
+        benchmark_path, "final benchmark", errors
+    )
+    if benchmark is None:
+        return
+
+    metadata = benchmark.get("metadata")
+    if not isinstance(metadata, dict):
+        errors.append("Final benchmark metadata must be an object")
+    else:
+        if metadata.get("executor_model") != "gpt-5.6-sol":
+            errors.append("Final benchmark executor model must be gpt-5.6-sol")
+        if metadata.get("analyzer_model") != "codex-inline-self-review":
+            errors.append(
+                "Final benchmark analyzer model must be "
+                "codex-inline-self-review"
+            )
+        if metadata.get("evals_run") != list(range(1, 9)):
+            errors.append("Final benchmark must contain eval IDs 1 through 8")
+        if metadata.get("runs_per_configuration") != 3:
+            errors.append(
+                "Final benchmark must contain three runs per configuration"
+            )
+
+    runs = benchmark.get("runs")
+    if not isinstance(runs, list):
+        errors.append("Final benchmark runs must be an array")
+        runs = []
+    candidate = [
+        run
+        for run in runs
+        if isinstance(run, dict) and run.get("configuration") == "with_skill"
+    ]
+    baseline = [
+        run
+        for run in runs
+        if isinstance(run, dict)
+        and run.get("configuration") == "without_skill"
+    ]
+    if len(candidate) != 24 or len(baseline) != 24 or len(runs) != 48:
+        errors.append(
+            "Final benchmark must contain 24 candidate and 24 baseline runs"
+        )
+    for run in candidate:
+        result = run.get("result")
+        passed = (
+            isinstance(result, dict)
+            and result.get("pass_rate") == 1.0
+            and result.get("failed") == 0
+        )
+        if not passed:
+            errors.append(
+                "Candidate benchmark run failed: "
+                f"{run.get('eval_name')}/run-{run.get('run_number')}"
+            )
+    if baseline and all(
+        isinstance(run.get("result"), dict)
+        and run["result"].get("pass_rate") == 1.0
+        and run["result"].get("failed") == 0
+        for run in baseline
+    ):
+        errors.append("Final benchmark does not demonstrate baseline failure")
+
+    markdown_path = benchmark_root / "benchmark.md"
+    if markdown_path.is_file() and (
+        "Analyzer: `codex-inline-self-review`"
+        not in read_utf8(markdown_path)
+    ):
+        errors.append("Final benchmark Markdown lacks Codex self-review label")
+
+    review_path = benchmark_root / "semantic-review-final.json"
+    if review_path.is_file():
+        review = load_json_object(review_path, "final semantic review", errors)
+        if review is not None:
+            reviewer = review.get("reviewer")
+            if not isinstance(reviewer, dict) or reviewer.get("kind") != (
+                "codex-inline-self-review"
+            ):
+                errors.append("Final semantic review has an invalid reviewer")
+            elif (
+                reviewer.get("independent") is not False
+                or reviewer.get("manual_user_review") is not False
+            ):
+                errors.append(
+                    "Final semantic review must disclose non-independent "
+                    "Codex self-review"
+                )
+            reports = review.get("reports")
+            if not isinstance(reports, list) or len(reports) != 24:
+                errors.append("Final semantic review must contain 24 reports")
+            else:
+                keys = {
+                    (item.get("case_id"), item.get("run_id"))
+                    for item in reports
+                    if isinstance(item, dict)
+                }
+                if len(keys) != 24:
+                    errors.append(
+                        "Final semantic review report IDs must be unique"
+                    )
+                if any(
+                    not isinstance(item, dict)
+                    or item.get("deterministic_hard_pass") is not True
+                    or item.get("unsupported_critical_claim") is not False
+                    for item in reports
+                ):
+                    errors.append(
+                        "Final semantic review contains a failed report"
+                    )
+            summary = review.get("summary")
+            if not isinstance(summary, dict) or any(
+                (
+                    summary.get("reports_reviewed") != 24,
+                    summary.get("deterministic_hard_passes") != 24,
+                    summary.get("unsupported_critical_claims") != 0,
+                    summary.get("semantic_gate_passed") is not True,
+                )
+            ):
+                errors.append("Final semantic review summary does not pass")
+
+    expected_reports = {f"{case_id}.md" for case_id in EVAL_CASE_IDS}
+    for version in ("v1.1", "v1.2"):
+        report_root = benchmark_root / "representative-outputs" / version
+        actual = (
+            {path.name for path in report_root.glob("*.md")}
+            if report_root.is_dir()
+            else set()
+        )
+        if actual != expected_reports:
+            errors.append(
+                f"Final benchmark representative outputs for {version} "
+                "must contain all eight cases"
+            )
+
+
 def validate_repo(root: Path) -> list[str]:
     root = root.resolve()
     errors: list[str] = []
@@ -365,6 +533,7 @@ def validate_repo(root: Path) -> list[str]:
     validate_png(root / "assets" / "lab-meeting-report-preview.png", errors)
     validate_evaluation_assets(root, errors)
     validate_candidate_selection(root, errors)
+    validate_final_benchmark(root, errors)
 
     old_name = SKILL_NAME + "-md"
     scaffold_pattern = re.compile(r"\b(?:T[O]DO|T[B]D|F[I]XME)\b")

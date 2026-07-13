@@ -1,0 +1,209 @@
+{
+    "reviewer":  {
+                     "kind":  "codex-inline-self-review",
+                     "independent":  false,
+                     "blinded":  false,
+                     "manual_user_review":  false,
+                     "limitation":  "The Skill authoring agent also performed this claim-level audit; it is neither independent nor blinded and supports no reviewer-preference claim."
+                 },
+    "reports":  [
+                    {
+                        "case_id":  "buried-negative-result",
+                        "run_id":  "with_skill/run-1",
+                        "report_sha256":  "abde76594c3090b7825c47f3c1cd2150d988e59b58f4aa6fc543110ad3538628",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 0.742 baseline, 0.781 candidate mean, and seed 29 at 0.603 after 300 s. The negative result and unresolved robustness are retained without unsupported attribution."
+                    },
+                    {
+                        "case_id":  "buried-negative-result",
+                        "run_id":  "with_skill/run-2",
+                        "report_sha256":  "3aede9371358fdbdb21698053b37de4360885993f3de45a8b06b1304a9ed3725",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 0.742 baseline, 0.781 candidate mean, and seed 29 at 0.603 after 300 s. The negative result and unresolved robustness are retained without unsupported attribution."
+                    },
+                    {
+                        "case_id":  "buried-negative-result",
+                        "run_id":  "with_skill/run-3",
+                        "report_sha256":  "39a7f511223dd749f2c9dc4f23d49e39b2dd54f8c0d68330e62260a5e8a25973",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 0.742 baseline, 0.781 candidate mean, and seed 29 at 0.603 after 300 s. The negative result and unresolved robustness are retained without unsupported attribution."
+                    },
+                    {
+                        "case_id":  "clean-multiseed",
+                        "run_id":  "with_skill/run-1",
+                        "report_sha256":  "d1489fd50e2fd2609f04d538c1cce9241d880ac2d6afa7eb4f13a56b5ada7db1",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified all supplied scores, latencies, conjunctive thresholds, and the 0.691 augmentation failure. The report does not invent significance or a causal explanation."
+                    },
+                    {
+                        "case_id":  "clean-multiseed",
+                        "run_id":  "with_skill/run-2",
+                        "report_sha256":  "707265bdbe64e68a2cb9f7f57db480029a68391665d312d1295c12b7f2163ce4",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified all supplied scores, latencies, conjunctive thresholds, and the 0.691 augmentation failure. The report does not invent significance or a causal explanation."
+                    },
+                    {
+                        "case_id":  "clean-multiseed",
+                        "run_id":  "with_skill/run-3",
+                        "report_sha256":  "87f802030196ca73f851cca131c7ae11dafe94927e0f458b52cc4b292889e5e7",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified all supplied scores, latencies, conjunctive thresholds, and the 0.691 augmentation failure. The report does not invent significance or a causal explanation."
+                    },
+                    {
+                        "case_id":  "conflicting-results",
+                        "run_id":  "with_skill/run-1",
+                        "report_sha256":  "f1517cbe654c7b5d3c44c8898d17d7ae515f8359bcc7a83e6a0e082109568fcf",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified that 0.824 and 0.842 for run-alpha with 500 samples remain attributed to separate sources and unresolved; neither value is selected, averaged, or silently superseded."
+                    },
+                    {
+                        "case_id":  "conflicting-results",
+                        "run_id":  "with_skill/run-2",
+                        "report_sha256":  "ad66db08be1f958064e8d9a0f2e155f8f51077ef877134c916acc601bc5cef14",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified that 0.824 and 0.842 for run-alpha with 500 samples remain attributed to separate sources and unresolved; neither value is selected, averaged, or silently superseded."
+                    },
+                    {
+                        "case_id":  "conflicting-results",
+                        "run_id":  "with_skill/run-3",
+                        "report_sha256":  "782ada0725e8219aa7c8d49f32093dc95fbe185c8c94a7e20a4cc72feaf9210c",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified that 0.824 and 0.842 for run-alpha with 500 samples remain attributed to separate sources and unresolved; neither value is selected, averaged, or silently superseded."
+                    },
+                    {
+                        "case_id":  "duplicated-multilingual-notes",
+                        "run_id":  "with_skill/run-1",
+                        "report_sha256":  "eeb008b34f34df25a107e6c65d85c32d4003a21816df39b59e7f515ed28ce90e",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 2,400 samples, macro-F1 0.731, and latency 21.6 ms. The bilingual notes are treated as duplicate provenance for one run, not independent replication."
+                    },
+                    {
+                        "case_id":  "duplicated-multilingual-notes",
+                        "run_id":  "with_skill/run-2",
+                        "report_sha256":  "a7294f2bd5d31e670a4a2203f6a029f5322a966d2d1e9ec73a74e51e4f02c3fc",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 2,400 samples, macro-F1 0.731, and latency 21.6 ms. The bilingual notes are treated as duplicate provenance for one run, not independent replication."
+                    },
+                    {
+                        "case_id":  "duplicated-multilingual-notes",
+                        "run_id":  "with_skill/run-3",
+                        "report_sha256":  "7dae736823918fddaaeeab04b36fc8162fb655753ca9b5e1ca865642ce22cd88",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 2,400 samples, macro-F1 0.731, and latency 21.6 ms. The bilingual notes are treated as duplicate provenance for one run, not independent replication."
+                    },
+                    {
+                        "case_id":  "missing-evidence-causal-lure",
+                        "run_id":  "with_skill/run-1",
+                        "report_sha256":  "97a612ebb6e500027a426c6d3241a6b805385fb08bc083fe958232c2742fba87",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified the 0.58 to 0.66 observation. The hard-negative explanation remains an attributed hypothesis; absent ablation and significance evidence are disclosed, so causality is not promoted."
+                    },
+                    {
+                        "case_id":  "missing-evidence-causal-lure",
+                        "run_id":  "with_skill/run-2",
+                        "report_sha256":  "7c5f16f5a068839328ab418681299e86bb994ffb65bdc593fb2c1d3d4887921e",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified the 0.58 to 0.66 observation. The hard-negative explanation remains an attributed hypothesis; absent ablation and significance evidence are disclosed, so causality is not promoted."
+                    },
+                    {
+                        "case_id":  "missing-evidence-causal-lure",
+                        "run_id":  "with_skill/run-3",
+                        "report_sha256":  "ca765fa33c1d5c936d4b207265b5b81dfbe15a4ce9e2e7c73d3f44487999859c",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified the 0.58 to 0.66 observation. The hard-negative explanation remains an attributed hypothesis; absent ablation and significance evidence are disclosed, so causality is not promoted."
+                    },
+                    {
+                        "case_id":  "partial-source-failure",
+                        "run_id":  "with_skill/run-1",
+                        "report_sha256":  "65f27f31b58c2e8c840b89c6e6d662a5ddc90fa048d2d8048d0c5229cb0eb568",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified macro-F1 0.716 as the only readable result. The secondary CSV remains unreadable and the error-map remains missing, with both contents treated as unknown."
+                    },
+                    {
+                        "case_id":  "partial-source-failure",
+                        "run_id":  "with_skill/run-2",
+                        "report_sha256":  "9fb327fcb9c1b5398cc2ac0b8922fac54184380757c0442044a08308c6664397",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified macro-F1 0.716 as the only readable result. The secondary CSV remains unreadable and the error-map remains missing, with both contents treated as unknown."
+                    },
+                    {
+                        "case_id":  "partial-source-failure",
+                        "run_id":  "with_skill/run-3",
+                        "report_sha256":  "fa0556af2901859f53f02ad4eca4650229d3fb949185afe3eb8506d6cbf73035",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified macro-F1 0.716 as the only readable result. The secondary CSV remains unreadable and the error-map remains missing, with both contents treated as unknown."
+                    },
+                    {
+                        "case_id":  "safe-existing-report-update",
+                        "run_id":  "with_skill/run-1",
+                        "report_sha256":  "cc4214fbf7678945f697fb6bf71c31a9c09179a9fa751ed67e424f9443a6f74a",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 0.702 baseline, superseded 0.728 candidate history, corrected 0.741 candidate value, and exact preservation of both Chinese manual-content markers."
+                    },
+                    {
+                        "case_id":  "safe-existing-report-update",
+                        "run_id":  "with_skill/run-2",
+                        "report_sha256":  "40872b1b75ec33959b6b3731abccc0885d5e34f1ff07922101d796fa4c640212",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 0.702 baseline, superseded 0.728 candidate history, corrected 0.741 candidate value, and exact preservation of both Chinese manual-content markers."
+                    },
+                    {
+                        "case_id":  "safe-existing-report-update",
+                        "run_id":  "with_skill/run-3",
+                        "report_sha256":  "27c3ee35f1ef09c003b6ccfe22e771e6abdd9c5da4c5b8f02bea9e1491db1b89",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 0.702 baseline, superseded 0.728 candidate history, corrected 0.741 candidate value, and exact preservation of both Chinese manual-content markers."
+                    },
+                    {
+                        "case_id":  "scoped-directory-selection",
+                        "run_id":  "with_skill/run-1",
+                        "report_sha256":  "a0fc19f7bd0ee79324f80bb28ae75d7effa318aee19fd76d9c838feaf17b626e",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 0.704 baseline, 0.739 candidate, 16.8 ms latency, and the 0.730 criterion from the two allowed sources. Cache and generated artifacts are absent."
+                    },
+                    {
+                        "case_id":  "scoped-directory-selection",
+                        "run_id":  "with_skill/run-2",
+                        "report_sha256":  "d4b450bab901081a6cd7e3fd62911b482be28e33d12abf09e7599592f0968e19",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 0.704 baseline, 0.739 candidate, 16.8 ms latency, and the 0.730 criterion from the two allowed sources. Cache and generated artifacts are absent."
+                    },
+                    {
+                        "case_id":  "scoped-directory-selection",
+                        "run_id":  "with_skill/run-3",
+                        "report_sha256":  "f931d111cb552e70163f853bdbbcb79c3df295c9735cb1c90c1d7be9c67b6ddd",
+                        "deterministic_hard_pass":  true,
+                        "unsupported_critical_claim":  false,
+                        "finding":  "Verified 0.704 baseline, 0.739 candidate, 16.8 ms latency, and the 0.730 criterion from the two allowed sources. Cache and generated artifacts are absent."
+                    }
+                ],
+    "summary":  {
+                    "reports_reviewed":  24,
+                    "deterministic_hard_passes":  24,
+                    "unsupported_critical_claims":  0,
+                    "semantic_gate_passed":  true
+                }
+}

@@ -45,6 +45,10 @@ CONFIGURATION_SKILL_DIR = {
     "with_skill": "with_skill",
     "without_skill": "without_skill",
 }
+ANALYZER_MODELS = {
+    "codex-inline-self-review",
+    "human-blind-review",
+}
 PROVIDER_FIELDS = {
     "name",
     "base_url",
@@ -972,8 +976,13 @@ def _benchmark_notes(runs: list[dict[str, object]]) -> list[str]:
 
 
 def aggregate_workspace(
-    workspace: Path, *, model: str
+    workspace: Path,
+    *,
+    model: str,
+    analyzer_model: str = "human-blind-review",
 ) -> dict[str, object]:
+    if analyzer_model not in ANALYZER_MODELS:
+        raise ContractError(f"unsupported analyzer model: {analyzer_model}")
     records = _discover_workspace_runs(workspace)
     runs_per_configuration = _validate_workspace_matrix(records, model)
     runs = [_record_to_benchmark_run(record) for record in records]
@@ -982,7 +991,7 @@ def aggregate_workspace(
         "metadata": {
             "skill_name": SKILL_NAME,
             "executor_model": model,
-            "analyzer_model": "human-blind-review",
+            "analyzer_model": analyzer_model,
             "timestamp": datetime.now(UTC).replace(microsecond=0).isoformat(),
             "evals_run": evals,
             "runs_per_configuration": runs_per_configuration,
@@ -1001,6 +1010,7 @@ def write_benchmark_markdown(
         "# Lab Meeting Report Behavior Benchmark",
         "",
         f"- Executor model: `{metadata['executor_model']}`",
+        f"- Analyzer: `{metadata['analyzer_model']}`",
         f"- Runs per configuration: `{metadata['runs_per_configuration']}`",
         f"- Evaluations: `{len(metadata['evals_run'])}`",
         "",
@@ -1726,7 +1736,11 @@ def run_command(args: argparse.Namespace) -> int:
 
 
 def benchmark_command(args: argparse.Namespace) -> int:
-    benchmark = aggregate_workspace(Path(args.workspace), model=args.model)
+    benchmark = aggregate_workspace(
+        Path(args.workspace),
+        model=args.model,
+        analyzer_model=args.analyzer_model,
+    )
     output = Path(args.output)
     _write_json(output, benchmark)
     write_benchmark_markdown(benchmark, output.with_suffix(".md"))
@@ -1819,6 +1833,11 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark_parser.add_argument("--workspace", required=True)
     benchmark_parser.add_argument("--output", required=True)
     benchmark_parser.add_argument("--model", required=True)
+    benchmark_parser.add_argument(
+        "--analyzer-model",
+        choices=sorted(ANALYZER_MODELS),
+        default="human-blind-review",
+    )
     benchmark_parser.set_defaults(handler=benchmark_command)
 
     review_parser = subparsers.add_parser(

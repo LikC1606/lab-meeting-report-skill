@@ -31,6 +31,8 @@
 
 Raw run workspaces must live under `$evalRoot = Join-Path $env:TEMP 'lab-meeting-report-v1.2-evals'`, outside the repository.
 
+The runner always keeps `--ignore-user-config`. If `config.toml` selects a custom model provider, it reads only the active provider's `name`, `base_url`, `wire_api`, and `requires_openai_auth` fields plus `windows.sandbox = "elevated"` when present, rejects any additional provider field or other Windows sandbox value, replays those values as explicit CLI transport overrides, and records only their SHA-256 in run metadata. Baseline reuse requires the provider hash to match. The runner never reads `auth.json`, copies headers, or inherits project, hook, plugin, prompt, or approval settings from the user configuration.
+
 Before every PowerShell command block that invokes Python, resolve the interpreter in that shell process:
 
 ```powershell
@@ -47,11 +49,11 @@ All `& $python` commands below rely on this preamble. This avoids `PATH` assumpt
 - Validate: repository root
 - Validate: `docs/superpowers/specs/2026-07-13-lab-meeting-report-v1.2-quality-evaluation-design.md`
 
-- [ ] **Step 1: Create an implementation worktree**
+- [x] **Step 1: Create an implementation worktree**
 
-Invoke `superpowers:using-git-worktrees` and create branch `feature/v1.2-quality-evaluation` from local commit `faf9d14`. Do not base it on `origin/main`, which does not yet contain the approved design commit.
+Invoke `superpowers:using-git-worktrees` and create branch `feature/v1.2-quality-evaluation` from local commit `283ecde`, which contains the approved design, implementation plan, and the `.worktrees/` safety rule. Do not base it on `origin/main`, which does not yet contain those local commits.
 
-- [ ] **Step 2: Verify repository and tag identity**
+- [x] **Step 2: Verify repository and tag identity**
 
 Run:
 
@@ -66,12 +68,12 @@ Expected:
 
 ```text
 feature/v1.2-quality-evaluation
-faf9d14... for HEAD
+283ecde... for HEAD
 76a800c... for v1.1.0
 no status output
 ```
 
-- [ ] **Step 3: Run the unchanged baseline checks**
+- [x] **Step 3: Run the unchanged baseline checks**
 
 Run:
 
@@ -92,7 +94,7 @@ Expected: `3` tests pass, `Repository validation passed`, and `Skill is valid!`.
 - Create: `evals/research-progress/schema/manifest.schema.json`
 - Create: `tests/test_eval_contract.py`
 
-- [ ] **Step 1: Write failing contract tests**
+- [x] **Step 1: Write failing contract tests**
 
 Create `tests/test_eval_contract.py` with a reusable valid manifest and these tests:
 
@@ -172,7 +174,7 @@ class ContractTests(unittest.TestCase):
             self.assertNotEqual(first, hash_tree(root))
 ```
 
-- [ ] **Step 2: Run the contract tests and verify RED**
+- [x] **Step 2: Run the contract tests and verify RED**
 
 Run:
 
@@ -182,7 +184,7 @@ Run:
 
 Expected: import failure because `scripts.eval_contract` does not exist.
 
-- [ ] **Step 3: Create the public JSON schema**
+- [x] **Step 3: Create the public JSON schema**
 
 Create `evals/research-progress/schema/manifest.schema.json` with `additionalProperties: false`, the exact top-level keys from `VALID_MANIFEST`, and these nested requirements:
 
@@ -263,7 +265,7 @@ Create `evals/research-progress/schema/manifest.schema.json` with `additionalPro
 }
 ```
 
-- [ ] **Step 4: Implement the minimal contract loader**
+- [x] **Step 4: Implement the minimal contract loader**
 
 Create `scripts/eval_contract.py` with these public interfaces:
 
@@ -307,7 +309,7 @@ COLLECTION_FIELDS = {
 
 Validate every referenced task/input/source path against the case directory. Validate derived operands and reject division by zero. Compile every forbidden regex during loading so malformed patterns fail before a model run.
 
-- [ ] **Step 5: Run tests and commit**
+- [x] **Step 5: Run tests and commit**
 
 Run:
 
@@ -326,7 +328,7 @@ Expected: all tests pass.
 - Create: `scripts/grade_report.py`
 - Create: `tests/test_grade_report.py`
 
-- [ ] **Step 1: Write numeric mutation tests**
+- [x] **Step 1: Write numeric mutation tests**
 
 Create `tests/test_grade_report.py` using a temporary case and test these exact behaviors:
 
@@ -411,7 +413,7 @@ class GradeReportTests(unittest.TestCase):
         self.assertTrue(grading["hard_pass"], grading)
 ```
 
-- [ ] **Step 2: Run numeric tests and verify RED**
+- [x] **Step 2: Run numeric tests and verify RED**
 
 Run:
 
@@ -421,7 +423,7 @@ Run:
 
 Expected: import failure because `scripts.grade_report` does not exist.
 
-- [ ] **Step 3: Implement numeric extraction and grading**
+- [x] **Step 3: Implement numeric extraction and grading**
 
 Create `scripts/grade_report.py` with:
 
@@ -513,7 +515,7 @@ def build_grading(expectations: list[Expectation], text: str) -> dict[str, objec
 
 For closed-world grading, build the allowed `Decimal` set from `numbers`, verified `derived_numbers`, and percent equivalents. Add one `numeric-closed-world` expectation listing every unexpected token. Add one expectation per required number. Reject a derived rule whose declared value differs from `evaluate_derived` after quantization to the declared decimal precision.
 
-- [ ] **Step 4: Add the grader CLI**
+- [x] **Step 4: Add the grader CLI**
 
 Implement:
 
@@ -523,7 +525,7 @@ Implement:
 
 The CLI writes UTF-8 JSON with `ensure_ascii=False`, prints `Hard gates passed` on exit `0`, and prints failed expectation IDs on exit `1`. Contract or I/O errors exit `2` and are infrastructure failures.
 
-- [ ] **Step 5: Run tests and commit**
+- [x] **Step 5: Run tests and commit**
 
 Run:
 
@@ -542,7 +544,7 @@ Expected: all tests pass.
 - Modify: `scripts/grade_report.py`
 - Modify: `tests/test_grade_report.py`
 
-- [ ] **Step 1: Add failing semantic mutation tests**
+- [x] **Step 1: Add failing semantic mutation tests**
 
 Add tests that mutate a known-valid report:
 
@@ -605,7 +607,7 @@ class GradeReportMutationTests(unittest.TestCase):
         self.assertExpectationFailed(grade_text(report, UPDATE_MANIFEST), "preserve:导师反馈（手写）")
 ```
 
-- [ ] **Step 2: Run the new tests and verify RED**
+- [x] **Step 2: Run the new tests and verify RED**
 
 Run:
 
@@ -615,7 +617,7 @@ Run:
 
 Expected: the five new tests fail because the corresponding expectations are absent.
 
-- [ ] **Step 3: Implement exact gate helpers**
+- [x] **Step 3: Implement exact gate helpers**
 
 Add these functions and call them from `grade_text`:
 
@@ -642,7 +644,7 @@ def conflict_expectation(rule: dict[str, object], normalized: str) -> Expectatio
 
 Use case-insensitive compiled regex for each forbidden pattern. Required sources must occur; forbidden sources must not occur; skipped-source rules use the same `all_of` semantics; preservation markers require exact NFKC-normalized presence.
 
-- [ ] **Step 4: Verify grading JSON compatibility**
+- [x] **Step 4: Verify grading JSON compatibility**
 
 Assert every expectation has exactly `text`, `passed`, and `evidence`, and that `summary` matches skill-creator's schema. Run:
 
@@ -652,7 +654,7 @@ Assert every expectation has exactly `text`, `passed`, and `evidence`, and that 
 
 Expected: all grader tests pass, including every mutation test.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add scripts/grade_report.py tests/test_grade_report.py
@@ -669,7 +671,7 @@ git commit -m "feat: enforce report evidence hard gates"
 - Create: `evals/research-progress/cases/duplicated-multilingual-notes/*`
 - Modify: `tests/test_eval_contract.py`
 
-- [ ] **Step 1: Write the failing five-case inventory test**
+- [x] **Step 1: Write the failing five-case inventory test**
 
 Add:
 
@@ -689,7 +691,7 @@ def test_composition_case_inventory_loads(self) -> None:
     self.assertEqual(loaded, COMPOSITION_CASES)
 ```
 
-- [ ] **Step 2: Run the inventory test and verify RED**
+- [x] **Step 2: Run the inventory test and verify RED**
 
 Run:
 
@@ -699,7 +701,7 @@ Run:
 
 Expected: FAIL because no case directories exist.
 
-- [ ] **Step 3: Create exact synthetic inputs and tasks**
+- [x] **Step 3: Create exact synthetic inputs and tasks**
 
 Every `task.md` and every source file must start with `Synthetic example`. Use these fixed facts:
 
@@ -713,7 +715,7 @@ Every `task.md` and every source file must start with `Synthetic example`. Use t
 
 Use an explicit local reporting date of `2026-07-13` in every task so dates are deterministic. Ask for an English report in the first four cases and a Simplified Chinese report in `duplicated-multilingual-notes`.
 
-- [ ] **Step 4: Create each manifest from the fixed facts**
+- [x] **Step 4: Create each manifest from the fixed facts**
 
 For every manifest:
 
@@ -725,7 +727,7 @@ For every manifest:
 - list only actual fixture paths under `required_sources`;
 - forbid `4,800`, `two independent runs`, and `two replications` in the duplicated-notes case.
 
-- [ ] **Step 5: Run contract and grader tests on all five fixtures**
+- [x] **Step 5: Run contract and grader tests on all five fixtures**
 
 Add a test that reads each fixture's `expected-valid-report.md`, grades it, and requires `hard_pass`. Store one hand-authored valid report beside each manifest for grader regression testing; label all five reports `Synthetic example`.
 
@@ -737,7 +739,7 @@ Run:
 
 Expected: all tests pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add evals/research-progress/cases tests/test_eval_contract.py tests/test_grade_report.py
@@ -753,7 +755,7 @@ git commit -m "test: add adversarial composition cases"
 - Modify: `tests/test_eval_contract.py`
 - Modify: `tests/test_grade_report.py`
 
-- [ ] **Step 1: Add the failing complete-inventory test**
+- [x] **Step 1: Add the failing complete-inventory test**
 
 Add:
 
@@ -771,11 +773,11 @@ def test_complete_case_inventory_has_eight_unique_cases(self) -> None:
     self.assertEqual(len(manifests), 8)
 ```
 
-- [ ] **Step 2: Run the inventory test and verify RED**
+- [x] **Step 2: Run the inventory test and verify RED**
 
 Expected: FAIL with the three missing case IDs.
 
-- [ ] **Step 3: Create exact end-to-end fixtures**
+- [x] **Step 3: Create exact end-to-end fixtures**
 
 | Case | Input tree and facts | Required behavior |
 |---|---|---|
@@ -785,7 +787,7 @@ Expected: FAIL with the three missing case IDs.
 
 Write the corrupt CSV as the fixed byte sequence `b"metric,value\nmacro_f1,\xff\xfe\n"` in the fixture-creation step, using a short checked-in binary file. Every readable fixture file and valid report must contain `Synthetic example`.
 
-- [ ] **Step 4: Add end-to-end manifests and valid-report tests**
+- [x] **Step 4: Add end-to-end manifests and valid-report tests**
 
 Use:
 
@@ -796,7 +798,7 @@ Use:
 
 Grade each hand-authored valid report and require all gates to pass.
 
-- [ ] **Step 5: Run all deterministic tests and commit**
+- [x] **Step 5: Run all deterministic tests and commit**
 
 ```powershell
 & $python -m unittest tests.test_eval_contract tests.test_grade_report -v
@@ -813,7 +815,7 @@ Expected: eight manifests load and all valid fixture reports pass.
 - Create: `scripts/run_behavior_evals.py`
 - Create: `tests/test_run_behavior_evals.py`
 
-- [ ] **Step 1: Write failing runner-isolation tests**
+- [x] **Step 1: Write failing runner-isolation tests**
 
 Create tests for these public interfaces:
 
@@ -852,7 +854,7 @@ def test_second_infrastructure_failure_is_invalid_not_quality_failure(self) -> N
     self.assertIsNone(result.hard_pass)
 ```
 
-- [ ] **Step 2: Run runner tests and verify RED**
+- [x] **Step 2: Run runner tests and verify RED**
 
 Run:
 
@@ -862,7 +864,7 @@ Run:
 
 Expected: import failure because the runner does not exist.
 
-- [ ] **Step 3: Implement deterministic Skill materialization**
+- [x] **Step 3: Implement deterministic Skill materialization**
 
 Implement:
 
@@ -892,7 +894,7 @@ def materialize_git_skill(repo_root: Path, ref: str, destination: Path) -> Path:
 
 For candidate runs, `shutil.copytree` the explicit directory. Reject a destination containing symlinks, an unexpected Skill inventory, or a frontmatter name other than `lab-meeting-report`. Record `hash_tree(skill_path)`.
 
-- [ ] **Step 4: Implement the real executor and retry classifier**
+- [x] **Step 4: Implement the real executor and retry classifier**
 
 Build this command on Windows, substituting `codex` on non-Windows. The variables are resolved to paths inside the current run directory:
 
@@ -902,7 +904,7 @@ codex.cmd exec --ephemeral --ignore-user-config --sandbox workspace-write --mode
 
 Use `subprocess.run(..., timeout=timeout_seconds, capture_output=True, text=True, encoding="utf-8", errors="replace")`. An abnormal exit, timeout, missing expected report, invalid UTF-8 report, or grader exception is infrastructure failure. A readable report with `hard_pass: false` is a quality failure and must not retry.
 
-- [ ] **Step 5: Write compatible metadata and outputs**
+- [x] **Step 5: Write compatible metadata and outputs**
 
 Use this layout exactly:
 
@@ -916,7 +918,7 @@ $workspace/
 
 Map candidate to `with_skill` and `v1.1.0` to `without_skill`. `run_metadata.json` must contain case hash, skill hash, prompt hash, runner hash, grader hash, model, CLI version, Git commit, configuration, run number, attempts, exit status, and infrastructure status. Never store auth environment variables.
 
-- [ ] **Step 6: Implement the `run` CLI**
+- [x] **Step 6: Implement the `run` CLI**
 
 Support:
 
@@ -936,7 +938,7 @@ $iteration = Join-Path $evalRoot 'iteration-1'
 
 Require exactly one of `--baseline-ref` or `--candidate-skill`. Refuse an existing nonempty configuration/run directory unless `--resume` is supplied; resume only missing or infrastructure-invalid runs.
 
-- [ ] **Step 7: Run tests and commit**
+- [x] **Step 7: Run tests and commit**
 
 ```powershell
 & $python -m unittest tests.test_run_behavior_evals -v
@@ -951,7 +953,7 @@ git commit -m "feat: run isolated behavior evaluations"
 - Modify: `scripts/run_behavior_evals.py`
 - Modify: `tests/test_run_behavior_evals.py`
 
-- [ ] **Step 1: Write failing aggregation and blinding tests**
+- [x] **Step 1: Write failing aggregation and blinding tests**
 
 Add:
 
@@ -988,11 +990,11 @@ def test_release_gate_requires_all_approved_conditions(self) -> None:
     self.assertIn("candidate hard gates: expected 24/24", "\n".join(errors))
 ```
 
-- [ ] **Step 2: Run tests and verify RED**
+- [x] **Step 2: Run tests and verify RED**
 
 Expected: failures because aggregation, review preparation, and feedback parsing are undefined.
 
-- [ ] **Step 3: Implement benchmark aggregation**
+- [x] **Step 3: Implement benchmark aggregation**
 
 Read every valid `grading.json`, `timing.json`, and `run_metadata.json`. Emit the exact `benchmark.json` shape from skill-creator's `references/schemas.md`, including per-configuration mean, sample standard deviation, min, max, and delta. Write a sibling `benchmark.md` from the same data. Derive `runs_per_configuration` from the workspace and reject unequal counts. For a final release benchmark the value must be `3`. Set:
 
@@ -1007,7 +1009,7 @@ Read every valid `grading.json`, `timing.json`, and `run_metadata.json`. Emit th
 
 Reject aggregation if hashes needed for baseline reuse differ, any run is invalid, or expected case/run combinations are missing.
 
-- [ ] **Step 4: Implement anonymous paired review preparation**
+- [x] **Step 4: Implement anonymous paired review preparation**
 
 For each case and run number, use `random.Random(f"{seed}:{case_id}:{run_number}")` to map candidate/baseline to A/B. Accept an optional separate baseline workspace for one-run candidate development comparisons. Create one viewer run whose `outputs/` contains:
 
@@ -1034,11 +1036,11 @@ review-format.json
 
 The allowed score range is `1` through `5`; preference is `A`, `B`, or `tie`; semantic failure is `none`, `A`, `B`, or `both`. Save `blind-map.json` beside, not inside, the review workspace. Also write an anonymized `benchmark.json` inside the review workspace with configurations renamed to A/B and no Skill paths or hashes.
 
-- [ ] **Step 5: Implement feedback parsing, unblinding, and semantic-failure writeback**
+- [x] **Step 5: Implement feedback parsing, unblinding, and semantic-failure writeback**
 
 Parse each skill-creator `feedback.json` review string as JSON, require all fields, map A/B back to candidate/baseline, and calculate per-case medians, global medians, preference counts, and semantic failures. Implement `apply_human_review(benchmark, human_review)` so a semantic failure changes the affected run's hard gate to failed, recalculates summaries, and adds a note identifying the human review finding. When `score-review` writes `benchmark-reviewed.json`, also write `benchmark-reviewed.md` from the reviewed data.
 
-- [ ] **Step 6: Implement the release gate**
+- [x] **Step 6: Implement the release gate**
 
 Implement `check_release_gate(benchmark, human_review) -> list[str]`. Return concrete errors unless:
 
@@ -1051,7 +1053,7 @@ Implement `check_release_gate(benchmark, human_review) -> list[str]`. Return con
 
 Add a CLI `check-release` that prints every error and exits `1`, or prints `Release gate passed` and exits `0`.
 
-- [ ] **Step 7: Add CLI subcommands and commit**
+- [x] **Step 7: Add CLI subcommands and commit**
 
 Support:
 
@@ -1079,7 +1081,7 @@ git commit -m "feat: aggregate and blind behavior reviews"
 - Modify: `scripts/validate_repo.py`
 - Modify: `tests/test_validate_repo.py`
 
-- [ ] **Step 1: Write failing repository-validation tests**
+- [x] **Step 1: Write failing repository-validation tests**
 
 Add:
 
@@ -1104,7 +1106,7 @@ def test_non_synthetic_eval_text_is_rejected(self) -> None:
         self.assertIn("synthetic example", (result.stdout + result.stderr).lower())
 ```
 
-- [ ] **Step 2: Run tests and verify RED**
+- [x] **Step 2: Run tests and verify RED**
 
 Run:
 
@@ -1114,7 +1116,7 @@ Run:
 
 Expected: both new tests fail because the current validator ignores `evals/`.
 
-- [ ] **Step 3: Add exact evaluation inventory checks**
+- [x] **Step 3: Add exact evaluation inventory checks**
 
 Add:
 
@@ -1138,7 +1140,7 @@ EVAL_REQUIRED_CODE = {
 
 For each case require `manifest.json`, `task.md`, `inputs/`, and `expected-valid-report.md`. Load manifests with `scripts.eval_contract.load_manifest`. Require `Synthetic example` in every readable fixture `.md`, `.txt`, `.csv`, and expected report. Permit the intentionally corrupt CSV only in `partial-source-failure` and verify its exact SHA-256.
 
-- [ ] **Step 4: Run the complete local gate and commit**
+- [x] **Step 4: Run the complete local gate and commit**
 
 ```powershell
 $env:PYTHONUTF8 = '1'
@@ -1160,7 +1162,7 @@ Expected: all tests and validators pass.
 - Create after review: `benchmarks/v1.1-v1.2/representative-outputs/v1.1/*`
 - External workspace: `$evalRoot\baseline-final`, where `$evalRoot = Join-Path $env:TEMP 'lab-meeting-report-v1.2-evals'`
 
-- [ ] **Step 1: Verify model runner preconditions**
+- [x] **Step 1: Verify model runner preconditions**
 
 Run:
 
@@ -1172,7 +1174,7 @@ git rev-list -n 1 v1.1.0
 
 Expected: Codex CLI `0.144.0-alpha.4`, tag commit `76a800c3fdd843b2513ea7270086a05ff7f5c47e`, and runner subcommands displayed.
 
-- [ ] **Step 2: Run all eight baseline cases three times**
+- [x] **Step 2: Run all eight baseline cases three times**
 
 Run:
 
@@ -1192,7 +1194,7 @@ $workspace = Join-Path $evalRoot 'baseline-final'
 
 Expected: `24 valid runs`; quality failures are allowed, infrastructure-invalid runs are not. If a run is invalid after its automatic retry, stop and repair the runner or environment before proceeding.
 
-- [ ] **Step 3: Aggregate baseline results**
+- [x] **Step 3: Aggregate baseline results**
 
 ```powershell
 & $python -m scripts.run_behavior_evals benchmark `
@@ -1203,7 +1205,7 @@ Expected: `24 valid runs`; quality failures are allowed, infrastructure-invalid 
 
 Expected: benchmark contains eight eval IDs and 24 `without_skill` runs.
 
-- [ ] **Step 4: Generate the review page before analyzing outputs**
+- [x] **Step 4: Generate the review page before analyzing outputs**
 
 ```powershell
 $viewer = Join-Path $env:USERPROFILE '.codex\skills\skill-creator\eval-viewer\generate_review.py'
@@ -1215,9 +1217,9 @@ $viewer = Join-Path $env:USERPROFILE '.codex\skills\skill-creator\eval-viewer\ge
 
 Open `baseline-review.html`, tell the user the hard-gate results are provisional until semantic review, and pause. Do not inspect and interpret the report quality before the user has reviewed the outputs.
 
-- [ ] **Step 5: Ingest user feedback and classify baseline failures**
+- [x] **Step 5: Run inline semantic review and classify baseline failures**
 
-After the user confirms review, copy the newly downloaded `feedback.json` into the baseline workspace. Read all machine failures and user feedback. Classify each failure into exactly one or more of:
+The user explicitly declined manual review. Read all machine failures, representative reports, and relevant transcripts inline. Record that the review is non-independent, then classify each failure into exactly one or more of:
 
 ```text
 E1 evidence inventory/provenance
@@ -1231,7 +1233,7 @@ P2 source assertion versus causal evidence
 
 Any failure outside this matrix stops execution and requires a design addendum; do not improvise a prompt change.
 
-- [ ] **Step 6: Commit inspectable baseline evidence**
+- [x] **Step 6: Commit inspectable baseline evidence**
 
 Copy `benchmark.json` to `benchmarks/v1.1-v1.2/baseline-benchmark.json`. Write `baseline-analysis.md` with case/run IDs, hard failures, semantic findings, root-cause codes, and limitations. Copy run 1 report for each case mechanically into `representative-outputs/v1.1/`.
 
@@ -1251,11 +1253,11 @@ git commit -m "test: record v1.1 behavior baseline"
 - Modify conditionally: `lab-meeting-report/SKILL.md`
 - Modify conditionally: `lab-meeting-report/references/progress-report.md`
 
-- [ ] **Step 1: Write the candidate-selection record**
+- [x] **Step 1: Write the candidate-selection record**
 
 Create `candidate-selection.json` with `baseline_commit`, `baseline_benchmark_sha256`, `selected_blocks`, and `evidence`. Every selected block must cite at least one failed case/run and one expectation or human semantic finding. Reject block IDs outside `E1` through `E5`, `P1`, and `P2`.
 
-- [ ] **Step 2: Apply only selected SKILL.md blocks**
+- [x] **Step 2: Apply only selected SKILL.md blocks**
 
 Insert selected text at the named location exactly.
 
@@ -1296,7 +1298,7 @@ Run a claim audit before completion: match every experimental number to a source
 
 The HTML comments are stable block identifiers for tests and future removal; they do not appear in generated reports.
 
-- [ ] **Step 3: Apply selected progress-template rules**
+- [x] **Step 3: Apply selected progress-template rules**
 
 Append P1 or P2 only when selected:
 
@@ -1308,11 +1310,11 @@ Append P1 or P2 only when selected:
 - A source author's causal wording is still an attributed claim when no isolating test is supplied; preserve it as an interpretation or hypothesis, not a verified mechanism.
 ```
 
-- [ ] **Step 4: Add selection consistency validation**
+- [x] **Step 4: Add selection consistency validation**
 
 Extend `scripts/validate_repo.py` and `tests/test_validate_repo.py` so every selected ID requires its exact marker from `<!-- E1 -->` through `<!-- P2 -->`, and no unselected marker may appear. Add a test that removes a selected block and requires validation failure.
 
-- [ ] **Step 5: Run local validation and commit**
+- [x] **Step 5: Run local validation and commit**
 
 ```powershell
 $env:PYTHONUTF8 = '1'
@@ -1331,7 +1333,7 @@ git commit -m "feat: strengthen evidence fidelity controls"
 - Modify only if selected: files and blocks from Task 11
 - Create/update: `benchmarks/v1.1-v1.2/iteration-history.json`
 
-- [ ] **Step 1: Run candidate iteration 1 once per case**
+- [x] **Step 1: Run candidate iteration 1 once per case**
 
 ```powershell
 $evalRoot = Join-Path $env:TEMP 'lab-meeting-report-v1.2-evals'
@@ -1347,22 +1349,11 @@ $candidate = Join-Path $evalRoot 'candidate-iteration-1'
   --timeout-seconds 900
 ```
 
-- [ ] **Step 2: Generate an anonymous paired viewer before analysis and pause for feedback**
+- [x] **Step 2: Replace manual viewer review with inline semantic review**
 
-Prepare a one-run paired review using the separate baseline workspace, then generate the standard static viewer:
+After each iteration, read every failed report against its inputs and inspect every hard-passing report for deleted decision-relevant evidence. Record design corrections in numbered addenda. Do not create or request manual feedback artifacts.
 
-```powershell
-$devReview = Join-Path $evalRoot 'candidate-iteration-1-review'
-$devMap = Join-Path $evalRoot 'candidate-iteration-1-blind-map.json'
-$baseline = Join-Path $evalRoot 'baseline-final'
-$viewer = Join-Path $env:USERPROFILE '.codex\skills\skill-creator\eval-viewer\generate_review.py'
-& $python -m scripts.run_behavior_evals prepare-review --workspace $candidate --baseline-workspace $baseline --review-workspace $devReview --blind-map $devMap --seed 1200
-& $python $viewer $devReview --skill-name 'Lab Meeting Report Candidate Review' --benchmark "$devReview\benchmark.json" --static "$devReview\review.html"
-```
-
-Open the page and pause for user review. Save returned feedback in the candidate workspace before analysis.
-
-- [ ] **Step 3: Apply only deterministic escalation rules**
+- [x] **Step 3: Apply only deterministic escalation rules**
 
 If a selected category still fails, add blocks in this order without rewriting existing text:
 
@@ -1379,9 +1370,9 @@ Update `candidate-selection.json` with the failed case/run that justifies each a
 
 If all relevant blocks are present and the failure remains, or a new failure category appears, stop and write a design addendum. Maximum: three candidate iterations.
 
-- [ ] **Step 4: Record accepted development history**
+- [x] **Step 4: Record accepted development history**
 
-Write `iteration-history.json` with version, parent commit, selected block IDs, per-case hard-pass result, feedback path hash, and outcome `won`, `lost`, or `tie`. Proceed only when the current candidate is `8/8` on deterministic hard gates and semantic review found no unsupported critical claim.
+Write `iteration-history.json` with version, parent commit, selected block IDs, per-case hard-pass result, semantic-review hash, and outcome `won`, `lost`, or `tie`. Proceed only when the current candidate is `8/8` on deterministic hard gates and semantic review found no unsupported critical claim.
 
 - [ ] **Step 5: Commit the iteration record**
 
@@ -1390,18 +1381,17 @@ git add benchmarks/v1.1-v1.2/iteration-history.json
 git commit -m "test: record candidate evaluation history"
 ```
 
-### Task 13: Run The Final Three-Repeat Benchmark And Blind Review
+### Task 13: Run The Final Three-Repeat Benchmark And Semantic Review
 
 **Files:**
 - External workspace: `$evalRoot\final`
-- External review: `$evalRoot\blind-review`
 - Create: `benchmarks/v1.1-v1.2/benchmark.json`
 - Create: `benchmarks/v1.1-v1.2/benchmark.md`
-- Create: `benchmarks/v1.1-v1.2/human-review.json`
+- Create: `benchmarks/v1.1-v1.2/semantic-review-final.json`
 
 - [ ] **Step 1: Reuse or rerun the frozen baseline**
 
-Compare skill, model, Codex CLI, runner, grader, prompt, and case hashes between `baseline-final` and the current final environment. If every hash matches, copy the eight `without_skill` directories into the final workspace. If any hash differs, rerun all 24 baseline runs in the final workspace.
+Compare skill, model, Codex CLI, runner, prompt, input, and provider hashes between `baseline-final` and the current final environment. Grader-only and hidden-manifest semantic-equivalence corrections may regrade the unchanged raw baseline reports when documented by a tested design addendum; any change visible to the generation process requires rerunning all 24 baseline runs.
 
 - [ ] **Step 2: Run 24 candidate evaluations**
 
@@ -1419,42 +1409,19 @@ $final = Join-Path $evalRoot 'final'
   --timeout-seconds 900
 ```
 
-Expected: 24 valid candidate runs; all deterministic hard gates must pass before human review.
+Expected: 24 valid candidate runs; all deterministic hard gates must pass before semantic review.
 
-- [ ] **Step 3: Prepare 24 anonymous A/B pairs**
+- [ ] **Step 3: Run the final inline claim-level semantic audit**
 
-```powershell
-$review = Join-Path $evalRoot 'blind-review'
-$blindMap = Join-Path $evalRoot 'blind-map.json'
-$viewer = Join-Path $env:USERPROFILE '.codex\skills\skill-creator\eval-viewer\generate_review.py'
-& $python -m scripts.run_behavior_evals benchmark --workspace $final --output "$final\benchmark.json" --model gpt-5.6-sol
-& $python -m scripts.run_behavior_evals prepare-review --workspace $final --review-workspace $review --blind-map $blindMap --seed 1200
-& $python $viewer $review --skill-name 'Lab Meeting Report Blind Review' --benchmark "$review\benchmark.json" --static "$review\review.html"
-```
+Read every candidate report against its supplied inputs. Write `semantic-review-final.json` with reviewer kind `codex-inline-self-review`, the non-independent limitation, one finding per run, and a hard failure for every unsupported critical claim.
 
-Open `review.html` and pause. The user reviews each pair using the JSON shape displayed in `review-format.json`.
+- [ ] **Step 4: Enforce the non-human release gate**
 
-- [ ] **Step 4: Parse feedback and enforce the release gate**
-
-Copy the downloaded feedback file to `$evalRoot\feedback.json`, then run:
-
-```powershell
-& $python -m scripts.run_behavior_evals score-review `
-  --feedback (Join-Path $evalRoot 'feedback.json') `
-  --blind-map $blindMap `
-  --benchmark "$final\benchmark.json" `
-  --human-output "$final\human-review.json" `
-  --benchmark-output "$final\benchmark-reviewed.json"
-& $python -m scripts.run_behavior_evals check-release `
-  --benchmark "$final\benchmark-reviewed.json" `
-  --human-review "$final\human-review.json"
-```
-
-`check-release` must exit nonzero unless all 24 candidate runs hard-pass, no run is invalid, no candidate semantic failure exists, candidate global soft median is at least baseline, no case median drops by more than one point, and at least one case satisfies the approved measurable-improvement rule.
+`check-release` must exit nonzero unless all 24 candidate runs hard-pass, no run is invalid, the semantic review records zero unsupported critical claims, and at least one case has a baseline hard failure with all three candidate runs passing. No blinded preference or soft-score claim is made.
 
 - [ ] **Step 5: Commit final evidence**
 
-Copy `benchmark-reviewed.json` as `benchmarks/v1.1-v1.2/benchmark.json`, copy `benchmark-reviewed.md` as `benchmark.md`, and copy the human review summary. Mechanically copy run 1 for each candidate case to `representative-outputs/v1.2/`. Run `check-release` against the committed paths, then:
+Copy the final benchmark as `benchmarks/v1.1-v1.2/benchmark.json` and `benchmark.md`, and copy `semantic-review-final.json`. Mechanically copy run 1 for each candidate case to `representative-outputs/v1.2/`. Run `check-release` against the committed paths, then:
 
 ```powershell
 git add benchmarks/v1.1-v1.2

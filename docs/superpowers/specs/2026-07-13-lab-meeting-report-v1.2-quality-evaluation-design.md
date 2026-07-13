@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-13
 
-**Status:** Approved by user after written-spec review
+**Status:** Approved by user after written-spec review; manual review replaced by explicit user directive on 2026-07-13
 
 **Target release:** `v1.2.0`
 
@@ -132,18 +132,18 @@ Development runs execute each case once per version. The final release benchmark
 
 Any invented critical number, unsupported critical conclusion, omitted negative result, hidden source conflict, or destructive update fails the entire run. Hard-gate failures are not averaged away by soft scores.
 
-## Human Review
+## Semantic Review
 
-Deterministic grading is followed by claim-level human review because semantic fabrication cannot be completely detected with string and numeric checks.
+Deterministic grading is followed by claim-level semantic review because semantic fabrication cannot be completely detected with string and numeric checks. The user explicitly declined manual review, so Codex performs this audit inline and records that it is non-independent and not blinded.
 
-The reviewer checks:
+The audit checks:
 
 1. whether each key conclusion is supported by a supplied source;
 2. whether facts, interpretations, hypotheses, and derived calculations remain distinct;
 3. whether wording exaggerates evidence strength;
 4. whether the report is clear, proportionate, concise, and useful for deciding the next experiment.
 
-A static review page presents randomized A/B outputs without identifying the skill version. It includes the case prompt, source material, hard-gate results, and fields for semantic-fidelity findings and qualitative feedback. The soft rubric uses the same scale for evidence clarity, information selection, decision usefulness, and readability. A semantic fabrication found during review is promoted to a hard-gate failure.
+The audit reads every candidate report against its supplied sources after deterministic grading. It records a finding per case in `semantic-review.json`. A semantic fabrication found during review is promoted to a hard-gate failure. This self-review cannot support claims about independent reviewer preference or blinded soft-score superiority.
 
 ## Iteration Loop
 
@@ -152,8 +152,8 @@ A static review page presents randomized A/B outputs without identifying the ski
 3. Group failures by root cause rather than by case wording.
 4. Modify only the smallest skill instruction or research-progress template needed to address a general failure.
 5. Run the candidate against all cases.
-6. Generate the static review page before interpreting qualitative results.
-7. Record feedback and repeat until the release gate passes or further prompt changes stop producing meaningful improvement.
+6. Run and record the inline claim-level semantic audit after deterministic grading.
+7. Repeat until the release gate passes or further prompt changes stop producing meaningful improvement.
 
 Potential improvements include an internal pre-draft evidence ledger, explicit separation of source facts and derived calculations, a pre-write preservation inventory for report updates, and a post-draft numeric/conflict/negative-result audit. These are candidates, not predetermined requirements. Evaluation evidence decides which are added.
 
@@ -203,6 +203,7 @@ benchmarks/
   v1.1-v1.2/
     benchmark.json
     benchmark.md
+    semantic-review.json
     representative-outputs/
 ```
 
@@ -214,10 +215,9 @@ Raw repeated-run workspaces and transient review files remain outside the commit
 
 1. all 24 candidate runs pass deterministic hard gates;
 2. no candidate run is invalid or has an unexplained infrastructure failure;
-3. claim-level human review finds no unsupported critical conclusion;
-4. the candidate's median blinded soft score is at least the baseline median, and no case-level median drops by more than one point on the five-point rubric;
-5. at least one predefined adversarial case shows a measurable improvement: the baseline has one or more hard-gate failures while all three candidate runs pass, or, when both versions pass all hard gates for that case, the candidate wins at least two of three paired blinded reviews without a hard-gate regression;
-6. unit tests, repository validation, official skill validation, sensitive-data scans, and fresh-clone verification pass.
+3. claim-level semantic review finds no unsupported critical conclusion and records its non-independent reviewer limitation;
+4. at least one predefined adversarial case shows measurable improvement: the baseline has one or more hard-gate failures while all three candidate runs pass;
+5. unit tests, repository validation, official skill validation, sensitive-data scans, and fresh-clone verification pass.
 
 If `v1.1.0` passes every accepted case, strengthen the adversarial suite before changing the prompt. If no defensible behavioral difference emerges, retain the current skill instructions and merge only the evaluation infrastructure without creating a `v1.2.0` release or claiming improved report quality.
 

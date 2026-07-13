@@ -1451,17 +1451,72 @@ def apply_human_review(
 
 
 def check_release_gate(
-    benchmark: dict[str, object], human_review: dict[str, object]
+    benchmark: dict[str, object],
+    review: dict[str, object],
+    *,
+    review_kind: str = "human",
 ) -> list[str]:
     errors: list[str] = []
     runs = benchmark.get("runs")
     if not isinstance(runs, list):
         return ["benchmark runs must be an array"]
-    if human_review.get("pairs_reviewed") != 24:
+    if review_kind not in {"human", "semantic"}:
+        return [f"unsupported review kind: {review_kind}"]
+    if review_kind == "human" and review.get("pairs_reviewed") != 24:
         errors.append(
             "human review: expected 24/24 pairs, got "
-            f"{human_review.get('pairs_reviewed', 0)}/24"
+            f"{review.get('pairs_reviewed', 0)}/24"
         )
+    if review_kind == "semantic":
+        reviewer = review.get("reviewer")
+        if not isinstance(reviewer, dict) or reviewer.get("kind") != (
+            "codex-inline-self-review"
+        ):
+            errors.append("semantic review requires codex-inline-self-review")
+        reports = review.get("reports")
+        if not isinstance(reports, list) or len(reports) != 24:
+            count = len(reports) if isinstance(reports, list) else 0
+            errors.append(
+                f"semantic review: expected 24/24 reports, got {count}/24"
+            )
+            reports = []
+        report_keys = {
+            (str(item.get("case_id")), str(item.get("run_id")))
+            for item in reports
+            if isinstance(item, dict)
+        }
+        if len(report_keys) != len(reports):
+            errors.append("semantic review report identifiers must be unique")
+        semantic_failures = sum(
+            bool(item.get("unsupported_critical_claim"))
+            for item in reports
+            if isinstance(item, dict)
+        )
+        semantic_failures += sum(
+            not bool(item.get("deterministic_hard_pass"))
+            for item in reports
+            if isinstance(item, dict)
+        )
+        summary = review.get("summary")
+        if not isinstance(summary, dict):
+            errors.append("semantic review summary must be an object")
+        else:
+            if summary.get("reports_reviewed") != 24:
+                errors.append("semantic review summary requires 24 reports")
+            if summary.get("deterministic_hard_passes") != 24:
+                errors.append("semantic review summary requires 24 hard passes")
+            if summary.get("unsupported_critical_claims") != 0:
+                semantic_failures = max(
+                    semantic_failures,
+                    int(summary.get("unsupported_critical_claims", 0)),
+                )
+            if summary.get("semantic_gate_passed") is not True:
+                semantic_failures = max(semantic_failures, 1)
+        if semantic_failures:
+            errors.append(
+                "candidate semantic failures: expected 0, got "
+                f"{semantic_failures}"
+            )
     candidate = [run for run in runs if run.get("configuration") == "with_skill"]
     baseline = [
         run for run in runs if run.get("configuration") == "without_skill"
@@ -1497,43 +1552,48 @@ def check_release_gate(
     if len(baseline) != 24:
         errors.append(f"baseline matrix: expected 24 runs, got {len(baseline)}")
 
-    semantic = human_review.get("semantic_failures", {})
-    candidate_semantic = (
-        semantic.get("candidate", []) if isinstance(semantic, dict) else []
-    )
-    if candidate_semantic:
-        errors.append(
-            f"candidate semantic failures: expected 0, got {len(candidate_semantic)}"
+    per_case: dict[str, object] = {}
+    if review_kind == "human":
+        semantic = review.get("semantic_failures", {})
+        candidate_semantic = (
+            semantic.get("candidate", []) if isinstance(semantic, dict) else []
         )
+        if candidate_semantic:
+            errors.append(
+                "candidate semantic failures: expected 0, got "
+                f"{len(candidate_semantic)}"
+            )
 
-    global_medians = human_review.get("global_medians", {})
-    try:
-        candidate_global = float(global_medians["candidate"]["overall"])
-        baseline_global = float(global_medians["baseline"]["overall"])
-    except (KeyError, TypeError, ValueError):
-        errors.append("human review lacks global overall medians")
-        candidate_global = baseline_global = 0.0
-    if candidate_global < baseline_global:
-        errors.append(
-            "candidate global soft median is below baseline: "
-            f"{candidate_global} < {baseline_global}"
-        )
+        global_medians = review.get("global_medians", {})
+        try:
+            candidate_global = float(global_medians["candidate"]["overall"])
+            baseline_global = float(global_medians["baseline"]["overall"])
+        except (KeyError, TypeError, ValueError):
+            errors.append("human review lacks global overall medians")
+            candidate_global = baseline_global = 0.0
+        if candidate_global < baseline_global:
+            errors.append(
+                "candidate global soft median is below baseline: "
+                f"{candidate_global} < {baseline_global}"
+            )
 
-    per_case = human_review.get("per_case", {})
-    if not isinstance(per_case, dict) or len(per_case) != 8:
-        errors.append("human review requires medians for all 8 cases")
-    else:
-        for eval_name, values in per_case.items():
-            try:
-                candidate_median = float(values["candidate"]["overall"])
-                baseline_median = float(values["baseline"]["overall"])
-            except (KeyError, TypeError, ValueError):
-                errors.append(f"case median missing for {eval_name}")
-                continue
-            if candidate_median < baseline_median - 1:
-                errors.append(
-                    f"case soft median drops by more than one point: {eval_name}"
-                )
+        raw_per_case = review.get("per_case", {})
+        if not isinstance(raw_per_case, dict) or len(raw_per_case) != 8:
+            errors.append("human review requires medians for all 8 cases")
+        else:
+            per_case = raw_per_case
+            for eval_name, values in per_case.items():
+                try:
+                    candidate_median = float(values["candidate"]["overall"])
+                    baseline_median = float(values["baseline"]["overall"])
+                except (KeyError, TypeError, ValueError):
+                    errors.append(f"case median missing for {eval_name}")
+                    continue
+                if candidate_median < baseline_median - 1:
+                    errors.append(
+                        "case soft median drops by more than one point: "
+                        f"{eval_name}"
+                    )
 
     measurable_improvement = False
     for eval_name in candidate_evals:
@@ -1554,7 +1614,9 @@ def check_release_gate(
         if candidate_all_pass and baseline_has_failure:
             measurable_improvement = True
             break
-        case_review = per_case.get(eval_name, {}) if isinstance(per_case, dict) else {}
+        if review_kind != "human":
+            continue
+        case_review = per_case.get(eval_name, {})
         preferences = (
             case_review.get("preference_counts", {})
             if isinstance(case_review, dict)
@@ -1705,8 +1767,13 @@ def score_review_command(args: argparse.Namespace) -> int:
 
 def check_release_command(args: argparse.Namespace) -> int:
     benchmark = _load_json(Path(args.benchmark), "benchmark")
-    human_review = _load_json(Path(args.human_review), "human review")
-    errors = check_release_gate(benchmark, human_review)
+    if args.human_review is not None:
+        review = _load_json(Path(args.human_review), "human review")
+        review_kind = "human"
+    else:
+        review = _load_json(Path(args.semantic_review), "semantic review")
+        review_kind = "semantic"
+    errors = check_release_gate(benchmark, review, review_kind=review_kind)
     if errors:
         for error in errors:
             print(error, file=sys.stderr)
@@ -1778,7 +1845,9 @@ def build_parser() -> argparse.ArgumentParser:
         "check-release", help="enforce the v1.2 behavior release gate"
     )
     release_parser.add_argument("--benchmark", required=True)
-    release_parser.add_argument("--human-review", required=True)
+    release_review = release_parser.add_mutually_exclusive_group(required=True)
+    release_review.add_argument("--human-review")
+    release_review.add_argument("--semantic-review")
     release_parser.set_defaults(handler=check_release_command)
     return parser
 

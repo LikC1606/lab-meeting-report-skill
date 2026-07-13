@@ -538,6 +538,28 @@ http_headers = { Authorization = "must-not-load" }
         errors = check_release_gate(passing_benchmark, incomplete_review)
         self.assertIn("human review: expected 24/24", "\n".join(errors))
 
+    def test_release_gate_accepts_complete_inline_semantic_review(self) -> None:
+        benchmark = make_release_benchmark()
+        semantic_review = make_passing_semantic_review()
+
+        self.assertEqual(
+            check_release_gate(
+                benchmark, semantic_review, review_kind="semantic"
+            ),
+            [],
+        )
+
+        semantic_review["reports"][0]["unsupported_critical_claim"] = True
+        semantic_review["summary"]["unsupported_critical_claims"] = 1
+        semantic_review["summary"]["semantic_gate_passed"] = False
+        errors = check_release_gate(
+            benchmark, semantic_review, review_kind="semantic"
+        )
+        self.assertIn(
+            "candidate semantic failures: expected 0, got 1",
+            "\n".join(errors),
+        )
+
 
 def make_release_benchmark(
     *, candidate_failure: bool = False
@@ -614,6 +636,34 @@ def make_passing_human_review() -> dict[str, object]:
             for eval_id in range(1, 9)
         },
         "reviews": [],
+    }
+
+
+def make_passing_semantic_review() -> dict[str, object]:
+    reports = [
+        {
+            "case_id": f"case-{eval_id}",
+            "run_id": f"with_skill/run-{run_number}",
+            "deterministic_hard_pass": True,
+            "unsupported_critical_claim": False,
+            "finding": "No unsupported critical claim found.",
+        }
+        for eval_id in range(1, 9)
+        for run_number in range(1, 4)
+    ]
+    return {
+        "reviewer": {
+            "kind": "codex-inline-self-review",
+            "independent": False,
+            "manual_user_review": False,
+        },
+        "reports": reports,
+        "summary": {
+            "reports_reviewed": 24,
+            "deterministic_hard_passes": 24,
+            "unsupported_critical_claims": 0,
+            "semantic_gate_passed": True,
+        },
     }
 
 

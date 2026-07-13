@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 import math
 import re
@@ -125,6 +126,123 @@ def numeric_expectations(
     return expectations
 
 
+def normalize_text(text: str) -> str:
+    normalized = unicodedata.normalize("NFKC", text).replace("\\", "/")
+    return re.sub(r"\s+", " ", normalized).casefold()
+
+
+def term_rule_expectation(
+    prefix: str, rule: dict[str, object], normalized: str
+) -> Expectation:
+    missing = [
+        str(term)
+        for term in rule["all_of"]
+        if normalize_text(str(term)) not in normalized
+    ]
+    return Expectation(
+        f"{prefix}:{rule['id']}",
+        not missing,
+        "missing: " + ", ".join(missing)
+        if missing
+        else "all required terms found",
+    )
+
+
+def _token_positions(normalized: str, token: str) -> list[int]:
+    target = normalize_text(token)
+    return [match.start() for match in re.finditer(re.escape(target), normalized)]
+
+
+def conflict_expectation(
+    rule: dict[str, object], normalized: str
+) -> Expectation:
+    tokens = [
+        *[str(value) for value in rule["values"]],
+        *[str(value) for value in rule["source_tokens"]],
+    ]
+    position_groups = [_token_positions(normalized, token) for token in tokens]
+    for token, positions in zip(tokens, position_groups, strict=True):
+        if not positions:
+            return Expectation(
+                f"conflict:{rule['id']}",
+                False,
+                f"missing conflict token: {token}",
+            )
+    minimum_span = min(
+        max(combination) - min(combination)
+        for combination in itertools.product(*position_groups)
+    )
+    maximum = int(rule["max_distance"])
+    return Expectation(
+        f"conflict:{rule['id']}",
+        minimum_span <= maximum,
+        f"minimum conflict span: {minimum_span}; maximum: {maximum}",
+    )
+
+
+def semantic_expectations(
+    text: str, manifest: dict[str, object]
+) -> list[Expectation]:
+    normalized = normalize_text(text)
+    nfkc_text = unicodedata.normalize("NFKC", text)
+    expectations: list[Expectation] = []
+
+    for rule in manifest["required_evidence"]:
+        expectations.append(term_rule_expectation("evidence", rule, normalized))
+    for rule in manifest["negative_results"]:
+        expectations.append(term_rule_expectation("negative", rule, normalized))
+    for rule in manifest["skipped_sources"]:
+        expectations.append(term_rule_expectation("skipped", rule, normalized))
+    for rule in manifest["conflicts"]:
+        expectations.append(conflict_expectation(rule, normalized))
+
+    for rule in manifest["forbidden_patterns"]:
+        pattern = re.compile(str(rule["pattern"]), re.IGNORECASE)
+        match = pattern.search(normalized)
+        expectations.append(
+            Expectation(
+                f"forbidden:{rule['id']}",
+                match is None,
+                f"forbidden pattern found: {match.group(0)}"
+                if match
+                else "forbidden pattern absent",
+            )
+        )
+
+    for source in manifest["required_sources"]:
+        target = normalize_text(str(source))
+        expectations.append(
+            Expectation(
+                f"required-source:{source}",
+                target in normalized,
+                "source found" if target in normalized else "source missing",
+            )
+        )
+    for source in manifest["forbidden_sources"]:
+        target = normalize_text(str(source))
+        expectations.append(
+            Expectation(
+                f"forbidden-source:{source}",
+                target not in normalized,
+                "forbidden source absent"
+                if target not in normalized
+                else "forbidden source cited",
+            )
+        )
+    for marker in manifest["preservation_markers"]:
+        target = unicodedata.normalize("NFKC", str(marker))
+        expectations.append(
+            Expectation(
+                f"preserve:{marker}",
+                target in nfkc_text,
+                "preservation marker found"
+                if target in nfkc_text
+                else "preservation marker missing",
+            )
+        )
+    return expectations
+
+
 def build_grading(
     expectations: list[Expectation], text: str
 ) -> dict[str, object]:
@@ -148,7 +266,9 @@ def build_grading(
 
 
 def grade_text(text: str, manifest: dict[str, object]) -> dict[str, object]:
-    return build_grading(numeric_expectations(text, manifest), text)
+    expectations = numeric_expectations(text, manifest)
+    expectations.extend(semantic_expectations(text, manifest))
+    return build_grading(expectations, text)
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:

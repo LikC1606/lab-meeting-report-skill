@@ -281,6 +281,90 @@ class GradeReportTests(unittest.TestCase):
 
         self.assertTrue(grading["hard_pass"], grading)
 
+    def test_defined_markdown_citations_are_not_experimental_values(
+        self,
+    ) -> None:
+        report = (
+            "Macro-F1 was 0.757 [1, 2].\n\n"
+            "## Sources\n\n"
+            "1. `inputs/results.md`\n"
+            "2. `inputs/decision.md`\n"
+        )
+
+        grading = grade_text(report, manifest_with_required_ratio("0.757"))
+
+        self.assertTrue(grading["hard_pass"], grading)
+
+    def test_undefined_bracketed_number_fails_closed_world(self) -> None:
+        report = (
+            "Macro-F1 was 0.757 [9].\n\n"
+            "## Sources\n\n"
+            "1. `inputs/results.md`\n"
+        )
+
+        grading = grade_text(report, manifest_with_required_ratio("0.757"))
+
+        self.assert_expectation_failed(grading, "numeric-closed-world")
+
+    def test_defined_chinese_markdown_citation_is_not_numeric_value(
+        self,
+    ) -> None:
+        report = (
+            "Macro-F1 为 0.757 [1]。\n\n"
+            "## 相关文件与来源\n\n"
+            "1. `inputs/results.md`\n"
+        )
+
+        grading = grade_text(report, manifest_with_required_ratio("0.757"))
+
+        self.assertTrue(grading["hard_pass"], grading)
+
+    def test_inline_code_does_not_split_required_semantic_term(self) -> None:
+        manifest = base_manifest()
+        manifest["numbers"] = [
+            {
+                "id": "failed-seed",
+                "value": "29",
+                "unit": "seed",
+                "required": True,
+                "source": "inputs/note.md",
+            }
+        ]
+        manifest["negative_results"] = [
+            {
+                "id": "collapsed-seed",
+                "all_of": ["seed 29", "negative result"],
+            }
+        ]
+        report = "Seed `29` is retained as a negative result."
+
+        grading = grade_text(report, manifest)
+
+        self.assertTrue(grading["hard_pass"], grading)
+
+    def test_inline_code_does_not_mask_missing_semantic_term(self) -> None:
+        manifest = base_manifest()
+        manifest["numbers"] = [
+            {
+                "id": "failed-seed",
+                "value": "29",
+                "unit": "seed",
+                "required": True,
+                "source": "inputs/note.md",
+            }
+        ]
+        manifest["negative_results"] = [
+            {
+                "id": "collapsed-seed",
+                "all_of": ["seed 29", "negative result"],
+            }
+        ]
+        report = "Seed `28` is retained as a negative result."
+
+        grading = grade_text(report, manifest)
+
+        self.assert_expectation_failed(grading, "negative:collapsed-seed")
+
     def test_source_authority_wording_satisfies_conflict_boundary(self) -> None:
         case = CASES_ROOT / "conflicting-results"
         manifest = load_manifest(case / "manifest.json")

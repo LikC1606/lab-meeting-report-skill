@@ -45,13 +45,59 @@ def _is_hyphenated_technical_identifier(
     return re.search(r"[A-Za-z][A-Za-z0-9]*-$", prefix) is not None
 
 
+def _markdown_reference_labels(text: str) -> set[str]:
+    labels: set[str] = set()
+    in_reference_section = False
+    for line in text.splitlines():
+        heading = re.match(r"^#{1,6}\s+(.+?)\s*$", line)
+        if heading:
+            title = heading.group(1)
+            in_reference_section = (
+                re.match(
+                    r"(?:sources?|references?)(?:\s|$)",
+                    title,
+                    re.IGNORECASE,
+                )
+                is not None
+                or any(
+                    marker in title
+                    for marker in ("来源", "参考文献", "参考资料")
+                )
+            )
+            continue
+        if not in_reference_section:
+            continue
+        item = re.match(r"^\s*(\d+)[.)]\s+", line)
+        if item:
+            labels.add(item.group(1))
+    return labels
+
+
+def _defined_markdown_citation_spans(text: str) -> list[tuple[int, int]]:
+    labels = _markdown_reference_labels(text)
+    if not labels:
+        return []
+    spans: list[tuple[int, int]] = []
+    for citation in re.finditer(r"\[(\d+(?:\s*,\s*\d+)*)\]", text):
+        cited = set(re.findall(r"\d+", citation.group(1)))
+        if cited <= labels:
+            spans.append((citation.start(), citation.end()))
+    return spans
+
+
 def extract_numbers(text: str) -> list[tuple[str, Decimal]]:
     values: list[tuple[str, Decimal]] = []
     normalized = unicodedata.normalize("NFKC", text)
+    citation_spans = _defined_markdown_citation_spans(normalized)
     for match in NUMBER_RE.finditer(normalized):
         if _is_markdown_ordered_list_marker(
             normalized, match
         ) or _is_hyphenated_technical_identifier(normalized, match):
+            continue
+        if any(
+            start < match.start() and match.end() < end
+            for start, end in citation_spans
+        ):
             continue
         token = match.group(0).strip()
         raw_value = token.rstrip("% ")
@@ -145,7 +191,11 @@ def numeric_expectations(
 
 
 def normalize_text(text: str) -> str:
-    normalized = unicodedata.normalize("NFKC", text).replace("\\", "/")
+    normalized = (
+        unicodedata.normalize("NFKC", text)
+        .replace("\\", "/")
+        .replace("`", "")
+    )
     return re.sub(r"\s+", " ", normalized).casefold()
 
 

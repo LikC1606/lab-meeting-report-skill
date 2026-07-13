@@ -1,0 +1,90 @@
+name: Bug report
+description: Report a reproducible problem with installation or report generation
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Remove private research data, credentials, and Lark tokens before submitting.
+
+  - type: input
+    id: agent
+    attributes:
+      label: Host agent and version
+      placeholder: Codex, Claude Code, Cursor, or another Agent Skills host
+    validations:
+      required: true
+
+  - type: input
+    id: operating-system
+    attributes:
+      label: Operating system
+      placeholder: Windows 11, macOS 15, Ubuntu 24.04
+    validations:
+      required: true
+
+  - type: textarea
+    id: installation
+    attributes:
+      label: Installation method
+      description: Include the command or manual steps you used.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: input-type
+    attributes:
+      label: Input type
+      options:
+        - Pasted notes
+        - Markdown or text files
+        - PDF paper
+        - CSV or Excel results
+        - Images
+        - Feishu or Lark sources
+        - Mixed inputs
+    validations:
+      required: true
+
+  - type: dropdown
+    id: report-mode
+    attributes:
+      label: Report mode
+      options:
+        - Research progress
+        - Journal club or paper review
+        - Mixed progress and literature
+        - Automatic routing was incorrect
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs or output excerpt
+      description: Remove secrets, unpublished results, personal data, URLs with private tokens, and credentials.
+      render: shell
+
+  - type: checkboxes
+    id: sharing
+    attributes:
+      label: Data-sharing confirmation
+      options:
+        - label: I removed secrets and private research data from this issue.
+          required: true

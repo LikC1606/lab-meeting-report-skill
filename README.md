@@ -1,6 +1,10 @@
 # Lab Meeting Report Skill
 
+[![Validate skill](https://github.com/LikC1606/lab-meeting-report-skill/actions/workflows/validate-skill.yml/badge.svg)](https://github.com/LikC1606/lab-meeting-report-skill/actions/workflows/validate-skill.yml)
+
 Turn research notes, experiment results, papers, chats, and meeting transcripts into evidence-grounded Markdown reports for lab meetings and journal clubs. Optional Feishu/Lark publishing included.
+
+![Rendered research progress report example](assets/lab-meeting-report-preview.png)
 
 [中文说明](#中文说明)
 
@@ -17,7 +21,17 @@ Use it as a lab meeting report generator, research progress report writer, or jo
 - Safe updates to existing dated reports without silently deleting manual content
 - Optional, bounded Feishu/Lark source intake and cloud-document publishing
 
-The default output language is Simplified Chinese. Technical terms, model names, metrics, and citations remain in their precise original form.
+The output follows the language of your request unless you explicitly choose another language. Ambiguous mixed-language requests fall back to English. Technical terms, model names, metrics, and citations remain in their precise original form.
+
+## See Complete Examples
+
+All example data and paper notes are synthetic. Each pair shows the source material alongside the complete generated report.
+
+| Workflow | Input | Generated report |
+|---|---|---|
+| Research progress | [Input notes](examples/research-progress/input-notes.md) | [Report](examples/research-progress/report.md) |
+| Journal club | [Synthetic paper notes](examples/journal-club/input-notes.md) | [Report](examples/journal-club/report.md) |
+| Mixed progress and literature | [Combined notes](examples/mixed/input-notes.md) | [Report](examples/mixed/report.md) |
 
 ## Install
 
@@ -108,6 +122,13 @@ It does not silently switch to bot identity, overwrite an entire existing docume
 
 The repository follows the portable Agent Skills folder format and includes Codex interface metadata. File parsing and Lark operations depend on the tools available in the host agent environment.
 
+## Feedback And Contributions
+
+- Report a reproducible problem with the [Bug form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=bug_report.yml).
+- Propose a reusable improvement with the [Feature form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=feature_request.yml).
+- Share a synthetic or anonymized workflow through the [Example Submission form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=example_submission.yml).
+- Ask questions and compare research workflows in [Discussions](https://github.com/LikC1606/lab-meeting-report-skill/discussions).
+
 ## 中文说明
 
 `lab-meeting-report` 用于把实验记录、论文笔记、结果表格、图片、聊天和会议记录整理为可追溯的组会 Markdown 文档。
@@ -121,6 +142,13 @@ The repository follows the portable Agent Skills folder format and includes Code
 - 保留负面结果、冲突证据和来源信息
 - 默认生成 `reports/group-meeting/YYYY-MM-DD.md`
 - 可选读取飞书文档、指定聊天和妙记，并同步为飞书云文档
+- 输出语言默认跟随你的请求；明确指定语言时优先服从，无法判断时使用英文
+
+### 完整示例
+
+- [科研进展：输入](examples/research-progress/input-notes.md) / [生成报告](examples/research-progress/report.md)
+- [论文阅读：输入](examples/journal-club/input-notes.md) / [生成报告](examples/journal-club/report.md)
+- [进展与文献混合：输入](examples/mixed/input-notes.md) / [生成报告](examples/mixed/report.md)
 
 ### 安装
 
@@ -159,6 +187,8 @@ npx skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 - 不把推测写成事实
 - 不默认扫描全部飞书资源
 - 不静默覆盖或删除远程文档
+
+问题和使用讨论可进入 [GitHub Discussions](https://github.com/LikC1606/lab-meeting-report-skill/discussions)，Bug、功能建议和示例投稿请使用仓库的结构化 Issue 表单。
 
 ## License
 

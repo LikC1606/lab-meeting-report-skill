@@ -1,0 +1,58 @@
+name: Example submission
+description: Propose a synthetic or anonymized input/output example for the repository
+title: "[Example]: "
+body:
+  - type: dropdown
+    id: example-type
+    attributes:
+      label: Example type
+      options:
+        - Research progress
+        - Journal club or paper review
+        - Mixed progress and literature
+        - Feishu or Lark publishing
+    validations:
+      required: true
+
+  - type: dropdown
+    id: privacy
+    attributes:
+      label: Data status
+      options:
+        - Fully synthetic
+        - Anonymized with permission
+    validations:
+      required: true
+
+  - type: textarea
+    id: input
+    attributes:
+      label: Input notes or link
+      description: Do not submit unpublished, identifying, confidential, or proprietary content.
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Generated report or link
+    validations:
+      required: true
+
+  - type: textarea
+    id: demonstrates
+    attributes:
+      label: What this example demonstrates
+      description: Identify the workflow behavior or edge case that makes it useful.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: permission
+    attributes:
+      label: Publication permission
+      options:
+        - label: I have permission to publish this material under the repository's MIT license.
+          required: true
+        - label: This submission contains no credentials, private URLs, or identifying research data.
+          required: true

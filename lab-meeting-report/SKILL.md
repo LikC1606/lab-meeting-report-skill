@@ -5,7 +5,7 @@ description: Create or update evidence-grounded Markdown documents for lab meeti
 
 # Research Group Meeting Markdown Reports
 
-Create a real Markdown report grounded in the user's source material. Default to simplified Chinese and preserve precise English technical terms, model names, abbreviations, and metric names.
+Create a real Markdown report grounded in the user's source material. Choose the output language in this order: follow an explicit language request, otherwise match the language of the user's request, and use English only when a genuinely mixed-language request is ambiguous. Preserve precise technical terms, model names, abbreviations, metric names, equations, citations, and identifiers in their source form.
 
 ## Workflow
 
@@ -48,6 +48,7 @@ If routing remains ambiguous, prefer mixed mode and keep current-work evidence s
 ### 4. Draft the report
 
 - Use the selected reference as the structure, not as text to copy mechanically.
+- Treat Chinese headings in the reference templates as structural examples. Translate headings and labels into the selected report language while preserving their semantic order and evidence rules.
 - Target roughly 3-5 rendered pages, shortening sparse reports and expanding only when evidence requires it.
 - Put each conclusion next to its supporting evidence.
 - Use Markdown tables for useful numeric comparisons.

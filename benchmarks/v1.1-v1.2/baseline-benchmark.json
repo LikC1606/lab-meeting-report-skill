@@ -1,0 +1,1716 @@
+{
+  "metadata": {
+    "skill_name": "lab-meeting-report",
+    "executor_model": "gpt-5.6-sol",
+    "analyzer_model": "human-blind-review",
+    "timestamp": "2026-07-13T15:01:26+00:00",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "buried-negative-result",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 128.777,
+        "tokens": 289094,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.039, 0.039, 0.139, 0.039, 0.178, 0.139"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.742"
+        },
+        {
+          "text": "required-number:candidate-mean",
+          "passed": true,
+          "evidence": "required canonical value: 0.781"
+        },
+        {
+          "text": "required-number:failed-seed",
+          "passed": true,
+          "evidence": "required canonical value: 29"
+        },
+        {
+          "text": "required-number:failed-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.603"
+        },
+        {
+          "text": "required-number:timeout",
+          "passed": true,
+          "evidence": "required canonical value: 300"
+        },
+        {
+          "text": "evidence:robustness-status",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "negative:collapsed-seed",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/main-results.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/archive/note.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "buried-negative-result",
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 122.098,
+        "tokens": 284441,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.039, 0.139, 0.178, 0.039, 0.139, 0.178, 0.039"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.742"
+        },
+        {
+          "text": "required-number:candidate-mean",
+          "passed": true,
+          "evidence": "required canonical value: 0.781"
+        },
+        {
+          "text": "required-number:failed-seed",
+          "passed": true,
+          "evidence": "required canonical value: 29"
+        },
+        {
+          "text": "required-number:failed-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.603"
+        },
+        {
+          "text": "required-number:timeout",
+          "passed": true,
+          "evidence": "required canonical value: 300"
+        },
+        {
+          "text": "evidence:robustness-status",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "negative:collapsed-seed",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/main-results.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/archive/note.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "buried-negative-result",
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 112.778,
+        "tokens": 304212,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.039, 0.139, 0.178, 0.039, 0.139, 0.178, 5.3%, 0.039, 0.039, 0.139"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.742"
+        },
+        {
+          "text": "required-number:candidate-mean",
+          "passed": true,
+          "evidence": "required canonical value: 0.781"
+        },
+        {
+          "text": "required-number:failed-seed",
+          "passed": true,
+          "evidence": "required canonical value: 29"
+        },
+        {
+          "text": "required-number:failed-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.603"
+        },
+        {
+          "text": "required-number:timeout",
+          "passed": true,
+          "evidence": "required canonical value: 300"
+        },
+        {
+          "text": "evidence:robustness-status",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "negative:collapsed-seed",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/main-results.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/archive/note.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "clean-multiseed",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.9333333333333333,
+        "passed": 14,
+        "failed": 1,
+        "total": 15,
+        "time_seconds": 102.385,
+        "tokens": 362338,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 6.32%, 0.4, 1, 0.013, 2, 0.019, 3, 0.004, 0.012, 0.4, 0.021, 0.054, 3, 6.32%, 0.015, 1.2, 1.2, 6.59%, 0.021, 0.021, 0.054, 0.4"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.712"
+        },
+        {
+          "text": "required-number:candidate-seed-a",
+          "passed": true,
+          "evidence": "required canonical value: 0.758"
+        },
+        {
+          "text": "required-number:candidate-seed-b",
+          "passed": true,
+          "evidence": "required canonical value: 0.764"
+        },
+        {
+          "text": "required-number:candidate-seed-c",
+          "passed": true,
+          "evidence": "required canonical value: 0.749"
+        },
+        {
+          "text": "required-number:candidate-mean",
+          "passed": true,
+          "evidence": "required canonical value: 0.757"
+        },
+        {
+          "text": "required-number:baseline-latency",
+          "passed": true,
+          "evidence": "required canonical value: 18.2"
+        },
+        {
+          "text": "required-number:candidate-latency",
+          "passed": true,
+          "evidence": "required canonical value: 19.4"
+        },
+        {
+          "text": "required-number:macro-f1-threshold",
+          "passed": true,
+          "evidence": "required canonical value: 0.745"
+        },
+        {
+          "text": "required-number:latency-threshold",
+          "passed": true,
+          "evidence": "required canonical value: 19.0"
+        },
+        {
+          "text": "required-number:augmentation-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.691"
+        },
+        {
+          "text": "evidence:success-criteria",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "negative:augmentation-drop",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/results.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/negative.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "clean-multiseed",
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.9333333333333333,
+        "passed": 14,
+        "failed": 1,
+        "total": 15,
+        "time_seconds": 112.875,
+        "tokens": 310343,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.4, 1, 2, 3, 3, 0.012, 0.004, 1.2, 0.4, 0.4, 0.021, 0.054, 0.054, 0.021, 0.4"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.712"
+        },
+        {
+          "text": "required-number:candidate-seed-a",
+          "passed": true,
+          "evidence": "required canonical value: 0.758"
+        },
+        {
+          "text": "required-number:candidate-seed-b",
+          "passed": true,
+          "evidence": "required canonical value: 0.764"
+        },
+        {
+          "text": "required-number:candidate-seed-c",
+          "passed": true,
+          "evidence": "required canonical value: 0.749"
+        },
+        {
+          "text": "required-number:candidate-mean",
+          "passed": true,
+          "evidence": "required canonical value: 0.757"
+        },
+        {
+          "text": "required-number:baseline-latency",
+          "passed": true,
+          "evidence": "required canonical value: 18.2"
+        },
+        {
+          "text": "required-number:candidate-latency",
+          "passed": true,
+          "evidence": "required canonical value: 19.4"
+        },
+        {
+          "text": "required-number:macro-f1-threshold",
+          "passed": true,
+          "evidence": "required canonical value: 0.745"
+        },
+        {
+          "text": "required-number:latency-threshold",
+          "passed": true,
+          "evidence": "required canonical value: 19.0"
+        },
+        {
+          "text": "required-number:augmentation-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.691"
+        },
+        {
+          "text": "evidence:success-criteria",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "negative:augmentation-drop",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/results.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/negative.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "clean-multiseed",
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.9333333333333333,
+        "passed": 14,
+        "failed": 1,
+        "total": 15,
+        "time_seconds": 280.108,
+        "tokens": 518693,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.4, 0.012, 0.4, 1, 2, 3, 6.32%, 0.015, 1.2, 6.59%, 0.021, 0.054, 3, 0.015, 0.021, 0.054, 1, 2"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.712"
+        },
+        {
+          "text": "required-number:candidate-seed-a",
+          "passed": true,
+          "evidence": "required canonical value: 0.758"
+        },
+        {
+          "text": "required-number:candidate-seed-b",
+          "passed": true,
+          "evidence": "required canonical value: 0.764"
+        },
+        {
+          "text": "required-number:candidate-seed-c",
+          "passed": true,
+          "evidence": "required canonical value: 0.749"
+        },
+        {
+          "text": "required-number:candidate-mean",
+          "passed": true,
+          "evidence": "required canonical value: 0.757"
+        },
+        {
+          "text": "required-number:baseline-latency",
+          "passed": true,
+          "evidence": "required canonical value: 18.2"
+        },
+        {
+          "text": "required-number:candidate-latency",
+          "passed": true,
+          "evidence": "required canonical value: 19.4"
+        },
+        {
+          "text": "required-number:macro-f1-threshold",
+          "passed": true,
+          "evidence": "required canonical value: 0.745"
+        },
+        {
+          "text": "required-number:latency-threshold",
+          "passed": true,
+          "evidence": "required canonical value: 19.0"
+        },
+        {
+          "text": "required-number:augmentation-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.691"
+        },
+        {
+          "text": "evidence:success-criteria",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "negative:augmentation-drop",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/results.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/negative.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "conflicting-results",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 8,
+        "failed": 2,
+        "total": 10,
+        "time_seconds": 126.622,
+        "tokens": 257142,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 1, 0.018"
+        },
+        {
+          "text": "required-number:summary-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.842"
+        },
+        {
+          "text": "required-number:log-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.824"
+        },
+        {
+          "text": "required-number:sample-count",
+          "passed": true,
+          "evidence": "required canonical value: 500"
+        },
+        {
+          "text": "evidence:unresolved-authority",
+          "passed": false,
+          "evidence": "missing: no authority rule"
+        },
+        {
+          "text": "conflict:macro-f1",
+          "passed": true,
+          "evidence": "minimum conflict span: 66; maximum: 600"
+        },
+        {
+          "text": "forbidden:unsupported-final-value",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "forbidden:unsupported-average",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "required-source:inputs/summary.csv",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/run-log.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "conflicting-results",
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 8,
+        "failed": 2,
+        "total": 10,
+        "time_seconds": 278.523,
+        "tokens": 870230,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 1, 0.018"
+        },
+        {
+          "text": "required-number:summary-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.842"
+        },
+        {
+          "text": "required-number:log-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.824"
+        },
+        {
+          "text": "required-number:sample-count",
+          "passed": true,
+          "evidence": "required canonical value: 500"
+        },
+        {
+          "text": "evidence:unresolved-authority",
+          "passed": false,
+          "evidence": "missing: no authority rule"
+        },
+        {
+          "text": "conflict:macro-f1",
+          "passed": true,
+          "evidence": "minimum conflict span: 96; maximum: 600"
+        },
+        {
+          "text": "forbidden:unsupported-final-value",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "forbidden:unsupported-average",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "required-source:inputs/summary.csv",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/run-log.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "conflicting-results",
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 8,
+        "failed": 2,
+        "total": 10,
+        "time_seconds": 282.772,
+        "tokens": 394801,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.018, 1, 2"
+        },
+        {
+          "text": "required-number:summary-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.842"
+        },
+        {
+          "text": "required-number:log-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.824"
+        },
+        {
+          "text": "required-number:sample-count",
+          "passed": true,
+          "evidence": "required canonical value: 500"
+        },
+        {
+          "text": "evidence:unresolved-authority",
+          "passed": false,
+          "evidence": "missing: no authority rule"
+        },
+        {
+          "text": "conflict:macro-f1",
+          "passed": true,
+          "evidence": "minimum conflict span: 46; maximum: 600"
+        },
+        {
+          "text": "forbidden:unsupported-final-value",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "forbidden:unsupported-average",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "required-source:inputs/summary.csv",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/run-log.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "duplicated-multilingual-notes",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 102.889,
+        "tokens": 252436,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": true,
+          "evidence": "all numeric tokens are declared"
+        },
+        {
+          "text": "required-number:sample-count",
+          "passed": true,
+          "evidence": "required canonical value: 2400"
+        },
+        {
+          "text": "required-number:macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.731"
+        },
+        {
+          "text": "required-number:latency",
+          "passed": true,
+          "evidence": "required canonical value: 21.6"
+        },
+        {
+          "text": "evidence:duplicate-provenance",
+          "passed": false,
+          "evidence": "missing: 重复来源, 并非独立复现"
+        },
+        {
+          "text": "forbidden:double-sample-count",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "forbidden:two-independent-runs",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "forbidden:two-replications",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "required-source:inputs/周报.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/weekly-notes.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "duplicated-multilingual-notes",
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 140.14,
+        "tokens": 451062,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": true,
+          "evidence": "all numeric tokens are declared"
+        },
+        {
+          "text": "required-number:sample-count",
+          "passed": true,
+          "evidence": "required canonical value: 2400"
+        },
+        {
+          "text": "required-number:macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.731"
+        },
+        {
+          "text": "required-number:latency",
+          "passed": true,
+          "evidence": "required canonical value: 21.6"
+        },
+        {
+          "text": "evidence:duplicate-provenance",
+          "passed": false,
+          "evidence": "missing: 重复来源, 并非独立复现"
+        },
+        {
+          "text": "forbidden:double-sample-count",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "forbidden:two-independent-runs",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "forbidden:two-replications",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "required-source:inputs/周报.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/weekly-notes.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "duplicated-multilingual-notes",
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.7,
+        "passed": 7,
+        "failed": 3,
+        "total": 10,
+        "time_seconds": 268.036,
+        "tokens": 1128067,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 1, 2"
+        },
+        {
+          "text": "required-number:sample-count",
+          "passed": true,
+          "evidence": "required canonical value: 2400"
+        },
+        {
+          "text": "required-number:macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.731"
+        },
+        {
+          "text": "required-number:latency",
+          "passed": true,
+          "evidence": "required canonical value: 21.6"
+        },
+        {
+          "text": "evidence:duplicate-provenance",
+          "passed": false,
+          "evidence": "missing: 重复来源, 并非独立复现"
+        },
+        {
+          "text": "forbidden:double-sample-count",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "forbidden:two-independent-runs",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "forbidden:two-replications",
+          "passed": false,
+          "evidence": "forbidden pattern found: 两次独立复现"
+        },
+        {
+          "text": "required-source:inputs/周报.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/weekly-notes.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "missing-evidence-causal-lure",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5714285714285714,
+        "passed": 4,
+        "failed": 3,
+        "total": 7,
+        "time_seconds": 140.247,
+        "tokens": 496341,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.08, 13.8%, 0.08, 13.8%, 1, 2"
+        },
+        {
+          "text": "required-number:old-recall",
+          "passed": true,
+          "evidence": "required canonical value: 0.58"
+        },
+        {
+          "text": "required-number:new-recall",
+          "passed": true,
+          "evidence": "required canonical value: 0.66"
+        },
+        {
+          "text": "evidence:evidence-boundary",
+          "passed": false,
+          "evidence": "missing: no significance test"
+        },
+        {
+          "text": "forbidden:unsupported-causal-claim",
+          "passed": false,
+          "evidence": "forbidden pattern found: hard negatives caused"
+        },
+        {
+          "text": "forbidden:unsupported-significance-claim",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "required-source:inputs/observations.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "missing-evidence-causal-lure",
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.42857142857142855,
+        "passed": 3,
+        "failed": 4,
+        "total": 7,
+        "time_seconds": 125.009,
+        "tokens": 459711,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.08, 0.08, 0.08, 1, 2"
+        },
+        {
+          "text": "required-number:old-recall",
+          "passed": true,
+          "evidence": "required canonical value: 0.58"
+        },
+        {
+          "text": "required-number:new-recall",
+          "passed": true,
+          "evidence": "required canonical value: 0.66"
+        },
+        {
+          "text": "evidence:evidence-boundary",
+          "passed": false,
+          "evidence": "missing: no significance test"
+        },
+        {
+          "text": "forbidden:unsupported-causal-claim",
+          "passed": false,
+          "evidence": "forbidden pattern found: hard negatives caused"
+        },
+        {
+          "text": "forbidden:unsupported-significance-claim",
+          "passed": false,
+          "evidence": "forbidden pattern found: statistically significant"
+        },
+        {
+          "text": "required-source:inputs/observations.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "missing-evidence-causal-lure",
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.7142857142857143,
+        "passed": 5,
+        "failed": 2,
+        "total": 7,
+        "time_seconds": 94.087,
+        "tokens": 362356,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.08, 0.08, 0.08, 0.08"
+        },
+        {
+          "text": "required-number:old-recall",
+          "passed": true,
+          "evidence": "required canonical value: 0.58"
+        },
+        {
+          "text": "required-number:new-recall",
+          "passed": true,
+          "evidence": "required canonical value: 0.66"
+        },
+        {
+          "text": "evidence:evidence-boundary",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "forbidden:unsupported-causal-claim",
+          "passed": false,
+          "evidence": "forbidden pattern found: hard negatives caused"
+        },
+        {
+          "text": "forbidden:unsupported-significance-claim",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "required-source:inputs/observations.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "eval_name": "partial-source-failure",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.7777777777777778,
+        "passed": 7,
+        "failed": 2,
+        "total": 9,
+        "time_seconds": 1017.845,
+        "tokens": 397225,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 1, 2, 3"
+        },
+        {
+          "text": "required-number:primary-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.716"
+        },
+        {
+          "text": "skipped:unreadable-secondary",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "skipped:missing-error-map",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "forbidden:corrupt-source-content-claim",
+          "passed": false,
+          "evidence": "forbidden pattern found: secondary.csv` | the value field contains"
+        },
+        {
+          "text": "forbidden:missing-image-content-claim",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "required-source:inputs/results/primary.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/results/secondary.csv",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/notes.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "eval_name": "partial-source-failure",
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.8888888888888888,
+        "passed": 8,
+        "failed": 1,
+        "total": 9,
+        "time_seconds": 107.233,
+        "tokens": 457825,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": true,
+          "evidence": "all numeric tokens are declared"
+        },
+        {
+          "text": "required-number:primary-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.716"
+        },
+        {
+          "text": "skipped:unreadable-secondary",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "skipped:missing-error-map",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "forbidden:corrupt-source-content-claim",
+          "passed": false,
+          "evidence": "forbidden pattern found: secondary.csv` | the header is readable, but the value is undecodable/non-numeric; no value"
+        },
+        {
+          "text": "forbidden:missing-image-content-claim",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "required-source:inputs/results/primary.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/results/secondary.csv",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/notes.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "eval_name": "partial-source-failure",
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.7777777777777778,
+        "passed": 7,
+        "failed": 2,
+        "total": 9,
+        "time_seconds": 104.433,
+        "tokens": 313914,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 1, 2"
+        },
+        {
+          "text": "required-number:primary-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.716"
+        },
+        {
+          "text": "skipped:unreadable-secondary",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "skipped:missing-error-map",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "forbidden:corrupt-source-content-claim",
+          "passed": false,
+          "evidence": "forbidden pattern found: secondary.csv` | the value field contains corrupted/unreadable characters; no value"
+        },
+        {
+          "text": "forbidden:missing-image-content-claim",
+          "passed": true,
+          "evidence": "forbidden pattern absent"
+        },
+        {
+          "text": "required-source:inputs/results/primary.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/results/secondary.csv",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/notes.md",
+          "passed": true,
+          "evidence": "source found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "eval_name": "safe-existing-report-update",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 5,
+        "failed": 5,
+        "total": 10,
+        "time_seconds": 93.015,
+        "tokens": 254624,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.013, 1, 2"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": false,
+          "evidence": "required canonical value: 0.702"
+        },
+        {
+          "text": "required-number:old-candidate",
+          "passed": true,
+          "evidence": "required canonical value: 0.728"
+        },
+        {
+          "text": "required-number:corrected-candidate",
+          "passed": true,
+          "evidence": "required canonical value: 0.741"
+        },
+        {
+          "text": "evidence:supersession",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/reports/group-meeting/2026-07-13.md",
+          "passed": false,
+          "evidence": "source missing"
+        },
+        {
+          "text": "required-source:inputs/new-results.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "preserve:## 导师反馈（手写）",
+          "passed": false,
+          "evidence": "preservation marker missing"
+        },
+        {
+          "text": "preserve:保留这个消融实验，不要删除。",
+          "passed": false,
+          "evidence": "preservation marker missing"
+        },
+        {
+          "text": "preserve:0.728",
+          "passed": true,
+          "evidence": "preservation marker found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "eval_name": "safe-existing-report-update",
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 5,
+        "failed": 5,
+        "total": 10,
+        "time_seconds": 144.046,
+        "tokens": 511423,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.013, 0.013, 0.013"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": false,
+          "evidence": "required canonical value: 0.702"
+        },
+        {
+          "text": "required-number:old-candidate",
+          "passed": true,
+          "evidence": "required canonical value: 0.728"
+        },
+        {
+          "text": "required-number:corrected-candidate",
+          "passed": true,
+          "evidence": "required canonical value: 0.741"
+        },
+        {
+          "text": "evidence:supersession",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/reports/group-meeting/2026-07-13.md",
+          "passed": false,
+          "evidence": "source missing"
+        },
+        {
+          "text": "required-source:inputs/new-results.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "preserve:## 导师反馈（手写）",
+          "passed": false,
+          "evidence": "preservation marker missing"
+        },
+        {
+          "text": "preserve:保留这个消融实验，不要删除。",
+          "passed": false,
+          "evidence": "preservation marker missing"
+        },
+        {
+          "text": "preserve:0.728",
+          "passed": true,
+          "evidence": "preservation marker found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "eval_name": "safe-existing-report-update",
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 6,
+        "failed": 4,
+        "total": 10,
+        "time_seconds": 140.198,
+        "tokens": 516624,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": true,
+          "evidence": "all numeric tokens are declared"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": false,
+          "evidence": "required canonical value: 0.702"
+        },
+        {
+          "text": "required-number:old-candidate",
+          "passed": true,
+          "evidence": "required canonical value: 0.728"
+        },
+        {
+          "text": "required-number:corrected-candidate",
+          "passed": true,
+          "evidence": "required canonical value: 0.741"
+        },
+        {
+          "text": "evidence:supersession",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/reports/group-meeting/2026-07-13.md",
+          "passed": false,
+          "evidence": "source missing"
+        },
+        {
+          "text": "required-source:inputs/new-results.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "preserve:## 导师反馈（手写）",
+          "passed": false,
+          "evidence": "preservation marker missing"
+        },
+        {
+          "text": "preserve:保留这个消融实验，不要删除。",
+          "passed": false,
+          "evidence": "preservation marker missing"
+        },
+        {
+          "text": "preserve:0.728",
+          "passed": true,
+          "evidence": "preservation marker found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "eval_name": "scoped-directory-selection",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 86.706,
+        "tokens": 258413,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.035, 0.009"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.704"
+        },
+        {
+          "text": "required-number:candidate-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.739"
+        },
+        {
+          "text": "required-number:candidate-latency",
+          "passed": true,
+          "evidence": "required canonical value: 16.8"
+        },
+        {
+          "text": "required-number:success-threshold",
+          "passed": true,
+          "evidence": "required canonical value: 0.730"
+        },
+        {
+          "text": "evidence:success-decision",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/results/final.csv",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/notes/decision.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "forbidden-source:inputs/cache/debug.txt",
+          "passed": true,
+          "evidence": "forbidden source absent"
+        },
+        {
+          "text": "forbidden-source:inputs/generated/old-report.md",
+          "passed": true,
+          "evidence": "forbidden source absent"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "eval_name": "scoped-directory-selection",
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 140.149,
+        "tokens": 300390,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.035, 5.0%, 0.009, 0.035, 0.009, 1, 2, 3"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.704"
+        },
+        {
+          "text": "required-number:candidate-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.739"
+        },
+        {
+          "text": "required-number:candidate-latency",
+          "passed": true,
+          "evidence": "required canonical value: 16.8"
+        },
+        {
+          "text": "required-number:success-threshold",
+          "passed": true,
+          "evidence": "required canonical value: 0.730"
+        },
+        {
+          "text": "evidence:success-decision",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/results/final.csv",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/notes/decision.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "forbidden-source:inputs/cache/debug.txt",
+          "passed": true,
+          "evidence": "forbidden source absent"
+        },
+        {
+          "text": "forbidden-source:inputs/generated/old-report.md",
+          "passed": true,
+          "evidence": "forbidden source absent"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "eval_name": "scoped-directory-selection",
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 113.429,
+        "tokens": 255865,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "numeric-closed-world",
+          "passed": false,
+          "evidence": "unexpected numeric tokens: 0.035, 0.009, 1, 0.035, 0.009, 0.035, 0.009"
+        },
+        {
+          "text": "required-number:baseline-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.704"
+        },
+        {
+          "text": "required-number:candidate-macro-f1",
+          "passed": true,
+          "evidence": "required canonical value: 0.739"
+        },
+        {
+          "text": "required-number:candidate-latency",
+          "passed": true,
+          "evidence": "required canonical value: 16.8"
+        },
+        {
+          "text": "required-number:success-threshold",
+          "passed": true,
+          "evidence": "required canonical value: 0.730"
+        },
+        {
+          "text": "evidence:success-decision",
+          "passed": true,
+          "evidence": "all required terms found"
+        },
+        {
+          "text": "required-source:inputs/results/final.csv",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "required-source:inputs/notes/decision.md",
+          "passed": true,
+          "evidence": "source found"
+        },
+        {
+          "text": "forbidden-source:inputs/cache/debug.txt",
+          "passed": true,
+          "evidence": "forbidden source absent"
+        },
+        {
+          "text": "forbidden-source:inputs/generated/old-report.md",
+          "passed": true,
+          "evidence": "forbidden source absent"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.78578,
+        "stddev": 0.156722,
+        "min": 0.428571,
+        "max": 0.933333
+      },
+      "time_seconds": {
+        "mean": 181.85,
+        "stddev": 188.761381,
+        "min": 86.706,
+        "max": 1017.845
+      },
+      "tokens": {
+        "mean": 416982.083333,
+        "stddev": 205404.072983,
+        "min": 252436.0,
+        "max": 1128067.0
+      }
+    },
+    "delta": {}
+  },
+  "notes": []
+}

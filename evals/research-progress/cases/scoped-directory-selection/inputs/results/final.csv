@@ -1,0 +1,4 @@
+Synthetic example
+metric,baseline,candidate
+macro_f1,0.704,0.739
+candidate_latency_ms,,16.8

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "case_id": "safe-existing-report-update",
+  "layer": "end-to-end",
+  "language": "en",
+  "report_mode": "research-progress",
+  "task_file": "task.md",
+  "input_root": "inputs",
+  "expected_report": "reports/group-meeting/2026-07-13.md",
+  "numbers": [
+    {"id": "report-year", "value": "2026", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-month", "value": "7", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-day", "value": "13", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "baseline-macro-f1", "value": "0.702", "unit": "ratio", "required": true, "source": "inputs/reports/group-meeting/2026-07-13.md"},
+    {"id": "old-candidate", "value": "0.728", "unit": "ratio", "required": true, "source": "inputs/reports/group-meeting/2026-07-13.md"},
+    {"id": "corrected-candidate", "value": "0.741", "unit": "ratio", "required": true, "source": "inputs/new-results.md"}
+  ],
+  "derived_numbers": [],
+  "required_evidence": [
+    {"id": "supersession", "all_of": ["0.741", "supersedes", "0.728", "history"]}
+  ],
+  "negative_results": [],
+  "conflicts": [],
+  "forbidden_patterns": [],
+  "required_sources": ["inputs/reports/group-meeting/2026-07-13.md", "inputs/new-results.md"],
+  "forbidden_sources": [],
+  "skipped_sources": [],
+  "preservation_markers": ["## 导师反馈（手写）", "保留这个消融实验，不要删除。", "0.728"]
+}

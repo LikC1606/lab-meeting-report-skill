@@ -23,6 +23,11 @@ COMPOSITION_CASES = {
     "missing-evidence-causal-lure",
     "duplicated-multilingual-notes",
 }
+ALL_CASES = COMPOSITION_CASES | {
+    "scoped-directory-selection",
+    "safe-existing-report-update",
+    "partial-source-failure",
+}
 
 VALID_MANIFEST = {
     "schema_version": 1,
@@ -123,6 +128,15 @@ class ContractTests(unittest.TestCase):
         }
 
         self.assertEqual(loaded, COMPOSITION_CASES)
+
+    def test_complete_case_inventory_has_eight_unique_cases(self) -> None:
+        root = REPO_ROOT / "evals" / "research-progress" / "cases"
+        manifests = [
+            load_manifest(path) for path in iter_case_manifests(root)
+        ]
+
+        self.assertEqual({item["case_id"] for item in manifests}, ALL_CASES)
+        self.assertEqual(len(manifests), 8)
 
 
 if __name__ == "__main__":

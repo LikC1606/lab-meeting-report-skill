@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "case_id": "scoped-directory-selection",
+  "layer": "end-to-end",
+  "language": "en",
+  "report_mode": "research-progress",
+  "task_file": "task.md",
+  "input_root": "inputs",
+  "expected_report": "reports/group-meeting/2026-07-13.md",
+  "numbers": [
+    {"id": "report-year", "value": "2026", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-month", "value": "7", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-day", "value": "13", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "baseline-macro-f1", "value": "0.704", "unit": "ratio", "required": true, "source": "inputs/results/final.csv"},
+    {"id": "candidate-macro-f1", "value": "0.739", "unit": "ratio", "required": true, "source": "inputs/results/final.csv"},
+    {"id": "candidate-latency", "value": "16.8", "unit": "ms", "required": true, "source": "inputs/results/final.csv"},
+    {"id": "success-threshold", "value": "0.730", "unit": "ratio", "required": true, "source": "inputs/notes/decision.md"}
+  ],
+  "derived_numbers": [],
+  "required_evidence": [
+    {"id": "success-decision", "all_of": ["success criterion", "0.730", "exceeds"]}
+  ],
+  "negative_results": [],
+  "conflicts": [],
+  "forbidden_patterns": [],
+  "required_sources": ["inputs/results/final.csv", "inputs/notes/decision.md"],
+  "forbidden_sources": ["inputs/cache/debug.txt", "inputs/generated/old-report.md"],
+  "skipped_sources": [],
+  "preservation_markers": []
+}

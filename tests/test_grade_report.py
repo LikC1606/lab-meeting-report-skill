@@ -19,6 +19,11 @@ COMPOSITION_CASES = {
     "missing-evidence-causal-lure",
     "duplicated-multilingual-notes",
 }
+END_TO_END_CASES = {
+    "scoped-directory-selection",
+    "safe-existing-report-update",
+    "partial-source-failure",
+}
 
 
 def base_manifest() -> dict[str, object]:
@@ -296,6 +301,20 @@ class GradeReportTests(unittest.TestCase):
     def test_composition_fixture_valid_reports_pass(self) -> None:
         cases_root = REPO_ROOT / "evals" / "research-progress" / "cases"
         for case_id in sorted(COMPOSITION_CASES):
+            with self.subTest(case_id=case_id):
+                case_root = cases_root / case_id
+                manifest = load_manifest(case_root / "manifest.json")
+                report = (case_root / "expected-valid-report.md").read_text(
+                    encoding="utf-8"
+                )
+
+                grading = grade_text(report, manifest)
+
+                self.assertTrue(grading["hard_pass"], grading)
+
+    def test_end_to_end_fixture_valid_reports_pass(self) -> None:
+        cases_root = REPO_ROOT / "evals" / "research-progress" / "cases"
+        for case_id in sorted(END_TO_END_CASES):
             with self.subTest(case_id=case_id):
                 case_root = cases_root / case_id
                 manifest = load_manifest(case_root / "manifest.json")

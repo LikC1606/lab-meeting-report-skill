@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "case_id": "partial-source-failure",
+  "layer": "end-to-end",
+  "language": "en",
+  "report_mode": "research-progress",
+  "task_file": "task.md",
+  "input_root": "inputs",
+  "expected_report": "reports/group-meeting/2026-07-13.md",
+  "numbers": [
+    {"id": "report-year", "value": "2026", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-month", "value": "7", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "report-day", "value": "13", "unit": "metadata", "required": false, "source": "task.md"},
+    {"id": "primary-macro-f1", "value": "0.716", "unit": "ratio", "required": true, "source": "inputs/results/primary.md"}
+  ],
+  "derived_numbers": [],
+  "required_evidence": [],
+  "negative_results": [],
+  "conflicts": [],
+  "forbidden_patterns": [
+    {"id": "corrupt-source-content-claim", "pattern": "secondary\\.csv[^.\\n]{0,120}(?:reports|shows|contains|macro-f1|score|value)"},
+    {"id": "missing-image-content-claim", "pattern": "error-map\\.png[^.\\n]{0,120}(?:reports|shows|contains|score|value|error rate)"}
+  ],
+  "required_sources": ["inputs/results/primary.md", "inputs/results/secondary.csv", "inputs/notes.md"],
+  "forbidden_sources": [],
+  "skipped_sources": [
+    {"id": "unreadable-secondary", "all_of": ["inputs/results/secondary.csv", "unreadable"]},
+    {"id": "missing-error-map", "all_of": ["inputs/figures/error-map.png", "missing"]}
+  ],
+  "preservation_markers": []
+}

@@ -88,8 +88,14 @@ class RunBehaviorEvalTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temp_dir = tempfile.TemporaryDirectory()
         self.workspace = Path(self.temp_dir.name) / "workspace"
+        self.codex_version = patch(
+            "scripts.run_behavior_evals._codex_version",
+            return_value="codex-cli-test",
+        )
+        self.codex_version.start()
 
     def tearDown(self) -> None:
+        self.codex_version.stop()
         self.temp_dir.cleanup()
 
     def make_spec(self) -> RunSpec:

@@ -7,14 +7,17 @@ import tempfile
 import unittest
 from dataclasses import replace
 from pathlib import Path
+from unittest.mock import patch
 
 from scripts.eval_contract import ContractError, load_manifest
 from scripts.run_behavior_evals import (
+    ExecutionContext,
     RunSpec,
     aggregate_workspace,
     apply_human_review,
     build_prompt,
     check_release_gate,
+    execute_codex,
     hash_run_environment,
     parse_review_feedback,
     prepare_blind_review,
@@ -129,6 +132,27 @@ class RunBehaviorEvalTests(unittest.TestCase):
 
         self.assertEqual(result.infrastructure_status, "valid")
         self.assertIn("--skip-git-repo-check", executor.command)
+
+    def test_real_executor_closes_inherited_stdin(self) -> None:
+        context = ExecutionContext(
+            command=["codex", "exec", "synthetic"],
+            sandbox=Path(self.temp_dir.name),
+            last_message=Path(self.temp_dir.name) / "last-message.txt",
+            case_root=CASE_ROOT,
+            manifest=CASE_MANIFEST,
+            timeout_seconds=30,
+        )
+        completed = subprocess.CompletedProcess(
+            context.command, 0, stdout="", stderr=""
+        )
+
+        with patch(
+            "scripts.run_behavior_evals.subprocess.run",
+            return_value=completed,
+        ) as run:
+            execute_codex(context)
+
+        self.assertIs(run.call_args.kwargs["stdin"], subprocess.DEVNULL)
 
     def test_run_layout_is_skill_creator_compatible(self) -> None:
         result = run_with_retry(

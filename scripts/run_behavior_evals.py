@@ -253,6 +253,7 @@ def execute_codex(
     return subprocess.run(
         context.command,
         cwd=context.sandbox,
+        stdin=subprocess.DEVNULL,
         timeout=context.timeout_seconds,
         capture_output=True,
         text=True,

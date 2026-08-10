@@ -22,6 +22,13 @@ python -m unittest discover -s tests -v
 python scripts/validate_repo.py .
 ```
 
+To regenerate the deterministic README preview after changing its example content:
+
+```bash
+python -m pip install reportlab pymupdf
+python scripts/render_preview.py
+```
+
 The validator checks the portable skill layout, metadata, public examples, evaluation assets, release benchmark, UTF-8 safety, and blocked secret patterns.
 
 Do not run the behavior benchmark unless your change requires a new model-based evaluation. The checked-in unit tests and repository validator do not call external model APIs.

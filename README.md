@@ -5,13 +5,15 @@
 [![GitHub release](https://img.shields.io/github/v/release/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 
-Turn scattered experiment notes, results, and papers into a dated Markdown report that keeps negative results, uncertainty, and source paths visible.
+Turn scattered experiment notes, CSV results, and paper notes into a decision-ready Markdown report without hiding failures or inventing missing evidence.
 
 Use `lab-meeting-report` for research progress reports, journal club notes, experiment retrospectives, or a combined progress-and-literature report. Optional Feishu/Lark intake and publishing are available when the host environment provides the required tools.
 
-![Rendered research progress report example](assets/lab-meeting-report-preview.png)
+![Raw research files transformed into an evidence-grounded report with traceable results, a retained failed experiment, and an explicit decision boundary](assets/lab-meeting-report-preview.png)
 
 [中文文档](README.zh-CN.md) | [Complete examples](#complete-examples) | [Measured quality](#measured-quality) | [Contributing](CONTRIBUTING.md)
+
+If this saves a lab-meeting preparation cycle, [star the repository](https://github.com/LikC1606/lab-meeting-report-skill) so other researchers can find it.
 
 ## Start Here
 

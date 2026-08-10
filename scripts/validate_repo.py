@@ -109,6 +109,17 @@ SPARSE_REPORT_GUARD_TERM = (
     "For sparse source material, target 1-2 rendered pages."
 )
 DEFAULT_PRIORITY_PATTERN = re.compile(r"\|\s*P[0-9]+\s*\|")
+PREVIEW_SOURCE = Path("scripts/render_preview.py")
+PREVIEW_REQUIRED_TERMS = {
+    "Expected outcome: not supplied",
+    "The sources do not provide a priority rule.",
+    "From scattered notes to an evidence-grounded decision",
+}
+PREVIEW_STALE_TERMS = {
+    "Complete 75 manual reviews",
+    "P0",
+    "P1",
+}
 EVAL_CASE_IDS = {
     "clean-multiseed",
     "conflicting-results",
@@ -224,6 +235,20 @@ def validate_png(path: Path, errors: list[str]) -> None:
         errors.append(
             f"Unexpected preview dimensions: {width}x{height}; expected 1440x960"
         )
+
+
+def validate_preview_source(root: Path, errors: list[str]) -> None:
+    path = root / PREVIEW_SOURCE
+    if not path.is_file():
+        errors.append(f"Missing preview source: {PREVIEW_SOURCE.as_posix()}")
+        return
+    text = read_utf8(path)
+    for term in sorted(PREVIEW_REQUIRED_TERMS):
+        if term not in text:
+            errors.append(f"Preview source missing current evidence guard: {term}")
+    for term in sorted(PREVIEW_STALE_TERMS):
+        if term in text:
+            errors.append(f"Preview source contains stale generated claim: {term}")
 
 
 def validate_example_numbers(root: Path, errors: list[str]) -> None:
@@ -661,6 +686,7 @@ def validate_repo(root: Path) -> list[str]:
 
     validate_example_numbers(root, errors)
 
+    validate_preview_source(root, errors)
     validate_png(root / "assets" / "lab-meeting-report-preview.png", errors)
     validate_evaluation_assets(root, errors)
     validate_candidate_selection(root, errors)

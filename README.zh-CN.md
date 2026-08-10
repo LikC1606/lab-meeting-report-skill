@@ -5,13 +5,15 @@
 [![GitHub release](https://img.shields.io/github/v/release/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 
-把散落的实验记录、结果和论文笔记整理为带日期的 Markdown 组会报告，同时保留失败实验、不确定性和来源路径。
+把散落的实验记录、CSV 结果和论文笔记整理为可用于决策的 Markdown 组会报告，同时不隐藏失败实验，也不编造缺失证据。
 
 `lab-meeting-report` 适用于科研进展汇报、Journal Club、实验复盘，以及把当前结果和文献证据放在一起分析的混合报告。宿主环境提供所需工具时，还可以按明确范围读取或发布飞书/Lark 内容。
 
-![科研进展报告渲染示例](assets/lab-meeting-report-preview.png)
+![原始科研文件被整理为证据可追溯的组会报告，同时保留失败实验和明确的决策边界](assets/lab-meeting-report-preview.png)
 
 [English](README.md) | [完整示例](#完整示例) | [质量评测](#质量评测) | [参与贡献](CONTRIBUTING.md)
+
+如果它帮你节省了一次组会准备时间，可以给[这个仓库加 Star](https://github.com/LikC1606/lab-meeting-report-skill)，让更多研究者找到它。
 
 ## 快速开始
 

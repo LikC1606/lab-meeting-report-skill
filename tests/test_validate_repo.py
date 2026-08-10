@@ -105,6 +105,29 @@ class ValidateRepoTests(unittest.TestCase):
                 (result.stdout + result.stderr).lower(),
             )
 
+    def test_stale_preview_claim_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            preview = fixture / "scripts" / "render_preview.py"
+            content = preview.read_text(encoding="utf-8")
+            preview.write_text(
+                content.replace(
+                    "The sources do not provide a priority rule.",
+                    "Complete 75 manual reviews",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "stale generated claim",
+                (result.stdout + result.stderr).lower(),
+            )
+
     def test_missing_example_source_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"

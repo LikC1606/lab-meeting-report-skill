@@ -1,7 +1,7 @@
 # Lab Meeting Report
 
 [![Validate skill](https://github.com/LikC1606/lab-meeting-report-skill/actions/workflows/validate-skill.yml/badge.svg)](https://github.com/LikC1606/lab-meeting-report-skill/actions/workflows/validate-skill.yml)
-[![skills.sh installs](https://skills.sh/b/LikC1606/lab-meeting-report-skill)](https://skills.sh/LikC1606/lab-meeting-report-skill)
+[![skills.sh listing](https://skills.sh/b/LikC1606/lab-meeting-report-skill)](https://skills.sh/LikC1606/lab-meeting-report-skill)
 [![GitHub release](https://img.shields.io/github/v/release/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 
@@ -35,7 +35,7 @@ On Windows PowerShell, use `npx.cmd`:
 npx.cmd skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 ```
 
-The installer requires Node.js and `npx`. You can also inspect the skill, install count, and security audits on [skills.sh](https://skills.sh/LikC1606/lab-meeting-report-skill/lab-meeting-report).
+The installer requires Node.js and `npx`. You can also inspect the published skill content on [skills.sh](https://skills.sh/LikC1606/lab-meeting-report-skill/lab-meeting-report).
 
 Then give your agent a concrete source and outcome:
 

@@ -7,15 +7,12 @@ Use this structure for experiment, implementation, or project-centered group-mee
 
 > 日期：<日期>｜汇报人：<姓名或待补充>｜报告类型：科研进展｜项目/方向：<项目或方向>
 
-## 本次摘要
+## 决策快照
 
-- 核心进展：<最重要的已验证变化>
-- 当前判断：<解释或假设，并明确其性质>
-- 下一步：<关键验证动作>
-
-## 需要讨论或决策的事项
-
-1. <问题、已知选项、希望获得的决定>
+- **当前状态：** <阶段结论及关键边界；核心数值放在最强证据中>
+- **需要决策：** <具体选择、阻塞或开放问题；来源未提出时明确说明>
+- **最强证据：** <与决策直接相关的主张>（来源：<路径及章节、表格或行号>）
+- **下一步：** <动作>；产物：<文件、结果或实验>；成功判据：<可判断标准>
 
 ## 研究目标与当前假设
 
@@ -87,6 +84,10 @@ Use this structure for experiment, implementation, or project-centered group-mee
 Writing rules:
 
 - Report outcomes rather than activity alone.
+- Keep the four decision-snapshot fields in their defined order and localize their labels to the report language.
+- If no decision was supplied, state that directly and surface the strongest blocker or open question without creating a false choice.
+- Keep a requested choice open unless the source or user supplies a decision; label any generated recommendation as a recommendation.
+- Avoid repeating the same metric in the decision snapshot, evidence table, and analysis unless each occurrence adds a distinct decision-relevant meaning.
 - Preserve negative results because they constrain the next decision.
 - Compare results with a baseline or prior state when the source permits it.
 - Do not imply statistical significance without supplied evidence.

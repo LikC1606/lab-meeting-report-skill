@@ -1,4 +1,4 @@
 interface:
   display_name: "Lab Meeting Report"
   short_description: "Create evidence-grounded lab meeting and research progress reports"
-  default_prompt: "Use $lab-meeting-report to create an evidence-grounded Markdown report for my lab meeting from local or Lark sources."
+  default_prompt: "Use $lab-meeting-report to turn my scoped research notes and results into a dated Markdown report with a decision summary, evidence table, failures, blockers, and next actions."

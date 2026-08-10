@@ -4,12 +4,12 @@
 
 > Date: 2026-07-12 | Report type: Mixed | Topic: Retrieval for imbalanced intent classification
 
-## Summary
+## Decision Snapshot
 
-- Current results improved macro-F1 from 0.712 to 0.757 and rare-class recall from 0.54 to 0.62.
-- A fictional paper reports a similar macro-F1 direction, 0.70 to 0.77, but uses balanced classes and retrieval without a reranker.
-- The two results are not directly comparable because class balance, model components, and latency reporting differ.
-- The next experiment should isolate retrieval by removing the reranker and measuring rare-class recall over three seeds.
+- **Current status:** The current retrieval-plus-reranker result improves the supplied macro-F1 and rare-class recall, while the paper uses balanced classes and retrieval without a reranker; the conditions are not directly comparable (sources: `results/current_experiment.csv`, `papers/synthetic-balanced-retrieval.md`).
+- **Decision needed:** What experiment can test whether retrieval, rather than the reranker or class balance, explains the current rare-class recall gain?
+- **Strongest evidence:** The current comparison changes retrieval and the reranker together, whereas the paper's result changes retrieval under balanced classes; neither source isolates the current mechanism (sources: `results/current_experiment.csv`, `papers/synthetic-balanced-retrieval.md`).
+- **Next action:** Run retrieval without the reranker under the same seed protocol; artifact: `results/retrieval_only.csv`; success criterion: record macro-F1, rare-class recall, and median latency under controlled conditions.
 
 ## Current Research Progress
 

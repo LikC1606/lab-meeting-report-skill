@@ -108,6 +108,31 @@ UNSUPPLIED_EXPECTATION_GUARD_TERM = (
 SPARSE_REPORT_GUARD_TERM = (
     "For sparse source material, target 1-2 rendered pages."
 )
+INPUT_CONTRACT_GUARD_TERM = (
+    "Accept a natural-language request without forcing the user to fill a form."
+)
+OUTPUT_CONTRACT_GUARD_TERM = (
+    "Make the first screen decision-useful: summarize the current state"
+)
+MISSING_SOURCE_GUARD_TERM = (
+    "If no usable source or explicit source scope is available"
+)
+DECISION_SNAPSHOT_GUARD_TERM = (
+    "begin the report body with a localized decision snapshot"
+)
+DECISION_SNAPSHOT_FIELDS = {
+    "**当前状态：**",
+    "**需要决策：**",
+    "**最强证据：**",
+    "**下一步：**",
+}
+EXAMPLE_DECISION_SNAPSHOT_FIELDS = {
+    "## Decision Snapshot",
+    "**Current status:**",
+    "**Decision needed:**",
+    "**Strongest evidence:**",
+    "**Next action:**",
+}
 DEFAULT_PRIORITY_PATTERN = re.compile(r"\|\s*P[0-9]+\s*\|")
 PREVIEW_SOURCE = Path("scripts/render_preview.py")
 PREVIEW_REQUIRED_TERMS = {
@@ -608,6 +633,41 @@ def validate_repo(root: Path) -> list[str]:
                 "Missing sparse-report length guard: "
                 f"{SPARSE_REPORT_GUARD_TERM}"
             )
+        if INPUT_CONTRACT_GUARD_TERM not in skill_text:
+            errors.append(
+                "Missing input-contract guard: "
+                f"{INPUT_CONTRACT_GUARD_TERM}"
+            )
+        if OUTPUT_CONTRACT_GUARD_TERM not in skill_text:
+            errors.append(
+                "Missing output-contract guard: "
+                f"{OUTPUT_CONTRACT_GUARD_TERM}"
+            )
+        if MISSING_SOURCE_GUARD_TERM not in skill_text:
+            errors.append(
+                "Missing source-required guard: "
+                f"{MISSING_SOURCE_GUARD_TERM}"
+            )
+        if DECISION_SNAPSHOT_GUARD_TERM not in skill_text:
+            errors.append(
+                "Missing decision-snapshot guard: "
+                f"{DECISION_SNAPSHOT_GUARD_TERM}"
+            )
+
+    for path in (
+        skill_root / "references" / "progress-report.md",
+        skill_root / "references" / "paper-review.md",
+        skill_root / "references" / "mixed-report.md",
+    ):
+        if not path.is_file():
+            continue
+        template_text = read_utf8(path)
+        for field in sorted(DECISION_SNAPSHOT_FIELDS):
+            if field not in template_text:
+                errors.append(
+                    "Missing decision-snapshot field in "
+                    f"{path.relative_to(root).as_posix()}: {field}"
+                )
 
     for path in (
         skill_root / "references" / "progress-report.md",
@@ -668,6 +728,13 @@ def validate_repo(root: Path) -> list[str]:
             continue
         if "Synthetic example" not in text:
             errors.append(f"Example lacks Synthetic example label: {relative.as_posix()}")
+        if path.name == "report.md":
+            for field in sorted(EXAMPLE_DECISION_SNAPSHOT_FIELDS):
+                if field not in text:
+                    errors.append(
+                        "Example report missing decision-snapshot field in "
+                        f"{relative.as_posix()}: {field}"
+                    )
 
     for relative in sorted(EXAMPLE_SOURCE_FILES):
         path = root / relative

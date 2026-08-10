@@ -4,12 +4,12 @@
 
 > Date: 2026-07-12 | Report type: Journal club | Topic: Low-resource intent retrieval
 
-## Summary
+## Decision Snapshot
 
-- The supplied notes report an in-domain macro-F1 increase from 0.68 to 0.74 over five seeds.
-- Removing hard-negative mining reduced the reported score to 0.70, supporting but not isolating its contribution.
-- Cross-domain macro-F1 increased from 0.61 to 0.65, but the notes do not describe domain balance or uncertainty.
-- Reproducibility is limited because data, code, complete hyperparameters, and compute cost are unavailable.
+- **Current status:** The notes report higher in-domain macro-F1 for the proposed method (0.74 versus 0.68 over five seeds) and leave uncertainty and reproducibility boundaries unresolved (source: `papers/synthetic-retrieval-notes.md`).
+- **Decision needed:** No decision was supplied in the source notes; the relevance or reproduction decision remains to be specified.
+- **Strongest evidence:** Removing hard-negative mining reduced in-domain macro-F1 from 0.74 to 0.70, which supports a contribution but does not isolate all interactions (source: `papers/synthetic-retrieval-notes.md`, ablation notes).
+- **Next action:** Verify the reproduction prerequisites before transferring the method; artifact: a checked dataset/code/parameter inventory; success criterion: each required item is either available or explicitly documented as unavailable.
 
 ## Paper Information And One-Sentence Contribution
 

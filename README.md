@@ -44,11 +44,24 @@ Use $lab-meeting-report to read this week's experiment notes and results,
 then create a lab meeting report with failures, blockers, and next steps.
 ```
 
+The minimum input is a source. The skill can infer the mode, language, date, and destination. If no usable source is available, it asks once instead of treating the stated goal as experimental evidence.
+
+For repeatable requests, add the goal, scoped sources, report mode, and output preference:
+
+```text
+Goal: decide whether the new run is ready for the next experiment
+Sources: ./notes ./results/*.csv
+Mode: research progress
+Output: English, brief, reports/group-meeting/2026-08-11.md
+```
+
 The default output is a real file, not a chat-only outline:
 
 ```text
 reports/group-meeting/YYYY-MM-DD.md
 ```
+
+The first screen always answers four questions: current status, decision needed, strongest evidence and its source, and next action. With sparse input or `brief` detail, the report keeps only that snapshot, necessary evidence, negative results or blockers, next actions, and sources.
 
 ## Why This Skill
 

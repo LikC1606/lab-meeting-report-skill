@@ -386,6 +386,118 @@ class ValidateRepoTests(unittest.TestCase):
                 (result.stdout + result.stderr).lower(),
             )
 
+    def test_input_contract_guard_is_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            skill_file = fixture / "lab-meeting-report" / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(
+                content.replace(
+                    "Accept a natural-language request without forcing the user to fill a form.",
+                    "Accept a request without forcing a form.",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "input-contract guard",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_output_contract_guard_is_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            skill_file = fixture / "lab-meeting-report" / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(
+                content.replace(
+                    "Make the first screen decision-useful: summarize the current state",
+                    "Make the report useful:",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "output-contract guard",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_source_required_guard_is_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            skill_file = fixture / "lab-meeting-report" / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(
+                content.replace(
+                    "If no usable source or explicit source scope is available",
+                    "If source material is unavailable",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "source-required guard",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_decision_snapshot_template_fields_are_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            template = (
+                fixture
+                / "lab-meeting-report"
+                / "references"
+                / "paper-review.md"
+            )
+            content = template.read_text(encoding="utf-8")
+            template.write_text(
+                content.replace("**最强证据：**", "**关键结果：**", 1),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "decision-snapshot field",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_decision_snapshot_example_fields_are_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            report = fixture / "examples" / "mixed" / "report.md"
+            content = report.read_text(encoding="utf-8")
+            report.write_text(
+                content.replace("**Decision needed:**", "**Open question:**", 1),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "example report missing decision-snapshot field",
+                (result.stdout + result.stderr).lower(),
+            )
+
     def test_unsupplied_expectation_guard_is_required(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"

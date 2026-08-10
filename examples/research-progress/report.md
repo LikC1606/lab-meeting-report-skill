@@ -4,16 +4,12 @@
 
 > Date: 2026-07-12 | Report type: Research progress | Project: Low-resource intent classification
 
-## Summary
+## Decision Snapshot
 
-- **Validated progress:** class-aware retrieval plus a reranker increased mean macro-F1 from 0.712 to 0.757 across three seeds.
-- **Cost:** median latency increased from 18.2 ms to 19.4 ms, a 6.6% increase that remains inside the 10% project limit.
-- **Negative result:** class-wide paraphrase augmentation reduced macro-F1 to 0.691, with the largest precision loss on rare classes.
-- **Next decision:** test retrieval without the reranker before attributing the gain to either component.
-
-## Decision Requested
-
-The next cycle must decide between the latency ablation and completion of the manual error review. The ablation directly tests whether retrieval alone meets the supplied macro-F1 and latency criteria. Only 45 of 120 predictions are currently reviewed, so the manual analysis cannot yet support a failure taxonomy. The sources do not provide a priority rule.
+- **Current status:** The combined retrieval-plus-reranker system reached mean macro-F1 0.757 across three seeds with 19.4 ms median latency (sources: `results/retrieval_reranker.csv`, `examples/research-progress/input-notes.md`).
+- **Decision needed:** Choose between the latency ablation and completing the manual error review. The source notes provide no priority rule.
+- **Strongest evidence:** The combined result is above the supplied 0.712 baseline, but retrieval and reranking were changed together, so attribution remains unresolved (sources: `results/baseline.csv`, `results/retrieval_reranker.csv`).
+- **Next action:** Run retrieval without the reranker over three seeds; artifact: `results/retrieval_only.csv`; success criterion: mean macro-F1 at least 0.745 and median latency no more than 19.0 ms.
 
 ## Objective And Current Hypothesis
 

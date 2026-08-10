@@ -7,15 +7,12 @@ Use this structure for paper-reading, journal-club, or literature-centered group
 
 > 日期：<日期>｜汇报人：<姓名或待补充>｜报告类型：论文阅读｜项目/方向：<相关方向>
 
-## 本次摘要
+## 决策快照
 
-- 一句话贡献：<论文解决了什么问题，提供了什么证据>
-- 可信度判断：<主要依据与边界>
-- 对当前研究的价值：<可复用方法、证据或警示>
-
-## 需要讨论或决策的事项
-
-1. <需要组内判断的问题及备选方案>
+- **当前状态：** <论文的核心主张、证据强度及最重要边界；核心数值放在最强证据中>
+- **需要决策：** <是否复用、复现或继续阅读；来源未提出时明确说明>
+- **最强证据：** <支撑核心主张的结果>（来源：<图、表、章节或笔记路径>）
+- **下一步：** <动作>；产物：<复现结果、评审记录或方案>；成功判据：<可判断标准>
 
 ## 论文信息与一句话贡献
 
@@ -94,6 +91,10 @@ Use this structure for paper-reading, journal-club, or literature-centered group
 ```
 
 Writing rules:
+- Keep the four decision-snapshot fields in their defined order and localize their labels to the report language.
+- Include the paper's most important limitation in `当前状态`; do not imply that reuse or reproduction was requested when no such decision was supplied.
+- Keep a requested relevance or reproduction choice open unless the source or user supplies a decision; label any generated recommendation as a recommendation.
+- Avoid repeating the same result in the decision snapshot, key-results table, and limitations unless each occurrence adds a distinct evaluation.
 - Tie every major claim to a figure, table, section, or quoted source note.
 - Separate the authors' claim from the reporter's evaluation.
 - Do not describe novelty as established without a supported comparison to prior work.

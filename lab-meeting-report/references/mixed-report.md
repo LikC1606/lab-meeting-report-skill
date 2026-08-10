@@ -7,16 +7,12 @@ Use this structure when current research progress and literature evidence both m
 
 > 日期：<日期>｜汇报人：<姓名或待补充>｜报告类型：进展与文献混合｜项目/方向：<项目或方向>
 
-## 本次摘要
+## 决策快照
 
-- 当前进展：<最重要的实验或项目结果>
-- 文献启发：<最相关且有证据支持的启发>
-- 假设变化：<保留、修正或否定了什么>
-- 下一步：<最关键的验证动作>
-
-## 需要讨论或决策的事项
-
-1. <需要决定的问题、证据与选项>
+- **当前状态：** <当前研究与文献的关系及边界；核心数值放在最强证据中>
+- **需要决策：** <需要决定的问题；来源未提出时明确说明>
+- **最强证据：** <当前证据与文献证据中最影响决策的主张>（来源：<各自的路径及定位>）
+- **下一步：** <验证动作>；产物：<结果或文件>；成功判据：<可判断标准>
 
 ## 当前研究进展
 
@@ -75,6 +71,10 @@ Do not collapse a correlation in the paper and a causal claim in the current wor
 
 Writing rules:
 
+- Keep the four decision-snapshot fields in their defined order and localize their labels to the report language.
+- Keep current-work and literature provenance separate even when both appear in the strongest-evidence field.
+- Keep a requested choice open unless the source or user supplies a decision; label any generated recommendation as a recommendation.
+- Avoid repeating the same metric in the decision snapshot, evidence map, and hypothesis update unless each occurrence adds a distinct decision-relevant meaning.
 - Attribute current-work evidence and literature evidence separately before synthesizing them.
 - State whether conditions, datasets, metrics, and populations are comparable.
 - Treat literature-inspired explanations as hypotheses until directly tested.

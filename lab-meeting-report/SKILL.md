@@ -7,6 +7,45 @@ description: Create evidence-grounded lab meeting reports, research progress rep
 
 Create a real Markdown report grounded in the user's source material. Choose the output language in this order: follow an explicit language request, otherwise match the language of the user's request, and use English only when a genuinely mixed-language request is ambiguous. Preserve precise technical terms, model names, abbreviations, metric names, equations, citations, and identifiers in their source form.
 
+## Input contract
+
+Accept a natural-language request without forcing the user to fill a form. Extract these fields when supplied:
+
+- **Goal or decision:** what the group needs to understand or decide;
+- **Sources:** explicitly scoped files, pasted notes, figures, paper excerpts, or Feishu/Lark resources;
+- **Report mode:** research progress, paper review, or mixed;
+- **Output preferences:** language, reporting date, audience (`组会`, `导师`, or `归档`), detail (`brief`, `standard`, or `audit`), and destination path.
+
+Treat the source scope as the only required input. Pasted material counts as a source; resolve relative paths and globs against the active project. If no usable source or explicit source scope is available, ask one focused question requesting the source and do not draft evidence claims. A goal by itself is not evidence.
+
+Use these defaults when the user leaves optional fields unspecified: infer the mode from the evidence, use the current local date, match the request language, write to `reports/group-meeting/YYYY-MM-DD.md`, and use `standard` detail. Treat `简报` as `brief`, `标准` as `standard`, and `审计` or `追溯` as `audit`. For sparse sources, use `brief` behavior automatically. Ask at most one other focused clarification question, and only when the missing answer would change the report's conclusions or safety; otherwise mark the gap as `待补充` and continue. Do not make the user repeat information already present in the request or sources.
+
+For a repeatable request, this compact shape is sufficient:
+
+```text
+目标/需决策：<问题>
+来源：<文件或目录>
+报告类型：<科研进展 | 论文阅读 | 混合>
+输出：<语言、详细程度、目标路径，可省略>
+```
+
+## Output contract
+
+Create a validated Markdown file, not only a chat response. After the title and metadata, begin the report body with a localized decision snapshot containing these fields in this order:
+
+1. **Current status:** the most important supported state or result;
+2. **Decision needed:** the concrete choice, blocker, or open question; if none was supplied, say so instead of inventing one;
+3. **Strongest evidence:** the decision-relevant claim plus its source path and precise locator when available;
+4. **Next action:** the action, expected artifact, and success criterion.
+
+If the evidence cannot support a current-status judgment, mark the status as `待补充` and state the missing evidence. Keep the snapshot scannable; move context and secondary results below it.
+
+- For `brief`, keep only the decision snapshot, additional non-duplicative evidence, negative results or blockers, additional next actions not already present in the snapshot, and sources. Omit any supporting section that would only repeat the snapshot. The snapshot is the brief's conclusion; do not add a separate summary, conclusion, or recommendation section. Read the selected mode reference for its domain-specific evidence rules, but do not expand to its full structure.
+- For `standard`, use the selected mode reference and keep the decision snapshot first.
+- For `audit`, use the `standard` structure and add a claim-level provenance table, unresolved conflicts, and skipped or unreadable sources. Use this level only when the user requests detailed traceability or the evidence conflicts materially.
+
+Place a source path or identifier next to every decision-relevant claim. In `brief`, use each decision-critical numeric metric once: keep the exact value in the strongest-evidence line or the evidence table, and refer back to it elsewhere instead of copying it. Do not repeat a metric in the snapshot and later sections unless the later occurrence adds comparison, uncertainty, or another decision-relevant interpretation. Do not turn a requested choice into a decided outcome. If a recommendation is useful but was not requested or supplied, label it explicitly as a recommendation or interpretation and keep the decision itself open.
+
 ## Workflow
 
 ### 1. Collect sources
@@ -61,6 +100,9 @@ If routing remains ambiguous, prefer mixed mode and keep current-work evidence s
 - Use the selected reference as the structure, not as text to copy mechanically.
 - Treat Chinese headings in the reference templates as structural examples. Translate headings and labels into the selected report language while preserving their semantic order and evidence rules.
 - For sparse source material, target 1-2 rendered pages. Use 3-5 pages only when the evidence volume warrants it, and merge overlapping sections instead of repeating the same metrics in the summary, tables, and analysis.
+- Make the first screen decision-useful: summarize the current state, the decision needed, the strongest evidence, and the next action. Do not make the reader reconstruct the decision from later sections.
+- Follow the selected detail level in the output contract instead of filling every template section mechanically.
+- Avoid repeating the same metric in the snapshot, evidence table, and analysis unless each occurrence adds a different decision-relevant meaning; point back to the source instead.
 - Put each conclusion next to its supporting evidence.
 - Use Markdown tables for useful numeric comparisons.
 - Use relative paths for figures. Add a figure caption, source, and one-sentence interpretation.

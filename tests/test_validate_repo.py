@@ -91,6 +91,26 @@ class ValidateRepoTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("missing skill file", (result.stdout + result.stderr).lower())
 
+    def test_missing_meeting_lifecycle_reference_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            lifecycle = (
+                fixture
+                / "lab-meeting-report"
+                / "references"
+                / "meeting-lifecycle.md"
+            )
+            lifecycle.unlink()
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "missing skill file",
+                (result.stdout + result.stderr).lower(),
+            )
+
     def test_missing_community_file_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"
@@ -455,6 +475,80 @@ class ValidateRepoTests(unittest.TestCase):
                 (result.stdout + result.stderr).lower(),
             )
 
+    def test_meeting_lifecycle_contract_guard_is_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            skill_file = fixture / "lab-meeting-report" / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(
+                content.replace(
+                    "Run an evidence-completeness check for every decision-critical empirical result",
+                    "Review the available evidence before drafting",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "meeting-lifecycle guard",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_meeting_lifecycle_template_terms_are_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            template = (
+                fixture
+                / "lab-meeting-report"
+                / "references"
+                / "mixed-report.md"
+            )
+            content = template.read_text(encoding="utf-8")
+            template.write_text(
+                content.replace(
+                    "## 当前阻塞与决策包（需要组内输入时保留）",
+                    "## 当前问题（需要组内输入时保留）",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "meeting-lifecycle template term",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_research_example_lifecycle_terms_are_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            report = fixture / "examples" / "research-progress" / "report.md"
+            content = report.read_text(encoding="utf-8")
+            report.write_text(
+                content.replace(
+                    "## Previous Action Review",
+                    "## Previous Work",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "example missing meeting-lifecycle term",
+                (result.stdout + result.stderr).lower(),
+            )
+
     def test_decision_snapshot_template_fields_are_required(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"
@@ -534,8 +628,8 @@ class ValidateRepoTests(unittest.TestCase):
             content = template.read_text(encoding="utf-8")
             template.write_text(
                 content.replace(
-                    "| <动作> | <结果或文件> | <可判断标准> | <依赖或风险> |",
-                    "| P0 | <动作> | <结果或文件> | <可判断标准> | <依赖或风险> |",
+                    "| <动作> | <姓名或待补充> | <日期或待补充> | <结果或文件> | <可判断标准> | <依赖或风险> |",
+                    "| P0 | <动作> | <姓名或待补充> | <日期或待补充> | <结果或文件> | <可判断标准> | <依赖或风险> |",
                     1,
                 ),
                 encoding="utf-8",

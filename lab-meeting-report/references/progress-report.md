@@ -6,6 +6,7 @@ Use this structure for experiment, implementation, or project-centered group-mee
 # 组会汇报：<主题>
 
 > 日期：<日期>｜汇报人：<姓名或待补充>｜报告类型：科研进展｜项目/方向：<项目或方向>
+> 会议阶段：<会前/会后/两者>｜听众：<组会/导师/归档>｜时长：<分钟或待补充>
 
 ## 决策快照
 
@@ -13,6 +14,12 @@ Use this structure for experiment, implementation, or project-centered group-mee
 - **需要决策：** <具体选择、阻塞或开放问题；来源未提出时明确说明>
 - **最强证据：** <与决策直接相关的主张>（来源：<路径及章节、表格或行号>）
 - **下一步：** <动作>；产物：<文件、结果或实验>；成功判据：<可判断标准>
+
+## 上次行动复盘（有连续性材料时保留）
+
+| 行动 | 状态 | 负责人 | 截止时间 | 预期产物 | 当前证据 | 缺口或变化 |
+|---|---|---|---|---|---|---|
+| <原行动> | <完成/进行中/受阻/未开始/待核验> | <姓名或待补充> | <日期或待补充> | <产物> | <来源和定位> | <未完成原因或相对上次变化> |
 
 ## 研究目标与当前假设
 
@@ -58,23 +65,37 @@ Use this structure for experiment, implementation, or project-centered group-mee
 - **替代解释：** <仅填写来源明确提出的解释；否则说明来源未提供或省略>
 - **可信度边界：** <样本量、对照、统计或外推限制>
 
+## 证据完整度与缺口
+
+| 决策关键结果 | 已核对项目 | 缺失项目 | 对决策的影响 | 来源 |
+|---|---|---|---|---|
+| <结果或主张> | <目标；数据/样本与划分；方法与配置；对照；样本量/重复；不确定性/统计；单位；图表定位；方法来源> | <逐项列出，或写无> | <是否会改变选择、结论或复现判断> | <路径和定位> |
+
 ## 失败实验与负面结果
 
 | 尝试 | 来源提供的预期 | 实际结果 | 来源提出的可能原因 | 已排除原因 | 后续处理 |
 |---|---|---|---|---|---|
 | <尝试> | <预期> | <结果> | <来源提出的待验证解释；未提供则写待补充> | <证据> | <重试、停止或改进> |
 
-## 当前阻塞
+## 当前阻塞与决策包
 
-| 阻塞项 | 影响 | 已尝试措施 | 需要的支持或决策 |
-|---|---|---|---|
-| <阻塞> | <范围或延期> | <措施> | <支持> |
+| 问题 | 影响 | 已尝试措施 | 可选方案 | 需要的支持或决定 | 来源 |
+|---|---|---|---|---|---|
+| <具体问题> | <范围或延期> | <措施及结果> | <来源提供的选项；未提供则待补充> | <支持或选择> | <路径和定位> |
+
+## 会议决定与行动记录（会后或两者阶段保留）
+
+> 会议记录来源：<会议纪要、逐字稿或明确的会后笔记路径>
+
+| 决定或行动 | 类型 | 负责人 | 截止时间 | 预期产物 | 完成判据 | 状态 | 来源定位 |
+|---|---|---|---|---|---|---|---|
+| <明确记录的决定或行动> | <决定/行动> | <姓名或待补充> | <日期或待补充> | <产物或待补充> | <判据或待补充> | <未开始/进行中/完成> | <章节、段落或时间戳> |
 
 ## 下一步计划
 
-| 动作 | 预期产物 | 成功判据 | 依赖或风险 |
-|---|---|---|---|
-| <动作> | <文件、结果或实验> | <可判断标准> | <依赖或风险> |
+| 动作 | 负责人 | 截止时间 | 预期产物 | 成功判据 | 依赖或风险 |
+|---|---|---|---|---|---|
+| <动作> | <姓名或待补充> | <日期或待补充> | <文件、结果或实验> | <可判断标准> | <依赖或风险> |
 
 ## 相关文件、代码与参考资料
 
@@ -94,6 +115,10 @@ Writing rules:
 - Omit priority labels unless the user or a source explicitly supplies them.
 - Do not generate alternative causal explanations from general knowledge. If the sources provide none, state that directly or omit the field.
 - Do not infer an expected outcome from an experiment name or method. If the source does not state the expectation, write `未提供`.
+- Treat `上次行动复盘` and `会议决定与行动记录` as optional lifecycle sections; omit them when their source material is absent.
+- Make every blocker a decision package with a problem, attempted measures, options, requested support, and source. Do not invent options or meeting outcomes.
+- Check decision-critical results for evidence completeness and show missing checks that could change the decision.
+- Keep owner and due-date cells as `待补充` when the source does not provide them.
 
 <!-- P1 -->
 - Treat duplicated or translated notes about the same run as repeated provenance for one run, not independent replication or additional sample count. State the full boundary directly without calculating a counterfactual count. In Chinese, use the unambiguous form `同一次运行的重复来源，并非独立复现`; translate that complete meaning in other report languages.

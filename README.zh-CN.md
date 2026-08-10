@@ -5,7 +5,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 
-把散落的实验记录、CSV 结果和论文笔记整理为可用于决策的 Markdown 组会报告，同时不隐藏失败实验，也不编造缺失证据。
+把散落的实验记录、CSV 结果和论文笔记整理为可用于决策的 Markdown 组会报告：会前复盘行动并暴露证据缺口，会后记录可追责的决定与任务，同时不隐藏失败实验，也不编造缺失证据。
 
 `lab-meeting-report` 适用于科研进展汇报、Journal Club、实验复盘，以及把当前结果和文献证据放在一起分析的混合报告。宿主环境提供所需工具时，还可以按明确范围读取或发布飞书/Lark 内容。
 
@@ -40,8 +40,8 @@ npx.cmd skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 安装后，向 Agent 指定来源和目标：
 
 ```text
-使用 $lab-meeting-report 读取本周实验记录和结果，生成组会 Markdown，
-保留失败实验、当前阻塞和下一步成功判据。
+使用 $lab-meeting-report 读取本周实验记录和结果，生成会前组会 Markdown，
+复盘上次行动，检查证据缺口，并保留失败实验、决策包和可追责的下一步。
 ```
 
 最低只需给出来源，报告类型、语言、日期和保存路径均可自动判断。没有可用来源时，Skill 会先询问一次，不会把目标描述当成实验事实。
@@ -52,6 +52,8 @@ npx.cmd skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 目标：判断这次新实验是否可以进入下一轮
 来源：./notes ./results/*.csv
 报告类型：科研进展
+会议阶段：会前
+上次行动：./notes/last-meeting.md
 输出：中文、简报、reports/group-meeting/2026-08-11.md
 ```
 
@@ -70,11 +72,36 @@ reports/group-meeting/YYYY-MM-DD.md
 这个 Skill 会：
 
 - 保留失败实验、负面结果、阻塞和互相冲突的数值；
+- 复盘上次行动，不会仅凭相关结果就推断任务已完成；
+- 检查决策关键证据是否缺少对照、重复、统计、单位、图表定位或方法来源；
+- 把阻塞整理为包含已尝试措施、已有选项和所需支持的讨论决策包；
+- 把明确的会后决定写成带负责人、截止时间、产物和完成判据的行动记录；
 - 明确区分观察事实、解释和假设；
 - 精确复制来源中的指标和引用，不静默填补缺失信息；
 - 更新已有日期报告时保护手写内容；
 - 把下一步写成包含产物和成功判据的具体行动；
 - 只读取用户明确放入范围的文件或飞书/Lark 资源。
+
+## 会前与会后闭环
+
+同一个 Skill 支持三种会议阶段。来源仍是唯一必填项；会议阶段、听众、时长、上次行动和输出详细程度都可以省略。
+
+| 阶段 | 输出内容 |
+|---|---|
+| `before` / 会前（默认） | 决策快照、可选的上次行动复盘、证据完整度缺口、决策包和下一步 |
+| `after` / 会后 | 安全更新会前报告，只记录明确会议笔记中存在的决定和任务分配 |
+| `both` / 两者 | 先生成会前报告，再追加来源明确的决定与行动记录 |
+
+来源没写负责人或截止时间时会保留 `待补充`，提议也不会被静默改写成决定。需要时还可以生成简洁的 Markdown 演讲提纲：每页一个信息点，附证据来源、口头解释边界和讨论问题；不会生成 PPTX、DOCX 或 HTML。
+
+会后更新示例：
+
+```text
+使用 $lab-meeting-report，根据 ./notes/meeting-record.md
+更新 reports/group-meeting/2026-08-11.md。会议阶段：会后。
+保留会前证据，只记录明确出现的决定、负责人、截止时间、
+预期产物、完成判据和未决问题。
+```
 
 ## 完整示例
 
@@ -96,6 +123,11 @@ reports/group-meeting/YYYY-MM-DD.md
 ```text
 使用 $lab-meeting-report 合并最新实验结果和论文笔记，
 解释一致与冲突之处，并提出下一项验证实验。
+```
+
+```text
+使用 $lab-meeting-report，根据已验证报告准备 10 分钟 Markdown 演讲提纲。
+每页只保留一个影响决策的信息点，并给出证据来源、口头边界和讨论问题。
 ```
 
 ## 报告模式

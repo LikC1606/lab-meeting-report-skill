@@ -23,6 +23,7 @@ EXPECTED_SKILL_FILES = {
     Path("SKILL.md"),
     Path("agents/openai.yaml"),
     Path("references/lark-integration.md"),
+    Path("references/meeting-lifecycle.md"),
     Path("references/mixed-report.md"),
     Path("references/paper-review.md"),
     Path("references/progress-report.md"),
@@ -120,6 +121,13 @@ MISSING_SOURCE_GUARD_TERM = (
 DECISION_SNAPSHOT_GUARD_TERM = (
     "begin the report body with a localized decision snapshot"
 )
+MEETING_LIFECYCLE_GUARD_TERMS = {
+    "stage (`before`, `after`, or `both`)",
+    "place `上次行动复盘` or its localized equivalent immediately after the snapshot",
+    "Run an evidence-completeness check for every decision-critical empirical result",
+    "add `会议决定与行动记录` using only decisions captured in the supplied meeting notes",
+    "one message per slide, its evidence source, the spoken interpretation, and the discussion question",
+}
 DECISION_SNAPSHOT_FIELDS = {
     "**当前状态：**",
     "**需要决策：**",
@@ -132,6 +140,30 @@ EXAMPLE_DECISION_SNAPSHOT_FIELDS = {
     "**Decision needed:**",
     "**Strongest evidence:**",
     "**Next action:**",
+}
+LIFECYCLE_TEMPLATE_TERMS = {
+    "上次行动复盘",
+    "证据完整度与缺口",
+    "当前阻塞与决策包",
+    "会议决定与行动记录",
+    "负责人",
+    "截止时间",
+}
+MEETING_LIFECYCLE_REFERENCE_TERMS = {
+    "| `before` |",
+    "| `after` |",
+    "| `both` |",
+    "## Continuity inventory",
+    "## Decision package",
+    "## Post-meeting record",
+    "## Evidence completeness",
+    "## Presenter outline",
+}
+EXAMPLE_LIFECYCLE_TERMS = {
+    "## Previous Action Review",
+    "## Evidence Completeness And Gaps",
+    "## Blocker And Decision Package",
+    "| Action | Owner | Due date |",
 }
 DEFAULT_PRIORITY_PATTERN = re.compile(r"\|\s*P[0-9]+\s*\|")
 PREVIEW_SOURCE = Path("scripts/render_preview.py")
@@ -653,6 +685,9 @@ def validate_repo(root: Path) -> list[str]:
                 "Missing decision-snapshot guard: "
                 f"{DECISION_SNAPSHOT_GUARD_TERM}"
             )
+        for term in sorted(MEETING_LIFECYCLE_GUARD_TERMS):
+            if term not in skill_text:
+                errors.append(f"Missing meeting-lifecycle guard: {term}")
 
     for path in (
         skill_root / "references" / "progress-report.md",
@@ -667,6 +702,21 @@ def validate_repo(root: Path) -> list[str]:
                 errors.append(
                     "Missing decision-snapshot field in "
                     f"{path.relative_to(root).as_posix()}: {field}"
+                )
+        for term in sorted(LIFECYCLE_TEMPLATE_TERMS):
+            if term not in template_text:
+                errors.append(
+                    "Missing meeting-lifecycle template term in "
+                    f"{path.relative_to(root).as_posix()}: {term}"
+                )
+
+    lifecycle_reference = skill_root / "references" / "meeting-lifecycle.md"
+    if lifecycle_reference.is_file():
+        lifecycle_text = read_utf8(lifecycle_reference)
+        for term in sorted(MEETING_LIFECYCLE_REFERENCE_TERMS):
+            if term not in lifecycle_text:
+                errors.append(
+                    "Missing meeting-lifecycle reference term: " f"{term}"
                 )
 
     for path in (
@@ -734,6 +784,13 @@ def validate_repo(root: Path) -> list[str]:
                     errors.append(
                         "Example report missing decision-snapshot field in "
                         f"{relative.as_posix()}: {field}"
+                    )
+        if relative == Path("examples/research-progress/report.md"):
+            for term in sorted(EXAMPLE_LIFECYCLE_TERMS):
+                if term not in text:
+                    errors.append(
+                        "Research-progress example missing meeting-lifecycle "
+                        f"term: {term}"
                     )
 
     for relative in sorted(EXAMPLE_SOURCE_FILES):

@@ -46,6 +46,13 @@ The fictional paper claims transfer across intent datasets. The supplied notes d
 
 Agreement in macro-F1 direction does not prove a shared mechanism. The fictional paper cannot validate the current rare-class explanation because it reports no rare-class setting.
 
+## Evidence Completeness And Gaps
+
+| Decision-critical result or claim | Checks present | Missing checks | Decision impact | Source |
+|---|---|---|---|---|
+| Current retrieval-plus-reranker result | Objective, current data imbalance, combined method change, baseline comparator, three-seed macro-F1, rare-class recall, latency units, and source path | Full data split, full configuration, uncertainty, statistical test, and isolated component result | The combined result motivates an ablation but cannot identify the responsible component | `results/current_experiment.csv`; `examples/mixed/input-notes.md` |
+| Fictional paper retrieval result | Balanced-class scope, retrieval change, baseline comparator, metric, and source path | Domain-level data detail, full configuration, uncertainty, statistical test, latency, and rare-class results | The paper cannot resolve current-system attribution or operational viability | `papers/synthetic-balanced-retrieval.md` |
+
 ## Transferable Method
 
 The retrieval-only configuration is transferable as an ablation, not yet as a production recommendation. Keep the current encoder and evaluation data fixed, remove the reranker, and run the same three-seed protocol.
@@ -58,11 +65,11 @@ The retrieval-only configuration is transferable as an ablation, not yet as a pr
 
 ## Validation Plan
 
-| Experiment | Expected artifact | Success criterion | Interpretation |
-|---|---|---|---|
-| Retrieval without reranker under the same seed protocol | `results/retrieval_only.csv` | Record macro-F1, rare-class recall, and median latency under a controlled configuration; numeric acceptance thresholds are not supplied | Compares retrieval-only with baseline and the combined system |
-| Compare all 8 per-class recall values | `analysis/per_class_recall.md` | Report every class without an aggregation-only claim | Tests whether the observed result is concentrated in rare classes |
-| Measure retrieval-only latency | Same result file | Use the same measurement protocol as the current experiment; the project threshold is not supplied | Tests operational viability without importing a threshold from another workflow |
+| Experiment | Owner | Due date | Expected artifact | Success criterion | Interpretation |
+|---|---|---|---|---|---|
+| Retrieval without reranker under the same seed protocol | Not supplied | Not supplied | `results/retrieval_only.csv` | Record macro-F1, rare-class recall, and median latency under a controlled configuration; numeric acceptance thresholds are not supplied | Compares retrieval-only with baseline and the combined system |
+| Compare all 8 per-class recall values | Not supplied | Not supplied | `analysis/per_class_recall.md` | Report every class without an aggregation-only claim | Tests whether the observed result is concentrated in rare classes |
+| Measure retrieval-only latency | Not supplied | Not supplied | Same result file | Use the same measurement protocol as the current experiment; the project threshold is not supplied | Tests operational viability without importing a threshold from another workflow |
 
 ## Sources
 

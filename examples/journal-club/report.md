@@ -47,6 +47,13 @@ The notes frame standard low-resource retrievers as insufficiently sensitive to 
 
 The lexical baseline was named but no value was supplied, so no claim against it is reported.
 
+## Evidence Completeness And Gaps
+
+| Decision-critical claim | Checks present | Missing checks | Decision impact | Source |
+|---|---|---|---|---|
+| Proposed method improves in-domain performance | Research question, synthetic data scope, method concept, bi-encoder comparator, five-seed average, metric, and ablation result | Split protocol, full configuration, seed values, dispersion, statistical test, and exact table or figure locator | The supplied comparison supports further inspection but is insufficient for a significance or reproducibility claim | `papers/synthetic-retrieval-notes.md` |
+| Method generalizes across domains | Cross-domain metric and a standard bi-encoder comparison | Domain definitions, domain-level results, uncertainty, statistical test, and exact table or figure locator | Transfer to the current setting remains unresolved | `papers/synthetic-retrieval-notes.md` |
+
 ## Novelty
 
 The supplied notes position intent-neighbor hard-negative mining as the main methodological change. A real novelty assessment would require a verified literature comparison, which is outside this synthetic example.
@@ -74,6 +81,12 @@ The supplied notes position intent-neighbor hard-negative mining as the main met
 - Hard-negative selection is a testable candidate for projects with confusable intent pairs.
 - Before transfer, verify that target data has the same neighborhood structure and label quality.
 - Reproduce the ablation with explicit latency and rare-class recall because those operational measures are absent from the paper notes.
+
+## Next Actions
+
+| Action | Owner | Due date | Expected artifact | Success criterion | Dependency or risk |
+|---|---|---|---|---|---|
+| Verify reproduction prerequisites before method transfer | Not supplied | Not supplied | Checked dataset, code, and parameter inventory | Each required item is available or explicitly documented as unavailable | The supplied notes contain no access links or complete configuration |
 
 ## Discussion Questions
 

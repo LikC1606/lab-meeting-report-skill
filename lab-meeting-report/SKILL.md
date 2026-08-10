@@ -1,6 +1,6 @@
 ---
 name: lab-meeting-report
-description: Create evidence-grounded lab meeting reports, research progress reports, journal club notes, and experiment retrospectives as dated Markdown from notes, papers, results, files, or explicitly scoped Feishu/Lark sources. Use when the user needs a real report file that preserves negative results, uncertainty, source provenance, and manual edits, or wants to publish a verified report to Lark; do not use for slide generation.
+description: Create evidence-grounded lab meeting reports, research progress reports, journal club notes, experiment retrospectives, and Markdown presenter outlines from notes, papers, results, files, or explicitly scoped Feishu/Lark sources. Use when the user needs a real dated Markdown file that reviews prior actions, checks evidence gaps, preserves negative results and manual edits, surfaces decision-ready blockers, records explicit post-meeting actions, or publishes a verified report to Lark; do not use for PPTX, DOCX, or HTML generation.
 ---
 
 # Evidence-Grounded Research Meeting Reports
@@ -14,11 +14,13 @@ Accept a natural-language request without forcing the user to fill a form. Extra
 - **Goal or decision:** what the group needs to understand or decide;
 - **Sources:** explicitly scoped files, pasted notes, figures, paper excerpts, or Feishu/Lark resources;
 - **Report mode:** research progress, paper review, or mixed;
-- **Output preferences:** language, reporting date, audience (`组会`, `导师`, or `归档`), detail (`brief`, `standard`, or `audit`), and destination path.
+- **Meeting context:** stage (`before`, `after`, or `both`), audience (`组会`, `导师`, or `归档`), duration, and local presentation format when supplied;
+- **Continuity:** the previous meeting's decisions or action items, status, owner, due date, and evidence when supplied;
+- **Output preferences:** language, reporting date, detail (`brief`, `standard`, or `audit`), destination path, and optional Markdown presenter outline.
 
 Treat the source scope as the only required input. Pasted material counts as a source; resolve relative paths and globs against the active project. If no usable source or explicit source scope is available, ask one focused question requesting the source and do not draft evidence claims. A goal by itself is not evidence.
 
-Use these defaults when the user leaves optional fields unspecified: infer the mode from the evidence, use the current local date, match the request language, write to `reports/group-meeting/YYYY-MM-DD.md`, and use `standard` detail. Treat `简报` as `brief`, `标准` as `standard`, and `审计` or `追溯` as `audit`. For sparse sources, use `brief` behavior automatically. Ask at most one other focused clarification question, and only when the missing answer would change the report's conclusions or safety; otherwise mark the gap as `待补充` and continue. Do not make the user repeat information already present in the request or sources.
+Use these defaults when the user leaves optional fields unspecified: infer the mode from the evidence, use the current local date, match the request language, use `before` stage, write to `reports/group-meeting/YYYY-MM-DD.md`, and use `standard` detail. Treat `简报` as `brief`, `标准` as `standard`, and `审计` or `追溯` as `audit`. For sparse sources, use `brief` behavior automatically. Infer an `after` stage only when the scoped notes clearly contain meeting decisions or action assignments; otherwise keep `before`. Ask at most one other focused clarification question, and only when the missing answer would change the report's conclusions or safety; otherwise mark the gap as `待补充` and continue. Do not make the user repeat information already present in the request or sources.
 
 For a repeatable request, this compact shape is sufficient:
 
@@ -26,6 +28,8 @@ For a repeatable request, this compact shape is sufficient:
 目标/需决策：<问题>
 来源：<文件或目录>
 报告类型：<科研进展 | 论文阅读 | 混合>
+会议阶段：<会前 | 会后 | 两者，可省略>
+上次行动：<行动及完成状态，可省略>
 输出：<语言、详细程度、目标路径，可省略>
 ```
 
@@ -34,7 +38,7 @@ For a repeatable request, this compact shape is sufficient:
 Create a validated Markdown file, not only a chat response. After the title and metadata, begin the report body with a localized decision snapshot containing these fields in this order:
 
 1. **Current status:** the most important supported state or result;
-2. **Decision needed:** the concrete choice, blocker, or open question; if none was supplied, say so instead of inventing one;
+2. **Decision needed:** the concrete choice, blocker, or open question, including supplied options, attempted fixes, or requested support; if none was supplied, say so instead of inventing one;
 3. **Strongest evidence:** the decision-relevant claim plus its source path and precise locator when available;
 4. **Next action:** the action, expected artifact, and success criterion.
 
@@ -45,6 +49,12 @@ If the evidence cannot support a current-status judgment, mark the status as `�
 - For `audit`, use the `standard` structure and add a claim-level provenance table, unresolved conflicts, and skipped or unreadable sources. Use this level only when the user requests detailed traceability or the evidence conflicts materially.
 
 Place a source path or identifier next to every decision-relevant claim. In `brief`, use each decision-critical numeric metric once: keep the exact value in the strongest-evidence line or the evidence table, and refer back to it elsewhere instead of copying it. Do not repeat a metric in the snapshot and later sections unless the later occurrence adds comparison, uncertainty, or another decision-relevant interpretation. Do not turn a requested choice into a decided outcome. If a recommendation is useful but was not requested or supplied, label it explicitly as a recommendation or interpretation and keep the decision itself open.
+
+When continuity material is supplied, place `上次行动复盘` or its localized equivalent immediately after the snapshot. Preserve each action's status, owner, due date, artifact, and source; never mark an action complete from a newer positive result unless the source explicitly links them. For `after` or `both` stages, add `会议决定与行动记录` using only decisions captured in the supplied meeting notes. Keep missing owners or due dates as `待补充`.
+
+Run an evidence-completeness check for every decision-critical empirical result before drafting. Check the objective or hypothesis, data or sample and split, method and configuration, comparator or control, sample size or repetitions, uncertainty or statistical test, units, figure/table locator, and method source when one was used. In `standard` and `audit`, include an `证据完整度与缺口` section or its localized equivalent; in `brief`, list only missing items that could change the decision. Do not convert a missing check into a negative result or a significance claim.
+
+When the user requests a presenter outline, append or write a Markdown companion with one message per slide, its evidence source, the spoken interpretation, and the discussion question. Keep it concise and do not generate PPTX, DOCX, or HTML.
 
 ## Workflow
 
@@ -95,6 +105,8 @@ Read `references/lark-integration.md` whenever the user supplies a Lark/Feishu U
 
 If routing remains ambiguous, prefer mixed mode and keep current-work evidence separate from literature evidence. Ask one focused question only when the answer would materially change the report's conclusions or structure.
 
+Read `references/meeting-lifecycle.md` whenever the user supplies previous meeting actions, requests an `after` or `both` stage, or asks for a presenter outline.
+
 ### 4. Draft the report
 
 - Use the selected reference as the structure, not as text to copy mechanically.
@@ -102,6 +114,8 @@ If routing remains ambiguous, prefer mixed mode and keep current-work evidence s
 - For sparse source material, target 1-2 rendered pages. Use 3-5 pages only when the evidence volume warrants it, and merge overlapping sections instead of repeating the same metrics in the summary, tables, and analysis.
 - Make the first screen decision-useful: summarize the current state, the decision needed, the strongest evidence, and the next action. Do not make the reader reconstruct the decision from later sections.
 - Follow the selected detail level in the output contract instead of filling every template section mechanically.
+- Include previous-action review before detailed context when continuity material is in scope; omit it when no continuity material was supplied.
+- Make blocker sections decision-ready: show the problem, what was tried, the available options, and the support or choice requested.
 - Avoid repeating the same metric in the snapshot, evidence table, and analysis unless each occurrence adds a different decision-relevant meaning; point back to the source instead.
 - Put each conclusion next to its supporting evidence.
 - Use Markdown tables for useful numeric comparisons.
@@ -132,6 +146,8 @@ If the same-date file exists:
 4. Do not remove an earlier claim unless the new source explicitly supersedes it; record the change when it does.
 5. If a safe merge is ambiguous, write `YYYY-MM-DD-revised.md` and leave the original unchanged.
 
+For `after` or `both` stages, merge the supplied meeting decisions and action assignments into the existing report without treating an unrecorded verbal decision as fact. Preserve the pre-meeting evidence and record superseded actions rather than deleting them.
+
 Create or edit the Markdown file with the platform's normal file-editing tool. Do not stop after printing an outline in chat.
 
 ### 6. Run the quality gate
@@ -147,6 +163,8 @@ Before finishing, verify:
 - numeric values and citations match their sources;
 - heading levels, tables, and relative image links are internally consistent;
 - next actions include expected artifacts and success criteria;
+- continuity actions include status, owner, and due date when supplied, with missing values visible;
+- the evidence-completeness check has either passed for decision-critical claims or listed the missing checks that affect the decision;
 - the report is understandable without the preceding chat;
 - unresolved essential gaps are summarized for the user.
 
@@ -160,6 +178,7 @@ Tell the user:
 
 - the output file path;
 - the selected report mode;
+- the selected meeting stage and whether a presenter outline was created;
 - the sources used;
 - any skipped or unreadable sources;
 - any essential gaps or conflicts that remain.

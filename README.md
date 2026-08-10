@@ -5,7 +5,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 
-Turn scattered experiment notes, CSV results, and paper notes into a decision-ready Markdown report without hiding failures or inventing missing evidence.
+Turn scattered experiment notes, CSV results, and paper notes into a decision-ready Markdown lab meeting report that reviews prior actions, exposes evidence gaps, and can record accountable decisions after the meeting.
 
 Use `lab-meeting-report` for research progress reports, journal club notes, experiment retrospectives, or a combined progress-and-literature report. Optional Feishu/Lark intake and publishing are available when the host environment provides the required tools.
 
@@ -41,7 +41,8 @@ Then give your agent a concrete source and outcome:
 
 ```text
 Use $lab-meeting-report to read this week's experiment notes and results,
-then create a lab meeting report with failures, blockers, and next steps.
+then create a pre-meeting report with prior-action status, evidence gaps,
+failures, decision-ready blockers, and accountable next steps.
 ```
 
 The minimum input is a source. The skill can infer the mode, language, date, and destination. If no usable source is available, it asks once instead of treating the stated goal as experimental evidence.
@@ -52,6 +53,8 @@ For repeatable requests, add the goal, scoped sources, report mode, and output p
 Goal: decide whether the new run is ready for the next experiment
 Sources: ./notes ./results/*.csv
 Mode: research progress
+Meeting stage: before
+Previous actions: ./notes/last-meeting.md
 Output: English, brief, reports/group-meeting/2026-08-11.md
 ```
 
@@ -70,11 +73,36 @@ Most report generators optimize for a smooth summary. Research reporting also ne
 This skill is designed to:
 
 - retain failed experiments, negative results, blockers, and conflicting values;
+- review previous actions without inferring completion from a related result;
+- check decision-critical evidence for missing controls, repetitions, statistics, units, locators, and method provenance;
+- turn blockers into discussion packages with attempted measures, supplied options, and the support requested;
+- record explicit meeting decisions with owners, due dates, artifacts, and success criteria;
 - keep observed facts, interpretations, and hypotheses visibly separate;
 - copy supplied measurements and citations without silently filling gaps;
 - update an existing dated report without deleting manual content;
 - turn next steps into actions with artifacts and success criteria;
 - read only the files or Feishu/Lark resources explicitly placed in scope.
+
+## Before And After The Meeting
+
+The same skill supports three meeting stages. The source remains the only required input; stage, audience, duration, previous actions, and output detail are optional.
+
+| Stage | What it produces |
+|---|---|
+| `before` (default) | A decision snapshot, previous-action review when supplied, evidence-completeness gaps, decision packages, and next actions |
+| `after` | A safe update that preserves the pre-meeting report and records only decisions and assignments found in explicit meeting notes |
+| `both` | The pre-meeting report followed by a separately attributed decision and action record |
+
+Missing owners or due dates stay visible as `待补充` / `Not supplied`; a proposal is never silently rewritten as a decision. When requested, the skill can also create a concise Markdown presenter outline with one message, evidence source, spoken interpretation, and discussion question per slide. It does not generate PPTX, DOCX, or HTML.
+
+Example post-meeting update:
+
+```text
+Use $lab-meeting-report to update reports/group-meeting/2026-08-11.md
+from ./notes/meeting-record.md. Meeting stage: after.
+Preserve the pre-meeting evidence and record only explicit decisions,
+owners, due dates, artifacts, success criteria, and unresolved questions.
+```
 
 ## Complete Examples
 
@@ -96,6 +124,12 @@ focused on the method, key evidence, limitations, and relevance to my work.
 ```text
 Use $lab-meeting-report to combine my latest results with these paper notes,
 explain agreements and conflicts, and propose the next validation experiment.
+```
+
+```text
+Use $lab-meeting-report to prepare a 10-minute Markdown presenter outline
+from the validated report. Keep one decision-relevant message per slide,
+with its evidence source, spoken boundary, and discussion question.
 ```
 
 ## Report Modes

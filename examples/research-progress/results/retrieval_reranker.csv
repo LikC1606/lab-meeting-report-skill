@@ -1,0 +1,5 @@
+configuration,seed,macro_f1,median_latency_ms
+retrieval_reranker,11,0.758,19.4
+retrieval_reranker,22,0.764,19.4
+retrieval_reranker,33,0.749,19.4
+retrieval_reranker,mean,0.757,19.4

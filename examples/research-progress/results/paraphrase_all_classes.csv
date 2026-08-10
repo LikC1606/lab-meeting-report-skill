@@ -1,0 +1,2 @@
+configuration,macro_f1,observation
+paraphrase_all_classes,0.691,precision dropped most on the two rarest classes

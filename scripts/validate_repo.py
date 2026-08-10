@@ -33,13 +33,32 @@ EXAMPLE_FILES = {
     Path("examples/mixed/input-notes.md"),
     Path("examples/mixed/report.md"),
 }
+EXAMPLE_SOURCE_FILES = {
+    Path("examples/research-progress/results/baseline.csv"),
+    Path("examples/research-progress/results/retrieval_reranker.csv"),
+    Path("examples/research-progress/results/paraphrase_all_classes.csv"),
+    Path("examples/journal-club/papers/synthetic-retrieval-notes.md"),
+    Path("examples/mixed/results/current_experiment.csv"),
+    Path("examples/mixed/papers/synthetic-balanced-retrieval.md"),
+}
+COMMUNITY_FILES = {
+    Path("CODE_OF_CONDUCT.md"),
+    Path("CONTRIBUTING.md"),
+    Path("SECURITY.md"),
+    Path("SUPPORT.md"),
+    Path(".github/PULL_REQUEST_TEMPLATE.md"),
+}
 README_TERMS = {
     "LikC1606/lab-meeting-report-skill@lab-meeting-report",
+    "README.zh-CN.md",
+    "https://skills.sh/LikC1606/lab-meeting-report-skill",
     "lab meeting report",
     "research progress report",
     "journal club",
     "Feishu",
     "Lark",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
     "## 中文说明",
 }
 LANGUAGE_TERMS = {
@@ -517,6 +536,16 @@ def validate_repo(root: Path) -> list[str]:
             if term not in readme:
                 errors.append(f"README.md missing required term: {term}")
 
+    for relative in sorted(COMMUNITY_FILES):
+        path = root / relative
+        if not path.is_file():
+            errors.append(f"Missing community file: {relative.as_posix()}")
+            continue
+        try:
+            read_utf8(path)
+        except UnicodeDecodeError as exc:
+            errors.append(f"Invalid UTF-8 in {relative.as_posix()}: {exc}")
+
     for relative in sorted(EXAMPLE_FILES):
         path = root / relative
         if not path.is_file():
@@ -529,6 +558,21 @@ def validate_repo(root: Path) -> list[str]:
             continue
         if "Synthetic example" not in text:
             errors.append(f"Example lacks Synthetic example label: {relative.as_posix()}")
+
+    for relative in sorted(EXAMPLE_SOURCE_FILES):
+        path = root / relative
+        if not path.is_file():
+            errors.append(f"Missing example source: {relative.as_posix()}")
+            continue
+        try:
+            text = read_utf8(path)
+        except UnicodeDecodeError as exc:
+            errors.append(f"Invalid UTF-8 in {relative.as_posix()}: {exc}")
+            continue
+        if path.suffix == ".md" and "Synthetic example" not in text:
+            errors.append(
+                f"Example source lacks Synthetic example label: {relative.as_posix()}"
+            )
 
     validate_png(root / "assets" / "lab-meeting-report-preview.png", errors)
     validate_evaluation_assets(root, errors)

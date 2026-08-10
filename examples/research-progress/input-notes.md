@@ -24,6 +24,7 @@
 - Seed 33 macro-F1: 0.749
 - Mean macro-F1: 0.757
 - Median latency: 19.4 ms per request
+- Precomputed comparisons supplied for reporting: macro-F1 change 0.045 absolute; latency change 1.2 ms, approximately 6.6% relative to baseline
 - Source: `results/retrieval_reranker.csv`
 
 ## Failed experiment

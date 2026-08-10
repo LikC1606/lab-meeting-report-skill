@@ -83,4 +83,5 @@ The supplied notes position intent-neighbor hard-negative mining as the main met
 
 ## Source
 
-- `examples/journal-club/input-notes.md`
+- [`examples/journal-club/input-notes.md`](input-notes.md)
+- [`papers/synthetic-retrieval-notes.md`](papers/synthetic-retrieval-notes.md)

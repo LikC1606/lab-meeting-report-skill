@@ -1,9 +1,9 @@
 ---
 name: lab-meeting-report
-description: Create or update evidence-grounded Markdown documents for lab meetings from pasted notes, local research files, papers, experiment results, directories, or explicitly scoped Lark/Feishu documents, chats, Minutes, and meeting artifacts. Use for lab meeting reports, research progress reports, journal club notes, experiment retrospectives, mixed progress-and-literature reports, or publishing and synchronizing a verified Markdown report to a Lark cloud document rather than creating slides.
+description: Create evidence-grounded lab meeting reports, research progress reports, journal club notes, and experiment retrospectives as dated Markdown from notes, papers, results, files, or explicitly scoped Feishu/Lark sources. Use when the user needs a real report file that preserves negative results, uncertainty, source provenance, and manual edits, or wants to publish a verified report to Lark; do not use for slide generation.
 ---
 
-# Research Group Meeting Markdown Reports
+# Evidence-Grounded Research Meeting Reports
 
 Create a real Markdown report grounded in the user's source material. Choose the output language in this order: follow an explicit language request, otherwise match the language of the user's request, and use English only when a genuinely mixed-language request is ambiguous. Preserve precise technical terms, model names, abbreviations, metric names, equations, citations, and identifiers in their source form.
 

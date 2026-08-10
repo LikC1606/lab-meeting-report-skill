@@ -1,0 +1,3 @@
+configuration,seed_scope,macro_f1,rare_class_recall,median_latency_ms
+baseline,not supplied,0.712,0.54,18.2
+retrieval_reranker,three-seed mean,0.757,0.62,19.4

@@ -1,58 +1,77 @@
-# Lab Meeting Report Skill
+# Lab Meeting Report
 
 [![Validate skill](https://github.com/LikC1606/lab-meeting-report-skill/actions/workflows/validate-skill.yml/badge.svg)](https://github.com/LikC1606/lab-meeting-report-skill/actions/workflows/validate-skill.yml)
+[![skills.sh installs](https://skills.sh/b/LikC1606/lab-meeting-report-skill)](https://skills.sh/LikC1606/lab-meeting-report-skill)
+[![GitHub release](https://img.shields.io/github/v/release/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 
-Turn research notes, experiment results, papers, chats, and meeting transcripts into evidence-grounded Markdown reports for lab meetings and journal clubs. Optional Feishu/Lark publishing included.
+Turn scattered experiment notes, results, and papers into a dated Markdown report that keeps negative results, uncertainty, and source paths visible.
+
+Use `lab-meeting-report` for research progress reports, journal club notes, experiment retrospectives, or a combined progress-and-literature report. Optional Feishu/Lark intake and publishing are available when the host environment provides the required tools.
 
 ![Rendered research progress report example](assets/lab-meeting-report-preview.png)
 
-[中文说明](#中文说明)
+[中文文档](README.zh-CN.md) | [Complete examples](#complete-examples) | [Measured quality](#measured-quality) | [Contributing](CONTRIBUTING.md)
 
-## What It Does
+## Start Here
 
-`lab-meeting-report` creates a real, dated Markdown document instead of stopping at an outline or chat response. It supports:
+Install the skill from its public GitHub source:
 
-Use it as a lab meeting report generator, research progress report writer, or journal club reporting workflow without changing tools.
+```bash
+npx skills add https://github.com/LikC1606/lab-meeting-report-skill --skill lab-meeting-report
+```
 
-- **Research progress reports** with experiments, results, failed attempts, blockers, and next-step success criteria
-- **Paper and journal club reports** with methods, evidence, novelty, limitations, and reproducibility checks
-- **Mixed reports** that connect current results with literature evidence and turn conflicts into validation plans
-- Evidence provenance, explicit uncertainty, and separation of facts, interpretations, and hypotheses
-- Safe updates to existing dated reports without silently deleting manual content
-- Optional, bounded Feishu/Lark source intake and cloud-document publishing
-
-The output follows the language of your request unless you explicitly choose another language. Ambiguous mixed-language requests fall back to English. Technical terms, model names, metrics, and citations remain in their precise original form.
-
-## See Complete Examples
-
-All example data and paper notes are synthetic. Each pair shows the source material alongside the complete generated report.
-
-| Workflow | Input | Generated report |
-|---|---|---|
-| Research progress | [Input notes](examples/research-progress/input-notes.md) | [Report](examples/research-progress/report.md) |
-| Journal club | [Synthetic paper notes](examples/journal-club/input-notes.md) | [Report](examples/journal-club/report.md) |
-| Mixed progress and literature | [Combined notes](examples/mixed/input-notes.md) | [Report](examples/mixed/report.md) |
-
-## Install
-
-macOS and Linux:
+For a global, non-interactive installation on macOS or Linux:
 
 ```bash
 npx skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 ```
 
-Windows PowerShell:
+On Windows PowerShell, use `npx.cmd`:
 
 ```powershell
 npx.cmd skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 ```
 
-## Quick Start
+The installer requires Node.js and `npx`. You can also inspect the skill, install count, and security audits on [skills.sh](https://skills.sh/LikC1606/lab-meeting-report-skill/lab-meeting-report).
+
+Then give your agent a concrete source and outcome:
 
 ```text
 Use $lab-meeting-report to read this week's experiment notes and results,
 then create a lab meeting report with failures, blockers, and next steps.
 ```
+
+The default output is a real file, not a chat-only outline:
+
+```text
+reports/group-meeting/YYYY-MM-DD.md
+```
+
+## Why This Skill
+
+Most report generators optimize for a smooth summary. Research reporting also needs to preserve evidence that makes the story less smooth.
+
+This skill is designed to:
+
+- retain failed experiments, negative results, blockers, and conflicting values;
+- keep observed facts, interpretations, and hypotheses visibly separate;
+- copy supplied measurements and citations without silently filling gaps;
+- update an existing dated report without deleting manual content;
+- turn next steps into actions with artifacts and success criteria;
+- read only the files or Feishu/Lark resources explicitly placed in scope.
+
+## Complete Examples
+
+All example data, paper notes, and results are synthetic. Each workflow includes its source material and generated report so you can audit the transformation end to end.
+
+| Workflow | Source material | Generated report |
+|---|---|---|
+| Research progress | [Notes](examples/research-progress/input-notes.md) and [result files](examples/research-progress/results) | [Report](examples/research-progress/report.md) |
+| Journal club | [Input notes](examples/journal-club/input-notes.md) and [paper notes](examples/journal-club/papers/synthetic-retrieval-notes.md) | [Report](examples/journal-club/report.md) |
+| Progress plus literature | [Combined notes](examples/mixed/input-notes.md), [results](examples/mixed/results/current_experiment.csv), and [paper notes](examples/mixed/papers/synthetic-balanced-retrieval.md) | [Report](examples/mixed/report.md) |
+
+Additional prompts:
 
 ```text
 Use $lab-meeting-report to read paper.pdf and create a journal club report
@@ -64,149 +83,69 @@ Use $lab-meeting-report to combine my latest results with these paper notes,
 explain agreements and conflicts, and propose the next validation experiment.
 ```
 
-By default, the skill writes:
-
-```text
-reports/group-meeting/YYYY-MM-DD.md
-```
-
 ## Report Modes
 
 | Mode | Best for | Core sections |
 |---|---|---|
 | Research progress | Experiments, implementations, ongoing projects | Goal, method, evidence, negative results, blockers, next actions |
-| Paper review | Journal clubs, paper reading, literature discussions | Research gap, method, key evidence, novelty, limitations, reproducibility |
+| Paper review | Journal clubs, paper reading, literature discussions | Research gap, method, evidence, novelty, limitations, reproducibility |
 | Mixed | Connecting current work to literature | Current results, literature mapping, hypothesis update, validation plan |
 
-## Accepted Inputs
+Supported inputs include pasted notes, Markdown, text, PDF, CSV, Excel, figures, screenshots, and explicitly selected Feishu/Lark resources. Availability depends on the parsing tools provided by the host agent.
 
-- Pasted notes and status updates
-- Markdown and text files
-- Research papers and reports in PDF
-- CSV and Excel result tables
-- Figures and screenshots
-- Explicitly selected Feishu/Lark documents, chats, meetings, and Minutes artifacts
-
-The skill reads only material placed in scope. It does not scan unrelated directories or all Lark resources by default.
-
-## Evidence And Safety Rules
+## Evidence Rules
 
 - Never invent results, metrics, citations, authors, venues, DOI values, or causal explanations.
-- Keep observed facts, interpretations, and hypotheses visibly separate.
-- Preserve failed experiments and negative results.
-- Retain conflicting source values with provenance instead of silently reconciling them.
+- Preserve source identifiers and copy experimental measurements exactly.
+- Do not introduce new calculations unless the user requests them or a supplied source defines them.
+- Retain conflicting values when no authority rule is supplied.
 - Mark essential missing information as `待补充` and unverified citation data as `未核验`.
 - Preserve manually written content when updating an existing report.
 
-## Measured v1.2 Quality
+Read the complete workflow in [`lab-meeting-report/SKILL.md`](lab-meeting-report/SKILL.md).
 
-The v1.2 candidate was evaluated three times on each of eight public synthetic research-progress cases covering numeric fidelity, conflicting sources, buried negative results, unsupported causal language, duplicated notes, scoped directory reading, safe report updates, and unavailable sources.
+## Measured Quality
+
+The v1.2 candidate was evaluated three times on each of eight public synthetic research-progress cases. The cases cover numeric fidelity, conflicting sources, buried negative results, unsupported causal language, duplicated notes, scoped directory reading, safe report updates, and unavailable sources.
 
 | Configuration | Strict hard passes | Mean expectation pass rate |
 |---|---:|---:|
 | v1.2 candidate | 24/24 | 1.000 |
 | Frozen v1.1 baseline | 0/24 | 0.818 |
 
-The hard gate requires every deterministic expectation in a report to pass. Codex also audited all 24 candidate reports claim by claim and found no unsupported critical claim. This audit was performed by the same authoring agent, so it is neither independent nor blinded and does not establish reviewer preference. Results are limited to this synthetic corpus and do not prove universal hallucination prevention.
+The hard gate requires every deterministic expectation in a report to pass. Codex also audited the 24 candidate reports claim by claim and found no unsupported critical claim. That audit used the same authoring agent, so it was neither independent nor blinded. The results apply only to this synthetic corpus and do not establish universal hallucination prevention or reviewer preference.
 
-See the [evaluation design](docs/superpowers/specs/2026-07-13-lab-meeting-report-v1.2-quality-evaluation-design.md), [public cases](evals/research-progress/cases), [versioned benchmark](benchmarks/v1.1-v1.2/benchmark.md), and [claim-level self-audit](benchmarks/v1.1-v1.2/semantic-review-final.json).
+Review the [evaluation design](docs/superpowers/specs/2026-07-13-lab-meeting-report-v1.2-quality-evaluation-design.md), [public cases](evals/research-progress/cases), [versioned benchmark](benchmarks/v1.1-v1.2/benchmark.md), and [claim-level self-audit](benchmarks/v1.1-v1.2/semantic-review-final.json).
 
 ## Optional Feishu/Lark Integration
 
-Local Markdown generation works without Feishu/Lark.
+Local Markdown generation does not require Feishu/Lark. Reading or publishing Feishu/Lark content additionally requires:
 
-To read Lark sources or publish a report as a Lark cloud document, the host environment also needs:
+- [`lark-cli`](https://github.com/larksuite/cli);
+- the official `lark-shared`, `lark-doc`, `lark-im`, `lark-minutes`, and `lark-vc` skills needed for the requested operation;
+- a user-authorized Lark identity with the minimum required scopes.
 
-- [`lark-cli`](https://github.com/larksuite/cli)
-- The current official `lark-shared`, `lark-doc`, `lark-im`, `lark-minutes`, and `lark-vc` skills for the operations you use
-- A user-authorized Lark identity with the minimum required scopes
+The workflow reads only explicitly selected resources, validates the local Markdown first, uses user identity, and verifies the remote document before recording its URL. It does not silently switch to bot identity, overwrite an entire existing document, or delete remote resources.
 
-The Lark workflow is local-first:
+## Scope And Compatibility
 
-1. Read only explicitly selected Lark resources.
-2. Generate and validate the local Markdown report.
-3. Create or safely append to a Lark cloud document.
-4. Upload local report images when requested.
-5. Verify the remote document before writing its URL back to the local report.
+The repository follows the portable Agent Skills folder format and includes Codex interface metadata. Core output is Markdown; this skill does not generate PPTX, DOCX, or HTML. It does not search for additional literature unless the user explicitly requests it.
 
-It does not silently switch to bot identity, overwrite an entire existing document, or delete remote resources.
-
-## Compatibility
-
-The repository follows the portable Agent Skills folder format and includes Codex interface metadata. File parsing and Lark operations depend on the tools available in the host agent environment.
+File parsing and Feishu/Lark operations depend on the tools available in the host environment. Review the skill before installation and keep sensitive research data within an environment you trust.
 
 ## Feedback And Contributions
 
-- Report a reproducible problem with the [Bug form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=bug_report.yml).
-- Propose a reusable improvement with the [Feature form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=feature_request.yml).
-- Share a synthetic or anonymized workflow through the [Example Submission form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=example_submission.yml).
-- Ask questions and compare research workflows in [Discussions](https://github.com/LikC1606/lab-meeting-report-skill/discussions).
+- Report a reproducible problem with the [bug form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=bug_report.yml).
+- Propose a reusable improvement with the [feature form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=feature_request.yml).
+- Share a synthetic or anonymized workflow with the [example form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=example_submission.yml).
+- Ask questions and compare workflows in [Discussions](https://github.com/LikC1606/lab-meeting-report-skill/discussions).
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development and pull-request workflow and [SECURITY.md](SECURITY.md) for private vulnerability reporting.
 
 ## 中文说明
 
-`lab-meeting-report` 用于把实验记录、论文笔记、结果表格、图片、聊天和会议记录整理为可追溯的组会 Markdown 文档。
-
-### 核心能力
-
-- 科研进展汇报：目标、方法、结果、失败实验、阻塞和下一步判据
-- 论文阅读汇报：研究问题、方法、关键证据、创新、局限和可复现性
-- 混合型汇报：把当前研究结果与文献证据对应起来，形成下一步验证计划
-- 明确区分事实、解释和假设
-- 保留负面结果、冲突证据和来源信息
-- 默认生成 `reports/group-meeting/YYYY-MM-DD.md`
-- 可选读取飞书文档、指定聊天和妙记，并同步为飞书云文档
-- 输出语言默认跟随你的请求；明确指定语言时优先服从，无法判断时使用英文
-
-### 完整示例
-
-- [科研进展：输入](examples/research-progress/input-notes.md) / [生成报告](examples/research-progress/report.md)
-- [论文阅读：输入](examples/journal-club/input-notes.md) / [生成报告](examples/journal-club/report.md)
-- [进展与文献混合：输入](examples/mixed/input-notes.md) / [生成报告](examples/mixed/report.md)
-
-### 安装
-
-Windows PowerShell：
-
-```powershell
-npx.cmd skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
-```
-
-macOS 或 Linux：
-
-```bash
-npx skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
-```
-
-### 使用示例
-
-```text
-使用 $lab-meeting-report 读取本周实验记录和结果，生成组会 Markdown，
-保留失败实验、当前阻塞和下一步成功判据。
-```
-
-```text
-使用 $lab-meeting-report 读取这篇论文，生成论文阅读组会报告，
-重点分析方法、关键证据、局限性和对当前工作的启发。
-```
-
-### 飞书集成
-
-本地 Markdown 功能不依赖飞书。启用飞书集成时，需要安装并授权 `lark-cli`，同时具备当前操作对应的官方 Lark skills。该流程只读取你明确指定的文档、聊天或会议范围，并先生成本地报告，再同步飞书。
-
-### 可靠性原则
-
-- 不编造数据、引用、DOI、作者或结论
-- 不隐藏失败实验和负面结果
-- 不把推测写成事实
-- 不默认扫描全部飞书资源
-- 不静默覆盖或删除远程文档
-
-### v1.2 质量评测
-
-v1.2 候选版本在 8 个公开合成科研进展场景上各运行 3 次，严格门槛结果为 `24/24`，冻结的 v1.1 基线为 `0/24`；逐项期望平均通过率分别为 `1.000` 与 `0.818`。Codex 对 24 份候选报告逐声明自审，未发现无证据支撑的关键声明。该审阅由同一编写代理完成，不独立、非盲评，结论只适用于当前合成评测集，不能外推为普遍的幻觉消除能力。
-
-问题和使用讨论可进入 [GitHub Discussions](https://github.com/LikC1606/lab-meeting-report-skill/discussions)，Bug、功能建议和示例投稿请使用仓库的结构化 Issue 表单。
+完整中文安装、示例、能力边界和贡献说明见 [README.zh-CN.md](README.zh-CN.md)。
 
 ## License
 
-MIT
+[MIT](LICENSE)

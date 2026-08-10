@@ -73,6 +73,6 @@ Only 45 of 120 target predictions have been manually reviewed. A retrieval error
 ## Sources
 
 - `examples/research-progress/input-notes.md`
-- `results/baseline.csv` (referenced by the synthetic input; not included)
-- `results/retrieval_reranker.csv` (referenced by the synthetic input; not included)
-- `results/paraphrase_all_classes.csv` (referenced by the synthetic input; not included)
+- [`results/baseline.csv`](results/baseline.csv)
+- [`results/retrieval_reranker.csv`](results/retrieval_reranker.csv)
+- [`results/paraphrase_all_classes.csv`](results/paraphrase_all_classes.csv)

@@ -9,6 +9,7 @@
 - Retrieval + reranker mean macro-F1: 0.757 over three seeds
 - Rare-class recall: baseline 0.54; new system 0.62
 - Median latency: baseline 18.2 ms; new system 19.4 ms
+- Precomputed latency change supplied for reporting: 1.2 ms
 - Current hypothesis: retrieval improves rare-class recall by exposing class-specific examples
 - Source: `results/current_experiment.csv`
 

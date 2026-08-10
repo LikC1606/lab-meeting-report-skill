@@ -3,3 +3,6 @@ contact_links:
   - name: Questions and workflow discussions
     url: https://github.com/LikC1606/lab-meeting-report-skill/discussions
     about: Ask usage questions, share workflows, and discuss report design.
+  - name: Security vulnerability
+    url: https://github.com/LikC1606/lab-meeting-report-skill/security/advisories/new
+    about: Privately report a vulnerability. Do not include sensitive details in a public issue.

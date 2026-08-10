@@ -67,5 +67,5 @@ The retrieval-only configuration is transferable as an ablation, not yet as a pr
 ## Sources
 
 - `examples/mixed/input-notes.md`
-- `results/current_experiment.csv` (referenced by the synthetic input; not included)
-- `papers/synthetic-balanced-retrieval.md` (referenced by the synthetic input; not included)
+- [`results/current_experiment.csv`](results/current_experiment.csv)
+- [`papers/synthetic-balanced-retrieval.md`](papers/synthetic-balanced-retrieval.md)

@@ -91,6 +91,41 @@ class ValidateRepoTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("missing skill file", (result.stdout + result.stderr).lower())
 
+    def test_missing_community_file_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            (fixture / "SECURITY.md").unlink()
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "missing community file",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_missing_example_source_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            source = (
+                fixture
+                / "examples"
+                / "research-progress"
+                / "results"
+                / "baseline.csv"
+            )
+            source.unlink()
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "missing example source",
+                (result.stdout + result.stderr).lower(),
+            )
+
     def test_missing_eval_manifest_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"

@@ -34,6 +34,8 @@ Keep facts, interpretations, and hypotheses distinct. When sources conflict, ret
 <!-- E1 -->
 Before drafting, build an internal evidence ledger for each decision-relevant claim. Record its source path, exact value and unit when numeric, evidence type (`source fact`, `derived calculation`, `interpretation`, or `hypothesis`), conflicts, and linked negative evidence. Preserve source identifiers exactly; do not assign sequence numbers, seed labels, run IDs, or priority ranks that the source did not supply. Use the ledger for control; do not add it to the final report unless it improves traceability.
 
+Do not invent or brainstorm alternative causal explanations unless the user explicitly asks for hypothesis generation. When the sources supply no alternative explanation, state that boundary directly or omit the field. Do not infer an experiment's intended outcome from its method or name; state that the expectation was not supplied. Do not infer priority labels; include a priority column only when the user or a source provides the ranking.
+
 <!-- E2 -->
 Copy experimental numbers and units exactly from their sources. By default, do not introduce new deltas, percentages, averages, dispersion values, threshold margins, or other experimental numbers; state comparisons qualitatively instead. For a supplied threshold, say that the result `exceeds`, `meets`, or `falls below` it as appropriate without computing a margin. Calculate a new number only when the user explicitly requests it or a supplied source explicitly defines that calculation, then verify every operand and label the result as calculated rather than observed. Never invent a numeric estimate to fill a missing result, uncertainty, threshold, or significance value.
 
@@ -58,7 +60,7 @@ If routing remains ambiguous, prefer mixed mode and keep current-work evidence s
 
 - Use the selected reference as the structure, not as text to copy mechanically.
 - Treat Chinese headings in the reference templates as structural examples. Translate headings and labels into the selected report language while preserving their semantic order and evidence rules.
-- Target roughly 3-5 rendered pages, shortening sparse reports and expanding only when evidence requires it.
+- For sparse source material, target 1-2 rendered pages. Use 3-5 pages only when the evidence volume warrants it, and merge overlapping sections instead of repeating the same metrics in the summary, tables, and analysis.
 - Put each conclusion next to its supporting evidence.
 - Use Markdown tables for useful numeric comparisons.
 - Use relative paths for figures. Add a figure caption, source, and one-sentence interpretation.

@@ -13,14 +13,14 @@
 
 ## Decision Requested
 
-Prioritize the latency ablation first. It directly tests whether retrieval alone can retain most of the quality gain while meeting the stricter 19.0 ms next-step target. Manual error review should continue in parallel, but only 45 of 120 predictions are currently labeled, so it cannot yet support a failure taxonomy.
+The next cycle must decide between the latency ablation and completion of the manual error review. The ablation directly tests whether retrieval alone meets the supplied macro-F1 and latency criteria. Only 45 of 120 predictions are currently reviewed, so the manual analysis cannot yet support a failure taxonomy. The sources do not provide a priority rule.
 
 ## Objective And Current Hypothesis
 
 - **Objective:** improve macro-F1 without increasing median inference latency by more than 10%.
 - **Fact:** the combined retrieval-reranker system reached mean macro-F1 0.757 over seeds 11, 22, and 33.
 - **Interpretation:** the combined system improves class-balanced performance relative to the 0.712 baseline.
-- **Hypothesis:** retrieval provides most of the gain, while the reranker contributes disproportionately to latency. This has not been tested.
+- **Source hypothesis:** noisy paraphrases may have blurred boundaries between rare intents in the failed augmentation experiment. The contribution of retrieval versus the reranker remains unresolved.
 
 ## Method
 
@@ -30,7 +30,7 @@ Prioritize the latency ablation first. It directly tests whether retrieval alone
 | Classifier | Linear | Linear |
 | Retrieval | None | Class-aware retrieval |
 | Reranker | None | Lightweight reranker |
-| Evaluation | Macro-F1, median latency | Macro-F1 over 3 seeds, median latency |
+| Evaluation | Macro-F1, median latency | Macro-F1 over three seeds, median latency |
 
 ## Results And Evidence
 
@@ -47,14 +47,14 @@ Individual retrieval-reranker seed results were 0.758, 0.764, and 0.749. The sup
 - **Fact:** the combined system improved the supplied macro-F1 by 0.045 absolute.
 - **Fact:** the latency increase was 1.2 ms, or approximately 6.6% relative to baseline.
 - **Interpretation:** the result satisfies the current project constraint but leaves limited latency headroom.
-- **Alternative explanation:** part of the measured gain may come from the reranker rather than retrieval.
+- **Alternative explanation:** the sources provide no alternative causal explanation for the combined-system result; the missing component ablation leaves attribution unresolved.
 - **Confidence boundary:** baseline seed variability and statistical uncertainty were not supplied.
 
 ## Failed Experiment And Negative Result
 
 | Attempt | Expected | Actual | Supported conclusion | Unresolved cause |
 |---|---|---|---|---|
-| Paraphrase every class | Improve rare-class coverage | Macro-F1 fell to 0.691 | The tested augmentation configuration harmed overall performance | Whether label drift, paraphrase quality, or sampling balance caused the drop |
+| Paraphrase every class | Not supplied | Macro-F1 fell to 0.691 | The tested augmentation configuration harmed overall performance | The source hypothesis about boundary blurring remains unverified; no other cause was supplied |
 
 The notes report the largest precision loss on the two rarest classes. The proposed boundary-blurring explanation remains a hypothesis until examples are reviewed.
 
@@ -64,11 +64,10 @@ Only 45 of 120 target predictions have been manually reviewed. A retrieval error
 
 ## Next Actions
 
-| Priority | Action | Expected artifact | Success criterion | Risk |
-|---:|---|---|---|---|
-| P0 | Run retrieval without reranker over three seeds | `results/retrieval_only.csv` | Mean macro-F1 >= 0.745 and median latency <= 19.0 ms | Gain may depend on reranker |
-| P1 | Complete 75 remaining manual reviews | `analysis/error_review.csv` | 120 reviewed predictions with category labels | Reviewer consistency |
-| P2 | Inspect rare-class paraphrases | `analysis/paraphrase_audit.md` | Identify whether errors show label drift or sampling imbalance | Small sample |
+| Action | Expected artifact | Success criterion | Dependency or risk |
+|---|---|---|---|
+| Run retrieval without reranker over three seeds | `results/retrieval_only.csv` | Mean macro-F1 >= 0.745 and median latency <= 19.0 ms | Keep the remaining setup and latency protocol comparable |
+| Complete the manual review | `analysis/error_review.csv` | 120 reviewed predictions with traceable category labels | Current state is 45 reviewed predictions; review criteria are not supplied |
 
 ## Sources
 

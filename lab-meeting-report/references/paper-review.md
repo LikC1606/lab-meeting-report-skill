@@ -64,7 +64,7 @@ Use this structure for paper-reading, journal-club, or literature-centered group
 
 - 内部有效性：<对照、统计、消融、敏感性>
 - 外部有效性：<数据、任务、人群或场景边界>
-- 替代解释：<未排除的可能性>
+- 替代解释：<仅填写论文或用户明确提出的解释；否则说明未提供或省略>
 - 作者声明的局限：<内容>
 - 汇报者补充的局限：<内容，标明是评价>
 
@@ -82,7 +82,7 @@ Use this structure for paper-reading, journal-club, or literature-centered group
 - 可直接复用：<方法、指标、对照或工具>
 - 需要验证后复用：<内容及验证条件>
 - 不宜迁移：<边界与原因>
-- 可形成的新假设：<明确标为假设>
+- 可形成的新假设：<仅在用户要求生成假设时填写，并明确标为待验证>
 
 ## 讨论问题与参考文献
 
@@ -98,3 +98,4 @@ Writing rules:
 - Separate the authors' claim from the reporter's evaluation.
 - Do not describe novelty as established without a supported comparison to prior work.
 - Label incomplete bibliographic details as `未核验` rather than guessing.
+- Do not generate alternative causal explanations or new hypotheses unless the user requests them; distinguish any requested hypothesis from paper evidence.

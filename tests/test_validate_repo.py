@@ -126,6 +126,25 @@ class ValidateRepoTests(unittest.TestCase):
                 (result.stdout + result.stderr).lower(),
             )
 
+    def test_invented_example_number_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            report = fixture / "examples" / "mixed" / "report.md"
+            content = report.read_text(encoding="utf-8")
+            report.write_text(
+                content + "\nInvented acceptance threshold: 0.59.\n",
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "unexpected numeric values",
+                (result.stdout + result.stderr).lower(),
+            )
+
     def test_missing_eval_manifest_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"
@@ -295,6 +314,103 @@ class ValidateRepoTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn(
                 "encoding guard",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_unsupported_explanation_guard_is_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            skill_file = fixture / "lab-meeting-report" / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(
+                content.replace(
+                    "Do not invent or brainstorm alternative causal explanations",
+                    "Do not add unsupported explanations",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "unsupported-explanation guard",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_sparse_report_length_guard_is_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            skill_file = fixture / "lab-meeting-report" / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(
+                content.replace(
+                    "For sparse source material, target 1-2 rendered pages.",
+                    "Keep sparse reports concise.",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "sparse-report length guard",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_unsupplied_expectation_guard_is_required(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            skill_file = fixture / "lab-meeting-report" / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(
+                content.replace(
+                    "Do not infer an experiment's intended outcome",
+                    "Do not invent an experiment expectation",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "unsupplied-expectation guard",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_default_priority_rank_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            template = (
+                fixture
+                / "lab-meeting-report"
+                / "references"
+                / "mixed-report.md"
+            )
+            content = template.read_text(encoding="utf-8")
+            template.write_text(
+                content.replace(
+                    "| <动作> | <结果或文件> | <可判断标准> | <依赖或风险> |",
+                    "| P0 | <动作> | <结果或文件> | <可判断标准> | <依赖或风险> |",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "default priority rank",
                 (result.stdout + result.stderr).lower(),
             )
 

@@ -11,7 +11,7 @@ Use this structure for experiment, implementation, or project-centered group-mee
 
 - 核心进展：<最重要的已验证变化>
 - 当前判断：<解释或假设，并明确其性质>
-- 下一步：<最优先的验证动作>
+- 下一步：<关键验证动作>
 
 ## 需要讨论或决策的事项
 
@@ -58,14 +58,14 @@ Use this structure for experiment, implementation, or project-centered group-mee
 - **事实：** <直接观察>
 - **解释：** <当前最合理解释及证据>
 - **假设：** <仍未验证的机制或原因>
-- **替代解释：** <其他可能性>
+- **替代解释：** <仅填写来源明确提出的解释；否则说明来源未提供或省略>
 - **可信度边界：** <样本量、对照、统计或外推限制>
 
 ## 失败实验与负面结果
 
-| 尝试 | 预期 | 实际结果 | 可能原因 | 已排除原因 | 后续处理 |
+| 尝试 | 来源提供的预期 | 实际结果 | 来源提出的可能原因 | 已排除原因 | 后续处理 |
 |---|---|---|---|---|---|
-| <尝试> | <预期> | <结果> | <原因或待验证假设> | <证据> | <重试、停止或改进> |
+| <尝试> | <预期> | <结果> | <来源提出的待验证解释；未提供则写待补充> | <证据> | <重试、停止或改进> |
 
 ## 当前阻塞
 
@@ -75,9 +75,9 @@ Use this structure for experiment, implementation, or project-centered group-mee
 
 ## 下一步计划
 
-| 优先级 | 动作 | 预期产物 | 成功判据 | 依赖或风险 |
-|---:|---|---|---|---|
-| P0 | <动作> | <文件、结果或实验> | <可判断标准> | <依赖或风险> |
+| 动作 | 预期产物 | 成功判据 | 依赖或风险 |
+|---|---|---|---|
+| <动作> | <文件、结果或实验> | <可判断标准> | <依赖或风险> |
 
 ## 相关文件、代码与参考资料
 
@@ -90,6 +90,9 @@ Writing rules:
 - Preserve negative results because they constrain the next decision.
 - Compare results with a baseline or prior state when the source permits it.
 - Do not imply statistical significance without supplied evidence.
+- Omit priority labels unless the user or a source explicitly supplies them.
+- Do not generate alternative causal explanations from general knowledge. If the sources provide none, state that directly or omit the field.
+- Do not infer an expected outcome from an experiment name or method. If the source does not state the expectation, write `未提供`.
 
 <!-- P1 -->
 - Treat duplicated or translated notes about the same run as repeated provenance for one run, not independent replication or additional sample count. State the full boundary directly without calculating a counterfactual count. In Chinese, use the unambiguous form `同一次运行的重复来源，并非独立复现`; translate that complete meaning in other report languages.

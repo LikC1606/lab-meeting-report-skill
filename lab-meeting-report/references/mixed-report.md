@@ -58,9 +58,9 @@ Do not collapse a correlation in the paper and a causal claim in the current wor
 
 ### 验证计划
 
-| 优先级 | 验证动作 | 预期产物 | 成功判据 | 依赖或风险 |
-|---:|---|---|---|---|
-| P0 | <动作> | <结果或文件> | <可判断标准> | <依赖或风险> |
+| 验证动作 | 预期产物 | 成功判据 | 依赖或风险 |
+|---|---|---|---|
+| <动作> | <结果或文件> | <可判断标准> | <依赖或风险> |
 
 ## 来源与附件
 
@@ -79,3 +79,5 @@ Writing rules:
 - State whether conditions, datasets, metrics, and populations are comparable.
 - Treat literature-inspired explanations as hypotheses until directly tested.
 - Let contradictions drive a validation plan instead of hiding them in a smooth narrative.
+- Omit priority labels unless the user or a source explicitly supplies them.
+- Do not add alternative causal explanations from general knowledge unless the user explicitly requests hypothesis generation.

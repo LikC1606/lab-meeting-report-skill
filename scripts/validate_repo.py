@@ -11,8 +11,10 @@ import yaml
 
 try:
     from scripts.eval_contract import ContractError, load_manifest
+    from scripts.grade_report import extract_numbers
 except ModuleNotFoundError:
     from eval_contract import ContractError, load_manifest
+    from grade_report import extract_numbers
 
 
 SKILL_NAME = "lab-meeting-report"
@@ -40,6 +42,23 @@ EXAMPLE_SOURCE_FILES = {
     Path("examples/journal-club/papers/synthetic-retrieval-notes.md"),
     Path("examples/mixed/results/current_experiment.csv"),
     Path("examples/mixed/papers/synthetic-balanced-retrieval.md"),
+}
+EXAMPLE_NUMERIC_SOURCES = {
+    Path("examples/research-progress/report.md"): {
+        Path("examples/research-progress/input-notes.md"),
+        Path("examples/research-progress/results/baseline.csv"),
+        Path("examples/research-progress/results/retrieval_reranker.csv"),
+        Path("examples/research-progress/results/paraphrase_all_classes.csv"),
+    },
+    Path("examples/journal-club/report.md"): {
+        Path("examples/journal-club/input-notes.md"),
+        Path("examples/journal-club/papers/synthetic-retrieval-notes.md"),
+    },
+    Path("examples/mixed/report.md"): {
+        Path("examples/mixed/input-notes.md"),
+        Path("examples/mixed/results/current_experiment.csv"),
+        Path("examples/mixed/papers/synthetic-balanced-retrieval.md"),
+    },
 }
 COMMUNITY_FILES = {
     Path("CODE_OF_CONDUCT.md"),
@@ -80,6 +99,16 @@ BLOCKED_PATTERNS = {
     "Windows user path": re.compile(r"[A-Za-z]:\\Users\\", re.IGNORECASE),
 }
 ENCODING_GUARD_TERM = "Treat text encoding as protected content."
+UNSUPPORTED_EXPLANATION_GUARD_TERM = (
+    "Do not invent or brainstorm alternative causal explanations"
+)
+UNSUPPLIED_EXPECTATION_GUARD_TERM = (
+    "Do not infer an experiment's intended outcome"
+)
+SPARSE_REPORT_GUARD_TERM = (
+    "For sparse source material, target 1-2 rendered pages."
+)
+DEFAULT_PRIORITY_PATTERN = re.compile(r"\|\s*P[0-9]+\s*\|")
 EVAL_CASE_IDS = {
     "clean-multiseed",
     "conflicting-results",
@@ -195,6 +224,35 @@ def validate_png(path: Path, errors: list[str]) -> None:
         errors.append(
             f"Unexpected preview dimensions: {width}x{height}; expected 1440x960"
         )
+
+
+def validate_example_numbers(root: Path, errors: list[str]) -> None:
+    metadata_values = {
+        value for _, value in extract_numbers("2026 7 12")
+    }
+    for report_relative, source_relatives in EXAMPLE_NUMERIC_SOURCES.items():
+        report_path = root / report_relative
+        source_paths = [root / relative for relative in source_relatives]
+        if not report_path.is_file() or any(
+            not path.is_file() for path in source_paths
+        ):
+            continue
+        allowed = set(metadata_values)
+        for source_path in source_paths:
+            allowed.update(
+                value
+                for _, value in extract_numbers(read_utf8(source_path))
+            )
+        unexpected = [
+            token
+            for token, value in extract_numbers(read_utf8(report_path))
+            if value not in allowed
+        ]
+        if unexpected:
+            errors.append(
+                "Example report contains unexpected numeric values: "
+                f"{report_relative.as_posix()}: {', '.join(unexpected)}"
+            )
 
 
 def validate_evaluation_assets(root: Path, errors: list[str]) -> None:
@@ -510,6 +568,33 @@ def validate_repo(root: Path) -> list[str]:
                 "Missing existing-report encoding guard: "
                 f"{ENCODING_GUARD_TERM}"
             )
+        if UNSUPPORTED_EXPLANATION_GUARD_TERM not in skill_text:
+            errors.append(
+                "Missing unsupported-explanation guard: "
+                f"{UNSUPPORTED_EXPLANATION_GUARD_TERM}"
+            )
+        if UNSUPPLIED_EXPECTATION_GUARD_TERM not in skill_text:
+            errors.append(
+                "Missing unsupplied-expectation guard: "
+                f"{UNSUPPLIED_EXPECTATION_GUARD_TERM}"
+            )
+        if SPARSE_REPORT_GUARD_TERM not in skill_text:
+            errors.append(
+                "Missing sparse-report length guard: "
+                f"{SPARSE_REPORT_GUARD_TERM}"
+            )
+
+    for path in (
+        skill_root / "references" / "progress-report.md",
+        skill_root / "references" / "mixed-report.md",
+        root / "examples" / "research-progress" / "report.md",
+        root / "examples" / "mixed" / "report.md",
+    ):
+        if path.is_file() and DEFAULT_PRIORITY_PATTERN.search(read_utf8(path)):
+            errors.append(
+                "Default priority rank detected in skill template: "
+                f"{path.relative_to(root).as_posix()}"
+            )
 
     metadata_file = skill_root / "agents" / "openai.yaml"
     if metadata_file.is_file():
@@ -573,6 +658,8 @@ def validate_repo(root: Path) -> list[str]:
             errors.append(
                 f"Example source lacks Synthetic example label: {relative.as_posix()}"
             )
+
+    validate_example_numbers(root, errors)
 
     validate_png(root / "assets" / "lab-meeting-report-preview.png", errors)
     validate_evaluation_assets(root, errors)

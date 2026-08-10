@@ -11,7 +11,10 @@ from dataclasses import asdict, dataclass
 from decimal import Decimal, InvalidOperation, localcontext
 from pathlib import Path
 
-from scripts.eval_contract import ContractError, load_manifest
+try:
+    from scripts.eval_contract import ContractError, load_manifest
+except ModuleNotFoundError:
+    from eval_contract import ContractError, load_manifest
 
 
 @dataclass(frozen=True)

@@ -15,13 +15,13 @@
 
 | Metric | Baseline | Retrieval + reranker | Source |
 |---|---:|---:|---|
-| Macro-F1 | 0.712 | 0.757 mean over 3 seeds | `results/current_experiment.csv` |
+| Macro-F1 | 0.712 | 0.757 mean over three seeds | `results/current_experiment.csv` |
 | Rare-class recall | 0.54 | 0.62 | `results/current_experiment.csv` |
 | Median latency | 18.2 ms | 19.4 ms | `results/current_experiment.csv` |
 
 - **Fact:** the combined current system improved the supplied macro-F1 and rare-class recall.
-- **Hypothesis:** retrieval caused the recall gain by exposing class-specific examples.
-- **Unresolved alternative:** the reranker may account for some or all of the gain.
+- **Source hypothesis:** retrieval improves rare-class recall by exposing class-specific examples.
+- **Evidence boundary:** the current comparison changes retrieval and the reranker together, so it cannot attribute the observed result to either component.
 
 ## Related Synthetic Paper
 
@@ -40,8 +40,8 @@ The fictional paper claims transfer across intent datasets. The supplied notes d
 
 | Current observation | Literature evidence | Relationship | Boundary | Validation action |
 |---|---|---|---|---|
-| Macro-F1 improved by 0.045 | Fictional paper reports +0.07 | Directionally consistent | Different data balance and model components | Run retrieval-only ablation on current data |
-| Rare-class recall improved by 0.08 | Rare-class recall not reported | Not comparable | Paper classes are balanced | Report per-class recall in retrieval-only run |
+| Macro-F1 is 0.712 for baseline and 0.757 for retrieval + reranker | Fictional paper reports baseline 0.70 and retrieval 0.77 | Directionally consistent | Different data balance and model components | Run retrieval-only ablation on current data |
+| Rare-class recall is 0.54 for baseline and 0.62 for retrieval + reranker | Rare-class recall not reported | Not comparable | Paper classes are balanced | Report per-class recall in retrieval-only run |
 | Latency increased by 1.2 ms | Latency not reported | Missing evidence | Paper has no operational constraint | Measure retrieval-only median latency |
 
 Agreement in macro-F1 direction does not prove a shared mechanism. The fictional paper cannot validate the current rare-class explanation because it reports no rare-class setting.
@@ -54,15 +54,15 @@ The retrieval-only configuration is transferable as an ablation, not yet as a pr
 
 - **Original hypothesis:** retrieval improves rare-class recall through class-specific examples.
 - **Current evidence:** the combined system improves recall, while the fictional paper reports retrieval gains under balanced conditions.
-- **Updated hypothesis:** retrieval contributes to the current gain, but the magnitude depends on class imbalance and may interact with the reranker.
+- **Updated hypothesis:** the source hypothesis remains unverified because the current result combines retrieval with a reranker and the paper uses balanced classes.
 
 ## Validation Plan
 
-| Priority | Experiment | Expected artifact | Success criterion | Interpretation |
-|---:|---|---|---|---|
-| P0 | Retrieval without reranker, 3 seeds | `results/retrieval_only.csv` | Mean macro-F1 >= 0.745 and rare-class recall >= 0.59 | Supports a retrieval contribution if both thresholds hold |
-| P1 | Compare per-class deltas | `analysis/per_class_recall.md` | Report all 8 classes without aggregation-only claims | Tests whether gain is concentrated in rare classes |
-| P2 | Measure retrieval-only latency | Same result file | Median latency <= 19.0 ms | Tests operational viability |
+| Experiment | Expected artifact | Success criterion | Interpretation |
+|---|---|---|---|
+| Retrieval without reranker under the same seed protocol | `results/retrieval_only.csv` | Record macro-F1, rare-class recall, and median latency under a controlled configuration; numeric acceptance thresholds are not supplied | Compares retrieval-only with baseline and the combined system |
+| Compare all 8 per-class recall values | `analysis/per_class_recall.md` | Report every class without an aggregation-only claim | Tests whether the observed result is concentrated in rare classes |
+| Measure retrieval-only latency | Same result file | Use the same measurement protocol as the current experiment; the project threshold is not supplied | Tests operational viability without importing a threshold from another workflow |
 
 ## Sources
 

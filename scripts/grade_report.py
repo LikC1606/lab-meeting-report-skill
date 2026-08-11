@@ -27,6 +27,26 @@ class Expectation:
 NUMBER_RE = re.compile(
     r"(?<![\w.])(?:\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?|\.\d+)\s*(%)?"
 )
+MARP_FRONTMATTER_RE = re.compile(
+    r"\A---\r?\n(?P<yaml>.*?)\r?\n---(?:\r?\n|\Z)", re.DOTALL
+)
+PRESENTATION_ROLE_PATTERNS = {
+    "evidence": re.compile(
+        r"(?:\*\*Evidence:\*\*|(?:Evidence|证据|来源)\s*[：:])",
+        re.IGNORECASE,
+    ),
+    "say": re.compile(
+        r"(?:\*\*Say:\*\*|(?:Say|讲述|讲述要点|演讲提示)\s*(?:[（(:：]|--?>))",
+        re.IGNORECASE,
+    ),
+    "discuss": re.compile(
+        r"(?:\*\*Discuss:\*\*|(?:Discuss|讨论|讨论问题|讨论入口|需组会决定|收束问题)\s*[：:])",
+        re.IGNORECASE,
+    ),
+}
+NEXT_STEP_PATTERN = re.compile(
+    r"(?:next\s+steps?|next-week|下一步|下周|行动|交付)", re.IGNORECASE
+)
 
 
 def canonical_decimal(value: str, percent: bool = False) -> Decimal:
@@ -88,18 +108,33 @@ def _defined_markdown_citation_spans(text: str) -> list[tuple[int, int]]:
     return spans
 
 
+def _source_locator_spans(text: str) -> list[tuple[int, int]]:
+    spans: list[tuple[int, int]] = []
+    pattern = re.compile(
+        r"(?:[\w./-]+\.(?:md|txt|csv|tsv|json|ya?ml|pdf|xlsx?))"
+        r":(?P<locator>L?\d+(?:(?:-|,)L?\d+)*)",
+        re.IGNORECASE,
+    )
+    for match in pattern.finditer(text):
+        spans.append(match.span("locator"))
+    return spans
+
+
 def extract_numbers(text: str) -> list[tuple[str, Decimal]]:
     values: list[tuple[str, Decimal]] = []
     normalized = unicodedata.normalize("NFKC", text)
-    citation_spans = _defined_markdown_citation_spans(normalized)
+    ignored_spans = [
+        *_defined_markdown_citation_spans(normalized),
+        *_source_locator_spans(normalized),
+    ]
     for match in NUMBER_RE.finditer(normalized):
         if _is_markdown_ordered_list_marker(
             normalized, match
         ) or _is_hyphenated_technical_identifier(normalized, match):
             continue
         if any(
-            start < match.start() and match.end() < end
-            for start, end in citation_spans
+            start <= match.start() and match.end() <= end
+            for start, end in ignored_spans
         ):
             continue
         token = match.group(0).strip()
@@ -252,6 +287,16 @@ def conflict_expectation(
 
 
 def _forbidden_match_is_negated(text: str, match: re.Match[str]) -> bool:
+    question_end = text.find("?", match.end())
+    statement_ends = [
+        position
+        for boundary in (".", "!", ";", "\n")
+        if (position := text.find(boundary, match.end())) != -1
+    ]
+    if question_end != -1 and (
+        not statement_ends or question_end < min(statement_ends)
+    ):
+        return True
     clause_start = max(
         text.rfind(boundary, 0, match.start())
         for boundary in (".", "!", "?", ";")
@@ -263,14 +308,22 @@ def _forbidden_match_is_negated(text: str, match: re.Match[str]) -> bool:
     if contrasts:
         prefix = prefix[contrasts[-1].end() :]
     context = prefix[-160:]
-    return re.search(
+    english_negation = re.search(
         r"\b(?:"
         r"(?:does|do|did|is|are|was|were|has|have|had|can|could|would|should)"
         r"\s+not|cannot|can't|neither|no evidence|without evidence|"
         r"fails? to|insufficient to"
         r")\b",
         context,
-    ) is not None
+    )
+    chinese_negation = re.search(
+        r"(?:不(?:能|足以|支持|代表|表示|意味着|声称|主张|预设|排序)|"
+        r"无(?:法|证据)|"
+        r"没有(?:足够)?(?:证据)?|未(?:能|提供)?|缺(?:乏|少))"
+        r"[^。！？；\n]{0,48}$",
+        context,
+    )
+    return english_negation is not None or chinese_negation is not None
 
 
 def semantic_expectations(
@@ -343,6 +396,154 @@ def semantic_expectations(
     return expectations
 
 
+def _presentation_slides(text: str) -> tuple[str | None, list[str]]:
+    frontmatter = MARP_FRONTMATTER_RE.match(text)
+    if frontmatter is None:
+        return None, []
+    slides = [
+        slide.strip()
+        for slide in re.split(r"(?m)^---\s*$", text[frontmatter.end() :])
+        if slide.strip()
+    ]
+    return frontmatter.group("yaml"), slides
+
+
+def _presentation_numeric_text(text: str) -> str:
+    frontmatter = MARP_FRONTMATTER_RE.match(text)
+    body = text[frontmatter.end() :] if frontmatter else text
+    body = re.sub(r"#L\d+(?:-L?\d+)?", "", body)
+    body = re.sub(r"第\s*\d+(?:\s*[-、至]\s*\d+)?\s*行", "", body)
+    body = re.sub(r"第\s*\d+(?:\s*[-、至]\s*\d+)?\s*(?:页|张)", "", body)
+    body = re.sub(
+        r"\bslides?\s+\d+(?:\s*[-–]\s*\d+)?\b",
+        "",
+        body,
+        flags=re.IGNORECASE,
+    )
+    body = re.sub(r"[（(]\s*\d+\s*:\s*\d+\s*[）)]", "", body)
+    return body
+
+
+def presentation_expectations(
+    text: str,
+    manifest: dict[str, object],
+    report_text: str | None = None,
+) -> list[Expectation]:
+    frontmatter, slides = _presentation_slides(text)
+    duration_source = report_text or text
+    duration_match = re.search(
+        r"(?:时长|汇报时间|duration)\D{0,20}(\d+)\s*(?:分钟|min(?:ute)?s?)",
+        duration_source,
+        re.IGNORECASE,
+    )
+    duration = int(duration_match.group(1)) if duration_match else None
+    minimum_slides, maximum_slides = (
+        (5, 7) if duration is not None and duration <= 10 else (2, 12)
+    )
+    expectations = [
+        Expectation(
+            "presentation:marp-frontmatter",
+            frontmatter is not None
+            and re.search(r"(?mi)^marp:\s*true\s*$", frontmatter) is not None,
+            "Marp is enabled"
+            if frontmatter is not None
+            and re.search(r"(?mi)^marp:\s*true\s*$", frontmatter) is not None
+            else "missing valid Marp frontmatter",
+        ),
+        Expectation(
+            "presentation:slide-count",
+            minimum_slides <= len(slides) <= maximum_slides,
+            f"slide count: {len(slides)}; "
+            f"expected {minimum_slides}-{maximum_slides}",
+        ),
+    ]
+
+    for index, slide in enumerate(slides, start=1):
+        for role, pattern in PRESENTATION_ROLE_PATTERNS.items():
+            found = pattern.search(slide) is not None
+            expectations.append(
+                Expectation(
+                    f"presentation:slide-{index}:{role}",
+                    found,
+                    f"{role} marker found" if found else f"{role} marker missing",
+                )
+            )
+
+    final_has_next_step = bool(slides and NEXT_STEP_PATTERN.search(slides[-1]))
+    expectations.append(
+        Expectation(
+            "presentation:final-next-step",
+            final_has_next_step,
+            "final slide contains a next-step or action marker"
+            if final_has_next_step
+            else "final slide lacks a next-step or action marker",
+        )
+    )
+
+    allowed = {
+        _declared_value(rule, f"numbers[{index}]")
+        for index, rule in enumerate(manifest["numbers"])
+    }
+    for index, rule in enumerate(manifest["derived_numbers"]):
+        allowed.add(_declared_value(rule, f"derived_numbers[{index}]"))
+    unexpected = [
+        token
+        for token, value in extract_numbers(_presentation_numeric_text(text))
+        if value not in allowed
+    ]
+    expectations.append(
+        Expectation(
+            "presentation:numeric-closed-world",
+            not unexpected,
+            "unexpected numeric tokens: " + ", ".join(unexpected)
+            if unexpected
+            else "all presentation numeric tokens are declared",
+        )
+    )
+
+    normalized = normalize_text(text)
+    for field, prefix in (
+        ("required_evidence", "evidence"),
+        ("negative_results", "negative"),
+    ):
+        for rule in manifest[field]:
+            result = term_rule_expectation(prefix, rule, normalized)
+            expectations.append(
+                Expectation(
+                    f"presentation:{result.text}", result.passed, result.evidence
+                )
+            )
+    for source in manifest["required_sources"]:
+        target = normalize_text(str(source))
+        expectations.append(
+            Expectation(
+                f"presentation:required-source:{source}",
+                target in normalized,
+                "source found" if target in normalized else "source missing",
+            )
+        )
+    for rule in manifest["forbidden_patterns"]:
+        pattern = re.compile(str(rule["pattern"]), re.IGNORECASE)
+        match = next(
+            (
+                candidate
+                for candidate in pattern.finditer(normalized)
+                if not _forbidden_match_is_negated(normalized, candidate)
+            ),
+            None,
+        )
+        expectations.append(
+            Expectation(
+                f"presentation:forbidden:{rule['id']}",
+                match is None,
+                f"forbidden pattern found: {match.group(0)}"
+                if match
+                else "forbidden pattern absent",
+            )
+        )
+    return expectations
+
+
 def build_grading(
     expectations: list[Expectation], text: str
 ) -> dict[str, object]:
@@ -371,10 +572,29 @@ def grade_text(text: str, manifest: dict[str, object]) -> dict[str, object]:
     return build_grading(expectations, text)
 
 
+def grade_workflow(
+    report_text: str,
+    presentation_text: str | None,
+    manifest: dict[str, object],
+) -> dict[str, object]:
+    expectations = numeric_expectations(report_text, manifest)
+    expectations.extend(semantic_expectations(report_text, manifest))
+    combined_text = report_text
+    if presentation_text is not None:
+        expectations.extend(
+            presentation_expectations(
+                presentation_text, manifest, report_text=report_text
+            )
+        )
+        combined_text += "\n" + presentation_text
+    return build_grading(expectations, combined_text)
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Grade a generated lab report")
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
+    parser.add_argument("--presentation", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args(argv)
 
@@ -384,7 +604,12 @@ def main(argv: list[str] | None = None) -> int:
     try:
         manifest = load_manifest(args.manifest)
         report = args.report.read_text(encoding="utf-8", errors="strict")
-        grading = grade_text(report, manifest)
+        presentation = (
+            args.presentation.read_text(encoding="utf-8", errors="strict")
+            if args.presentation is not None
+            else None
+        )
+        grading = grade_workflow(report, presentation, manifest)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(
             json.dumps(grading, ensure_ascii=False, indent=2) + "\n",

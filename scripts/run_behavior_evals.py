@@ -29,7 +29,7 @@ from scripts.eval_contract import (
     load_manifest,
     safe_relative_path,
 )
-from scripts.grade_report import grade_text
+from scripts.grade_report import grade_workflow
 
 
 SKILL_NAME = "lab-meeting-report"
@@ -308,16 +308,27 @@ def build_prompt(
     expected_report = safe_relative_path(
         str(manifest["expected_report"]), "expected_report"
     )
-    return "\n".join(
+    lines = [
+        "Execute the synthetic lab-meeting report task in this isolated workspace.",
+        f"Open and follow the Skill at `{skill_file.as_posix()}`.",
+        f"Read the user task at `{task_file.as_posix()}` and only the sources it places in scope.",
+        f"Create the final Markdown report at `{expected_report.as_posix()}`.",
+    ]
+    if "expected_presentation" in manifest:
+        expected_presentation = safe_relative_path(
+            str(manifest["expected_presentation"]), "expected_presentation"
+        )
+        lines.append(
+            "Create the requested companion presentation at "
+            f"`{expected_presentation.as_posix()}`."
+        )
+    lines.extend(
         [
-            "Execute the synthetic lab-meeting report task in this isolated workspace.",
-            f"Open and follow the Skill at `{skill_file.as_posix()}`.",
-            f"Read the user task at `{task_file.as_posix()}` and only the sources it places in scope.",
-            f"Create the final Markdown report at `{expected_report.as_posix()}`.",
-            "Do not read or search for manifest.json, expected-valid-report.md, or files outside this workspace.",
-            "Do not stop after describing the report; write the requested file and verify it exists.",
+            "Do not read or search for manifest.json, expected-valid-report.md, expected-valid-slides.md, or files outside this workspace.",
+            "Do not stop after describing the report; write every requested file and verify it exists.",
         ]
     )
+    return "\n".join(lines)
 
 
 def _run_dir(spec: RunSpec, case_id: str) -> Path:
@@ -549,6 +560,7 @@ def run_with_retry(
     total_tokens = 0
     grading: dict[str, object] | None = None
     report_text: str | None = None
+    presentation_text: str | None = None
     runner_path = Path(__file__).resolve()
     grader_path = runner_path.with_name("grade_report.py")
     environment_hashes = {
@@ -561,6 +573,9 @@ def run_with_retry(
     }
 
     for attempts in range(1, 3):
+        grading = None
+        report_text = None
+        presentation_text = None
         sandbox = run_dir / "sandbox"
         if sandbox.exists():
             shutil.rmtree(sandbox)
@@ -615,7 +630,20 @@ def run_with_retry(
             report_text = expected_report.read_text(
                 encoding="utf-8", errors="strict"
             )
-            grading = grade_text(report_text, manifest)
+            if "expected_presentation" in manifest:
+                expected_presentation = sandbox / safe_relative_path(
+                    str(manifest["expected_presentation"]),
+                    "expected_presentation",
+                )
+                if not expected_presentation.is_file():
+                    raise RuntimeError(
+                        "expected presentation missing: "
+                        f"{manifest['expected_presentation']}"
+                    )
+                presentation_text = expected_presentation.read_text(
+                    encoding="utf-8", errors="strict"
+                )
+            grading = grade_workflow(report_text, presentation_text, manifest)
             _write_attempt_logs(
                 run_dir,
                 attempts,
@@ -687,6 +715,10 @@ def run_with_retry(
     outputs = run_dir / "outputs"
     outputs.mkdir(parents=True, exist_ok=True)
     (outputs / "report.md").write_text(report_text, encoding="utf-8")
+    if presentation_text is not None:
+        (outputs / "slides.md").write_text(
+            presentation_text, encoding="utf-8"
+        )
     _write_json(run_dir / "grading.json", grading)
     return RunResult(
         run_dir,

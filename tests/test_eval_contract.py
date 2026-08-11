@@ -96,6 +96,29 @@ class ContractTests(unittest.TestCase):
             with self.assertRaisesRegex(ContractError, "unexpected"):
                 load_manifest(self.write_case(Path(temp), manifest))
 
+    def test_optional_presentation_and_mixed_mode_are_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            manifest = {
+                **deepcopy(VALID_MANIFEST),
+                "report_mode": "mixed",
+                "expected_presentation": "slides.md",
+            }
+
+            loaded = load_manifest(self.write_case(Path(temp), manifest))
+
+        self.assertEqual(loaded["report_mode"], "mixed")
+        self.assertEqual(loaded["expected_presentation"], "slides.md")
+
+    def test_presentation_parent_traversal_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            manifest = {
+                **deepcopy(VALID_MANIFEST),
+                "expected_presentation": "../slides.md",
+            }
+
+            with self.assertRaisesRegex(ContractError, "relative path"):
+                load_manifest(self.write_case(Path(temp), manifest))
+
     def test_parent_traversal_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             manifest = {

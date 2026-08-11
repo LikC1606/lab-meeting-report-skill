@@ -12,7 +12,7 @@ class ContractError(ValueError):
     pass
 
 
-TOP_LEVEL_KEYS = {
+REQUIRED_TOP_LEVEL_KEYS = {
     "schema_version",
     "case_id",
     "layer",
@@ -32,6 +32,8 @@ TOP_LEVEL_KEYS = {
     "skipped_sources",
     "preservation_markers",
 }
+OPTIONAL_TOP_LEVEL_KEYS = {"expected_presentation"}
+TOP_LEVEL_KEYS = REQUIRED_TOP_LEVEL_KEYS | OPTIONAL_TOP_LEVEL_KEYS
 COLLECTION_FIELDS = {
     "numbers",
     "derived_numbers",
@@ -81,6 +83,22 @@ def _validate_exact_keys(
 ) -> None:
     missing = expected - set(value)
     unexpected = set(value) - expected
+    if missing:
+        raise ContractError(f"{field} missing fields: {', '.join(sorted(missing))}")
+    if unexpected:
+        raise ContractError(
+            f"{field} has unexpected fields: {', '.join(sorted(unexpected))}"
+        )
+
+
+def _validate_required_allowed_keys(
+    value: dict[str, object],
+    required: set[str],
+    allowed: set[str],
+    field: str,
+) -> None:
+    missing = required - set(value)
+    unexpected = set(value) - allowed
     if missing:
         raise ContractError(f"{field} missing fields: {', '.join(sorted(missing))}")
     if unexpected:
@@ -270,7 +288,9 @@ def load_manifest(path: Path) -> dict[str, object]:
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ContractError(f"cannot read manifest {path}: {exc}") from exc
     data = _require_mapping(data, "manifest")
-    _validate_exact_keys(data, TOP_LEVEL_KEYS, "manifest")
+    _validate_required_allowed_keys(
+        data, REQUIRED_TOP_LEVEL_KEYS, TOP_LEVEL_KEYS, "manifest"
+    )
     if data["schema_version"] != 1:
         raise ContractError("schema_version must be 1")
 
@@ -285,12 +305,18 @@ def load_manifest(path: Path) -> dict[str, object]:
         raise ContractError("layer must be composition or end-to-end")
     if data["language"] not in {"en", "zh-CN"}:
         raise ContractError("language must be en or zh-CN")
-    if data["report_mode"] != "research-progress":
-        raise ContractError("report_mode must be research-progress")
+    if data["report_mode"] not in {"research-progress", "paper-review", "mixed"}:
+        raise ContractError(
+            "report_mode must be research-progress, paper-review, or mixed"
+        )
 
     task_file = safe_relative_path(str(data["task_file"]), "task_file")
     input_root = safe_relative_path(str(data["input_root"]), "input_root")
     safe_relative_path(str(data["expected_report"]), "expected_report")
+    if "expected_presentation" in data:
+        safe_relative_path(
+            str(data["expected_presentation"]), "expected_presentation"
+        )
     if not (path.parent / task_file).is_file():
         raise ContractError(f"task_file not found: {task_file.as_posix()}")
     if not (path.parent / input_root).is_dir():

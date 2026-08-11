@@ -32,10 +32,11 @@
     },
     "layer": {"enum": ["composition", "end-to-end"]},
     "language": {"enum": ["en", "zh-CN"]},
-    "report_mode": {"const": "research-progress"},
+    "report_mode": {"enum": ["research-progress", "paper-review", "mixed"]},
     "task_file": {"type": "string", "minLength": 1},
     "input_root": {"type": "string", "minLength": 1},
     "expected_report": {"type": "string", "minLength": 1},
+    "expected_presentation": {"type": "string", "minLength": 1},
     "numbers": {"type": "array", "items": {"$ref": "#/$defs/number"}},
     "derived_numbers": {
       "type": "array",

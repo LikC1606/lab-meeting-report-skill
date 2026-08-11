@@ -30,9 +30,16 @@ Derive it from the validated report and keep:
 - a discussion question where group input is needed;
 - a final next-step slide.
 
+Every slide must retain three semantic roles: `Evidence`, `Say`, and `Discuss`. Localize their visible labels when appropriate. For an audience-facing deck, keep the evidence as a concise visible source footer, place `Say` in speaker notes when the format supports notes, and show `Discuss` only when the audience needs to act on it. A slide with no live discussion still needs a short presenter-note marker such as `Discuss: none` so the intent remains machine-checkable.
+
 Use the meeting duration when supplied. As a default rhythm, prefer a title slide, one overview slide, a small number of evidence slides, one blocker or discussion slide, and one next-step slide. Reduce the number of slides before shrinking content.
 
+For a presentation of 10 minutes or less, normally use 5-7 slides including the title. Exceed that range only when the supplied evidence requires a separate safety-critical or decision-critical slide. Do not turn every report section into a slide.
+
 Do not invent a title, result, citation, image, or metric that is absent from the report. Keep relative asset paths valid from the deck file.
+Preserve run IDs, seed labels, model names, and configuration identifiers exactly. Do not compress distinct identifiers into shorthand such as `seed-13/29/42`; write `seed-13`, `seed-29`, and `seed-42` so every claim remains searchable and traceable.
+Preserve the operational scope of blockers and requests. For example, an export-permission blocker must remain `导出权限` or `export permission`; do not broaden it to generic data access or `数据权限`.
+When a paper informs a slide, preserve its complete supplied title on that slide or in its speaker notes. Do not replace the title with a generic label such as "the paper."
 
 ## Marp
 

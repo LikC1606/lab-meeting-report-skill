@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "case_id": "chinese-mixed-decision",
+  "layer": "end-to-end",
+  "language": "zh-CN",
+  "report_mode": "mixed",
+  "task_file": "task.md",
+  "input_root": "inputs",
+  "expected_report": "report.md",
+  "expected_presentation": "slides.md",
+  "numbers": [
+    {"id": "year", "value": "2026", "unit": "metadata", "required": false, "source": "inputs/notes.md"},
+    {"id": "august", "value": "8", "unit": "metadata", "required": false, "source": "inputs/notes.md"},
+    {"id": "meeting-day", "value": "11", "unit": "metadata", "required": false, "source": "inputs/notes.md"},
+    {"id": "due-day", "value": "18", "unit": "metadata", "required": true, "source": "inputs/notes.md"},
+    {"id": "seed-13", "value": "13", "unit": "seed", "required": false, "source": "inputs/results.csv"},
+    {"id": "seed-29", "value": "29", "unit": "seed", "required": false, "source": "inputs/results.csv"},
+    {"id": "seed-42", "value": "42", "unit": "seed", "required": false, "source": "inputs/results.csv"},
+    {"id": "precision-13", "value": "0.88", "unit": "ratio", "required": true, "source": "inputs/results.csv"},
+    {"id": "recall-13", "value": "0.83", "unit": "ratio", "required": true, "source": "inputs/results.csv"},
+    {"id": "f1-window-5", "value": "0.85", "unit": "ratio", "required": true, "source": "inputs/results.csv"},
+    {"id": "latency-18", "value": "18", "unit": "ms", "required": true, "source": "inputs/results.csv"},
+    {"id": "precision-29", "value": "0.86", "unit": "ratio", "required": true, "source": "inputs/results.csv"},
+    {"id": "recall-window-5", "value": "0.84", "unit": "ratio", "required": true, "source": "inputs/results.csv"},
+    {"id": "latency-19", "value": "19", "unit": "ms", "required": true, "source": "inputs/results.csv"},
+    {"id": "precision-42-window-5", "value": "0.87", "unit": "ratio", "required": true, "source": "inputs/results.csv"},
+    {"id": "precision-window-9", "value": "0.91", "unit": "ratio", "required": true, "source": "inputs/results.csv"},
+    {"id": "recall-window-9", "value": "0.71", "unit": "ratio", "required": true, "source": "inputs/results.csv"},
+    {"id": "f1-window-9", "value": "0.80", "unit": "ratio", "required": true, "source": "inputs/results.csv"},
+    {"id": "latency-26", "value": "26", "unit": "ms", "required": true, "source": "inputs/results.csv"},
+    {"id": "reviewed-errors", "value": "24", "unit": "count", "required": true, "source": "inputs/notes.md"},
+    {"id": "review-target", "value": "60", "unit": "count", "required": true, "source": "inputs/notes.md"}
+  ],
+  "derived_numbers": [],
+  "required_evidence": [
+    {"id": "completed-baseline", "all_of": ["window_5", "seed-13", "seed-29", "seed-42"]},
+    {"id": "blocker-impact", "all_of": ["医院", "导出权限", "外部验证"]},
+    {"id": "open-choice", "all_of": ["synthetic perturbation stress test", "权限", "优先级规则"]},
+    {"id": "owned-action", "all_of": ["Chen", "2026-08-18", "60", "误报分类表"]},
+    {"id": "paper-boundary", "all_of": ["Temporal Convolution for Wearable Event Detection", "未核验", "不能", "解释"]}
+  ],
+  "negative_results": [
+    {"id": "window-9-recall", "all_of": ["window_9", "0.71", "window_5", "0.84"]}
+  ],
+  "conflicts": [],
+  "forbidden_patterns": [
+    {"id": "unsupported-causality", "pattern": "论文(?:证明|解释了).*recall"},
+    {"id": "invented-significance", "pattern": "(?:统计显著|显著提升|显著优于)"},
+    {"id": "invented-priority-stress-test", "pattern": "(?:优先(?!级)|建议)(?:选择|开展|推动|做)?.{0,12}synthetic perturbation stress test"},
+    {"id": "invented-priority-permission", "pattern": "(?:优先(?!级)|建议)(?:选择|开展|推动|做)?.{0,12}数据权限"}
+  ],
+  "required_sources": [
+    "inputs/notes.md",
+    "inputs/results.csv",
+    "inputs/paper-notes.md"
+  ],
+  "forbidden_sources": [],
+  "skipped_sources": [],
+  "preservation_markers": []
+}

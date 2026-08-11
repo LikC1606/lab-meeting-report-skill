@@ -36,6 +36,14 @@ CASE_ROOT = (
     / "clean-multiseed"
 )
 CASE_MANIFEST = load_manifest(CASE_ROOT / "manifest.json")
+WORKFLOW_CASE_ROOT = (
+    REPO_ROOT
+    / "evals"
+    / "weekly-workflow"
+    / "cases"
+    / "chinese-mixed-decision"
+)
+WORKFLOW_MANIFEST = load_manifest(WORKFLOW_CASE_ROOT / "manifest.json")
 SKILL_ROOT = REPO_ROOT / "lab-meeting-report"
 
 
@@ -138,6 +146,41 @@ class RunBehaviorEvalTests(unittest.TestCase):
         self.assertIn("skill-under-test/SKILL.md", prompt)
         self.assertIn("Do not read or search for manifest.json", prompt)
         self.assertNotIn("forbidden_patterns", prompt)
+
+    def test_presentation_case_prompt_and_outputs_include_slides(self) -> None:
+        def workflow_executor(
+            context: object,
+        ) -> subprocess.CompletedProcess[str]:
+            report_path = context.sandbox / Path(
+                context.manifest["expected_report"]
+            )
+            slides_path = context.sandbox / Path(
+                context.manifest["expected_presentation"]
+            )
+            shutil.copy2(
+                WORKFLOW_CASE_ROOT / "expected-valid-report.md", report_path
+            )
+            shutil.copy2(
+                WORKFLOW_CASE_ROOT / "expected-valid-slides.md", slides_path
+            )
+            return subprocess.CompletedProcess(
+                context.command, 0, stdout="", stderr=""
+            )
+
+        spec = replace(
+            self.make_spec(),
+            case_manifest=WORKFLOW_CASE_ROOT / "manifest.json",
+        )
+
+        prompt = build_prompt(
+            WORKFLOW_MANIFEST, Path("skill-under-test/SKILL.md")
+        )
+        result = run_with_retry(spec, executor=workflow_executor)
+
+        self.assertIn("`slides.md`", prompt)
+        self.assertEqual(result.infrastructure_status, "valid")
+        self.assertTrue(result.hard_pass)
+        self.assertTrue((result.run_dir / "outputs" / "slides.md").is_file())
 
     def test_command_allows_an_isolated_non_git_sandbox(self) -> None:
         executor = CapturingSuccessExecutor()

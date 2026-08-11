@@ -11,10 +11,10 @@ import yaml
 
 try:
     from scripts.eval_contract import ContractError, load_manifest
-    from scripts.grade_report import extract_numbers
+    from scripts.grade_report import extract_numbers, grade_workflow
 except ModuleNotFoundError:
     from eval_contract import ContractError, load_manifest
-    from grade_report import extract_numbers
+    from grade_report import extract_numbers, grade_workflow
 
 
 SKILL_NAME = "lab-meeting-report"
@@ -125,6 +125,18 @@ UNSUPPLIED_EXPECTATION_GUARD_TERM = (
 )
 SPARSE_REPORT_GUARD_TERM = (
     "For sparse source material, target 1-2 rendered pages."
+)
+STANDARD_REPORT_DEDUP_GUARD_TERM = (
+    "Do not repeat the same missing dataset, split, configuration"
+)
+PRESENTATION_ROLE_GUARD_TERM = (
+    "Every slide must retain three semantic roles: `Evidence`, `Say`, and `Discuss`."
+)
+PRESENTATION_IDENTIFIER_GUARD_TERM = (
+    "Do not compress distinct identifiers into shorthand"
+)
+PRESENTATION_BLOCKER_SCOPE_GUARD_TERM = (
+    "Preserve the operational scope of blockers and requests."
 )
 INPUT_CONTRACT_GUARD_TERM = (
     "Accept a natural-language request without forcing the user to fill a form."
@@ -239,6 +251,18 @@ CORRUPT_CSV_SHA256 = (
     "c90d4efb69ec99c28d449dbfb3e53a5aba0eb40b0ea686c3e58378067a9a5908"
 )
 EVAL_TEXT_SUFFIXES = {".md", ".txt", ".csv"}
+WEEKLY_WORKFLOW_CASE = Path(
+    "evals/weekly-workflow/cases/chinese-mixed-decision"
+)
+WEEKLY_WORKFLOW_FILES = {
+    Path("task.md"),
+    Path("manifest.json"),
+    Path("inputs/notes.md"),
+    Path("inputs/results.csv"),
+    Path("inputs/paper-notes.md"),
+    Path("expected-valid-report.md"),
+    Path("expected-valid-slides.md"),
+}
 CANDIDATE_SELECTION = Path(
     "benchmarks/v1.1-v1.2/candidate-selection.json"
 )
@@ -491,6 +515,43 @@ def validate_evaluation_assets(root: Path, errors: list[str]) -> None:
     corrupt_path = root / CORRUPT_CSV
     if not corrupt_path.is_file():
         errors.append(f"Missing corrupt CSV fixture: {CORRUPT_CSV.as_posix()}")
+
+
+def validate_weekly_workflow_eval(root: Path, errors: list[str]) -> None:
+    case_root = root / WEEKLY_WORKFLOW_CASE
+    for relative in sorted(WEEKLY_WORKFLOW_FILES):
+        path = case_root / relative
+        if not path.is_file():
+            errors.append(
+                "Missing weekly-workflow evaluation file: "
+                f"{(WEEKLY_WORKFLOW_CASE / relative).as_posix()}"
+            )
+
+    manifest_path = case_root / "manifest.json"
+    report_path = case_root / "expected-valid-report.md"
+    slides_path = case_root / "expected-valid-slides.md"
+    if not all(path.is_file() for path in (manifest_path, report_path, slides_path)):
+        return
+    try:
+        manifest = load_manifest(manifest_path)
+        report = read_utf8(report_path)
+        slides = read_utf8(slides_path)
+        grading = grade_workflow(report, slides, manifest)
+    except (ContractError, OSError, UnicodeDecodeError) as exc:
+        errors.append(f"Invalid weekly-workflow evaluation: {exc}")
+        return
+    if manifest.get("expected_presentation") != "slides.md":
+        errors.append("Weekly-workflow manifest must require slides.md")
+    failed = [
+        str(item.get("text"))
+        for item in grading["expectations"]
+        if isinstance(item, dict) and not item.get("passed")
+    ]
+    if failed:
+        errors.append(
+            "Weekly-workflow expected artifacts fail hard gates: "
+            + ", ".join(failed)
+        )
 
 
 def validate_candidate_selection(root: Path, errors: list[str]) -> None:
@@ -749,6 +810,38 @@ def validate_repo(root: Path) -> list[str]:
                 "Missing sparse-report length guard: "
                 f"{SPARSE_REPORT_GUARD_TERM}"
             )
+        if STANDARD_REPORT_DEDUP_GUARD_TERM not in skill_text:
+            errors.append(
+                "Missing standard-report deduplication guard: "
+                f"{STANDARD_REPORT_DEDUP_GUARD_TERM}"
+            )
+        presentation_reference = (
+            skill_root / "references" / "presentation-export.md"
+        )
+        if presentation_reference.is_file() and (
+            PRESENTATION_ROLE_GUARD_TERM
+            not in read_utf8(presentation_reference)
+        ):
+            errors.append(
+                "Missing presentation semantic-role guard: "
+                f"{PRESENTATION_ROLE_GUARD_TERM}"
+            )
+        if presentation_reference.is_file() and (
+            PRESENTATION_IDENTIFIER_GUARD_TERM
+            not in read_utf8(presentation_reference)
+        ):
+            errors.append(
+                "Missing presentation identifier guard: "
+                f"{PRESENTATION_IDENTIFIER_GUARD_TERM}"
+            )
+        if presentation_reference.is_file() and (
+            PRESENTATION_BLOCKER_SCOPE_GUARD_TERM
+            not in read_utf8(presentation_reference)
+        ):
+            errors.append(
+                "Missing presentation blocker-scope guard: "
+                f"{PRESENTATION_BLOCKER_SCOPE_GUARD_TERM}"
+            )
         if INPUT_CONTRACT_GUARD_TERM not in skill_text:
             errors.append(
                 "Missing input-contract guard: "
@@ -898,6 +991,7 @@ def validate_repo(root: Path) -> list[str]:
     validate_preview_source(root, errors)
     validate_png(root / "assets" / "lab-meeting-report-preview.png", errors)
     validate_evaluation_assets(root, errors)
+    validate_weekly_workflow_eval(root, errors)
     validate_candidate_selection(root, errors)
     validate_final_benchmark(root, errors)
 

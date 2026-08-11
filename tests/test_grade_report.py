@@ -5,10 +5,11 @@ import io
 import json
 import tempfile
 import unittest
+from decimal import Decimal
 from pathlib import Path
 
 from scripts.eval_contract import load_manifest
-from scripts.grade_report import grade_text, main
+from scripts.grade_report import extract_numbers, grade_text, grade_workflow, main
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +26,13 @@ END_TO_END_CASES = {
     "safe-existing-report-update",
     "partial-source-failure",
 }
+WEEKLY_WORKFLOW_CASE = (
+    REPO_ROOT
+    / "evals"
+    / "weekly-workflow"
+    / "cases"
+    / "chinese-mixed-decision"
+)
 
 
 def base_manifest() -> dict[str, object]:
@@ -281,6 +289,14 @@ class GradeReportTests(unittest.TestCase):
 
         self.assertTrue(grading["hard_pass"], grading)
 
+    def test_source_line_locators_are_not_experimental_values(self) -> None:
+        tokens = extract_numbers(
+            "Score 0.757. Sources: inputs/notes.md:7-13; "
+            "inputs/results.csv:3,5-6."
+        )
+
+        self.assertEqual(tokens, [("0.757", Decimal("0.757"))])
+
     def test_defined_markdown_citations_are_not_experimental_values(
         self,
     ) -> None:
@@ -424,6 +440,58 @@ class GradeReportTests(unittest.TestCase):
         )
 
         self.assert_expectation_failed(grading, "forbidden:significance")
+
+    def test_negated_chinese_significance_claim_passes_forbidden_gate(
+        self,
+    ) -> None:
+        manifest = base_manifest()
+        manifest["forbidden_patterns"] = [
+            {"id": "significance", "pattern": "统计显著"}
+        ]
+
+        grading = grade_text(
+            "当前没有统计检验，不能声称结果统计显著。", manifest
+        )
+
+        self.assertTrue(grading["hard_pass"], grading)
+
+        grading = grade_text(
+            "这里只报告观察值，不声称结果统计显著。", manifest
+        )
+
+        self.assertTrue(grading["hard_pass"], grading)
+
+    def test_forbidden_wording_inside_a_question_is_not_a_claim(self) -> None:
+        manifest = base_manifest()
+        manifest["forbidden_patterns"] = [
+            {"id": "priority", "pattern": "prioritize the permission request"}
+        ]
+
+        grading = grade_text(
+            "Should we prioritize the permission request?", manifest
+        )
+
+        self.assertTrue(grading["hard_pass"], grading)
+
+    def test_priority_rule_heading_is_not_a_priority_claim(self) -> None:
+        manifest = base_manifest()
+        manifest["forbidden_patterns"] = [
+            {
+                "id": "priority",
+                "pattern": (
+                    r"(?:优先(?!级)|建议)(?:选择|开展|推动|做)?.{0,12}"
+                    r"synthetic perturbation stress test"
+                ),
+            }
+        ]
+
+        grading = grade_text(
+            "待选方向，不预设优先级：\n"
+            "1. synthetic perturbation stress test",
+            manifest,
+        )
+
+        self.assertTrue(grading["hard_pass"], grading)
 
     def test_cli_writes_grading_json_and_returns_success(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -623,6 +691,114 @@ class GradeReportMutationTests(unittest.TestCase):
         )
 
         self.assert_expectation_passed(grading, "skipped:corrupt-results")
+
+
+class GradeWorkflowTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.manifest = load_manifest(WEEKLY_WORKFLOW_CASE / "manifest.json")
+        self.report = (WEEKLY_WORKFLOW_CASE / "expected-valid-report.md").read_text(
+            encoding="utf-8"
+        )
+        self.slides = (WEEKLY_WORKFLOW_CASE / "expected-valid-slides.md").read_text(
+            encoding="utf-8"
+        )
+
+    def expectation(self, grading: dict[str, object], name: str) -> dict:
+        return next(
+            item for item in grading["expectations"] if item["text"] == name
+        )
+
+    def test_valid_report_and_presentation_pass(self) -> None:
+        grading = grade_workflow(self.report, self.slides, self.manifest)
+
+        self.assertTrue(grading["hard_pass"], grading)
+        self.assertTrue(
+            self.expectation(grading, "presentation:marp-frontmatter")["passed"]
+        )
+
+    def test_slide_without_say_marker_fails(self) -> None:
+        slides = self.slides.replace("<!-- 演讲提示：", "<!-- 提示：", 1)
+
+        grading = grade_workflow(self.report, slides, self.manifest)
+
+        self.assertFalse(
+            self.expectation(grading, "presentation:slide-1:say")["passed"]
+        )
+
+    def test_invented_presentation_number_fails(self) -> None:
+        slides = self.slides.replace("当前状态是否", "准确率 0.999。当前状态是否", 1)
+
+        grading = grade_workflow(self.report, slides, self.manifest)
+
+        self.assertFalse(
+            self.expectation(
+                grading, "presentation:numeric-closed-world"
+            )["passed"]
+        )
+
+    def test_presentation_page_references_are_not_experimental_values(
+        self,
+    ) -> None:
+        slides = self.slides.replace(
+            "当前状态是否",
+            "细节见第 6 页和 slide 7。当前状态是否",
+            1,
+        )
+
+        grading = grade_workflow(self.report, slides, self.manifest)
+
+        self.assertTrue(
+            self.expectation(
+                grading, "presentation:numeric-closed-world"
+            )["passed"]
+        )
+
+    def test_missing_negative_result_on_slides_fails(self) -> None:
+        slides = self.slides.replace("0.71", "未提供", 1)
+
+        grading = grade_workflow(self.report, slides, self.manifest)
+
+        self.assertFalse(
+            self.expectation(
+                grading, "presentation:negative:window-9-recall"
+            )["passed"]
+        )
+
+    def test_eight_slides_fail_for_an_eight_minute_deck(self) -> None:
+        extra_slide = """
+
+---
+
+## 补充页
+
+证据：`inputs/notes.md`
+
+讨论问题：无
+
+<!-- 演讲提示：无补充内容。 -->
+"""
+        slides = self.slides + extra_slide + extra_slide
+
+        grading = grade_workflow(self.report, slides, self.manifest)
+
+        self.assertFalse(
+            self.expectation(grading, "presentation:slide-count")["passed"]
+        )
+
+    def test_invented_priority_on_slides_fails(self) -> None:
+        slides = self.slides.replace(
+            "下周主要精力选哪一项？",
+            "建议优先推动数据权限。",
+            1,
+        )
+
+        grading = grade_workflow(self.report, slides, self.manifest)
+
+        self.assertFalse(
+            self.expectation(
+                grading, "presentation:forbidden:invented-priority-permission"
+            )["passed"]
+        )
 
 
 if __name__ == "__main__":

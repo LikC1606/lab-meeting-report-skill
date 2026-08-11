@@ -65,7 +65,7 @@ For `standard`, organize the remaining material around what a researcher normall
 Omit empty or duplicative sections. Do not make the user-facing report resemble a completed questionnaire.
 
 - For `brief`, keep the weekly snapshot, non-duplicative key evidence, failed attempts or blockers that affect interpretation, next actions, and sources.
-- For `standard`, use the selected mode reference, target a readable meeting report, and surface only evidence gaps that could change the conclusion.
+- For `standard`, use the selected mode reference, target a readable meeting report, and surface only evidence gaps that could change the conclusion. After the snapshot and any previous-action review, normally use no more than four non-empty content sections. Combine overlapping result, literature, limitation, and blocker material instead of restating the same claim in several sections.
 - For `audit`, add a claim-level provenance table, the full evidence-completeness table, unresolved conflicts, and skipped or unreadable sources.
 
 Place a source path, identifier, or precise locator next to every decision-relevant claim. Avoid repeating the same metric unless a later occurrence adds comparison, uncertainty, or a new implication. Keep facts, interpretations, and hypotheses distinct. Label recommendations as recommendations; do not turn a requested choice into a decided outcome.
@@ -132,6 +132,7 @@ Prefer mixed mode only when both evidence types are substantial. Read `reference
 - Turn a blocker into a concrete help request: problem, impact, attempted measures, and requested discussion or resource. Include options only when the user or source supplied them.
 - Make next actions concrete with an artifact and success criterion; include owners and dates only when supplied.
 - In `brief` and `standard`, keep evidence-completeness auditing in the background and surface only missing checks that could change what the group concludes or does next.
+- In `standard`, state a shared evidence limitation once after the relevant table or result cluster. Do not repeat the same missing dataset, split, configuration, repetition, uncertainty, or statistical-test inventory in every row and again in later sections.
 
 ### 5. Write safely to disk
 

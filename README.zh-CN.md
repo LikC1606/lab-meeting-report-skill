@@ -163,7 +163,7 @@ Skill 不会静默安装这些项目。工具不存在时，会保留可直接�
 
 ## 质量评测
 
-v1.2 的证据保护规则在 8 个公开合成科研进展场景上各运行 3 次，严格门槛通过 24/24；冻结的 v1.1 基线为 0/24。v1.3 保留这些已评测的防编造规则，并重新设计默认输入输出和可选适配层。现有基准尚未证明真实博士生偏好或云平台发布成功率。
+v1.2 的证据保护规则在 8 个公开合成科研进展场景上各运行 3 次，严格门槛通过 24/24；冻结的 v1.1 基线为 0/24。v1.3 保留这些已评测的防编造规则，并重新设计默认输入输出和可选适配层。新增的[中文混合周工作流场景](evals/weekly-workflow/cases/chinese-mixed-decision)会同时验证默认周报与 Marp，检查每页结构、来源覆盖、负面结果保留和数值闭集。这个确定性门槛仍不能证明真实博士生偏好或云平台发布成功率。
 
 可查看[评测设计](docs/superpowers/specs/2026-07-13-lab-meeting-report-v1.2-quality-evaluation-design.md)、[公开场景](evals/research-progress/cases)、[版本化基准](benchmarks/v1.1-v1.2/benchmark.md)和[逐声明自审](benchmarks/v1.1-v1.2/semantic-review-final.json)。
 

@@ -2,14 +2,14 @@
 
 > This fictional paper and all reported values are synthetic. They exist only to demonstrate the skill workflow and must not be cited as real research.
 
-> Date: 2026-07-12 | Report type: Journal club | Topic: Low-resource intent retrieval
+> Date: 2026-07-12 | Report type: Journal club | Topic: Low-resource intent retrieval | Detail: Audit
 
-## Decision Snapshot
+## Weekly Snapshot
 
-- **Current status:** The notes report higher in-domain macro-F1 for the proposed method (0.74 versus 0.68 over five seeds) and leave uncertainty and reproducibility boundaries unresolved (source: `papers/synthetic-retrieval-notes.md`).
-- **Decision needed:** No decision was supplied in the source notes; the relevance or reproduction decision remains to be specified.
-- **Strongest evidence:** Removing hard-negative mining reduced in-domain macro-F1 from 0.74 to 0.70, which supports a contribution but does not isolate all interactions (source: `papers/synthetic-retrieval-notes.md`, ablation notes).
-- **Next action:** Verify the reproduction prerequisites before transferring the method; artifact: a checked dataset/code/parameter inventory; success criterion: each required item is either available or explicitly documented as unavailable.
+- **Progress this week:** The notes report higher in-domain macro-F1 for the proposed method (0.74 versus 0.68 over five seeds) and leave uncertainty and reproducibility boundaries unresolved (source: `papers/synthetic-retrieval-notes.md`).
+- **Key evidence:** Removing hard-negative mining reduced in-domain macro-F1 from 0.74 to 0.70, which supports a contribution but does not isolate all interactions (source: `papers/synthetic-retrieval-notes.md`, ablation notes).
+- **Blocker or help needed:** No blocker or help request was supplied; whether the method is relevant enough to reproduce remains to be discussed.
+- **Next step:** Verify the reproduction prerequisites before transferring the method; artifact: a checked dataset/code/parameter inventory; success criterion: each required item is either available or explicitly documented as unavailable.
 
 ## Paper Information And One-Sentence Contribution
 
@@ -47,7 +47,7 @@ The notes frame standard low-resource retrievers as insufficiently sensitive to 
 
 The lexical baseline was named but no value was supplied, so no claim against it is reported.
 
-## Evidence Completeness And Gaps
+## Audit Appendix: Evidence Completeness And Gaps
 
 | Decision-critical claim | Checks present | Missing checks | Decision impact | Source |
 |---|---|---|---|---|

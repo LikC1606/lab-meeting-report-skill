@@ -172,10 +172,10 @@ def render_preview(output: Path) -> None:
     )
     draw_text(
         pdf,
-        "From scattered notes to an evidence-grounded decision",
+        "From a week of scattered research to a meeting-ready summary",
         48,
         861,
-        size=32,
+        size=28,
         font="Helvetica-Bold",
     )
     draw_text(
@@ -189,7 +189,7 @@ def render_preview(output: Path) -> None:
     set_color(pdf, BORDER)
     set_color(pdf, BORDER, fill=False)
     pdf.roundRect(1334, 865, 58, 30, 4, fill=0, stroke=1)
-    draw_text(pdf, "v1.2.2", 1343, 875, size=11, font="Helvetica-Bold")
+    draw_text(pdf, "v1.3", 1348, 875, size=11, font="Helvetica-Bold")
 
     panel_y = 125
     panel_height = 675
@@ -197,8 +197,8 @@ def render_preview(output: Path) -> None:
     left_width = 405
     right_x = 525
     right_width = 867
-    draw_panel(pdf, left_x, panel_y, left_width, panel_height, "Inputs / four files", "Raw research evidence")
-    draw_panel(pdf, right_x, panel_y, right_width, panel_height, "Generated Markdown report", "Decision-ready, with evidence boundaries")
+    draw_panel(pdf, left_x, panel_y, left_width, panel_height, "Weekly input / four files", "Notes, results, and blockers")
+    draw_panel(pdf, right_x, panel_y, right_width, panel_height, "Generated Markdown report", "Meeting-ready weekly summary")
 
     set_color(pdf, GREEN, fill=False)
     pdf.setLineWidth(3)
@@ -252,7 +252,7 @@ def render_preview(output: Path) -> None:
     pdf.roundRect(66, 164, 369, 86, 4, fill=1, stroke=0)
     draw_wrapped(
         pdf,
-        "Mixed CSV rows, experiment notes, a failed run, and an unresolved decision enter as separate evidence sources.",
+        "Experiment notes, result files, a failed run, and a blocker enter as one scoped weekly bundle.",
         80,
         224,
         338,
@@ -276,7 +276,7 @@ def render_preview(output: Path) -> None:
             summary_y + summary_height,
         )
     summaries = [
-        ("VALIDATED PROGRESS", "Macro-F1 0.712 -> 0.757", GREEN),
+        ("PROGRESS THIS WEEK", "Macro-F1 0.712 -> 0.757", GREEN),
         ("OPERATIONAL COST", "Latency 18.2 -> 19.4 ms", INK),
         ("NEGATIVE RESULT", "Paraphrase run fell to 0.691", RED),
     ]
@@ -366,10 +366,10 @@ def render_preview(output: Path) -> None:
     pdf.roundRect(summary_x, 178, summary_width, 102, 4, fill=1, stroke=0)
     set_color(pdf, GOLD)
     pdf.rect(summary_x, 178, 4, 102, fill=1, stroke=0)
-    draw_text(pdf, "Next decision", summary_x + 17, 248, size=13, font="Helvetica-Bold")
+    draw_text(pdf, "Blocker and help needed", summary_x + 17, 248, size=13, font="Helvetica-Bold")
     draw_wrapped(
         pdf,
-        "Choose between the retrieval-only ablation and completion of manual review. The sources do not provide a priority rule.",
+        "The group needs to choose between a retrieval-only ablation and completing manual review. The sources do not provide a priority rule.",
         summary_x + 17,
         225,
         summary_width - 34,
@@ -380,7 +380,7 @@ def render_preview(output: Path) -> None:
 
     draw_text(
         pdf,
-        "Facts, interpretations, hypotheses, failures, and missing evidence stay distinct.",
+        "The weekly summary stays lightweight while evidence boundaries remain enforced.",
         48,
         82,
         size=11,

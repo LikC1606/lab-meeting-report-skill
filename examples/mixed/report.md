@@ -2,14 +2,14 @@
 
 > All project data and paper notes in this report are synthetic and exist only to demonstrate the skill workflow.
 
-> Date: 2026-07-12 | Report type: Mixed | Topic: Retrieval for imbalanced intent classification
+> Date: 2026-07-12 | Report type: Mixed | Topic: Retrieval for imbalanced intent classification | Detail: Audit
 
-## Decision Snapshot
+## Weekly Snapshot
 
-- **Current status:** The current retrieval-plus-reranker result improves the supplied macro-F1 and rare-class recall, while the paper uses balanced classes and retrieval without a reranker; the conditions are not directly comparable (sources: `results/current_experiment.csv`, `papers/synthetic-balanced-retrieval.md`).
-- **Decision needed:** What experiment can test whether retrieval, rather than the reranker or class balance, explains the current rare-class recall gain?
-- **Strongest evidence:** The current comparison changes retrieval and the reranker together, whereas the paper's result changes retrieval under balanced classes; neither source isolates the current mechanism (sources: `results/current_experiment.csv`, `papers/synthetic-balanced-retrieval.md`).
-- **Next action:** Run retrieval without the reranker under the same seed protocol; artifact: `results/retrieval_only.csv`; success criterion: record macro-F1, rare-class recall, and median latency under controlled conditions.
+- **Progress this week:** The current retrieval-plus-reranker result improves the supplied macro-F1 and rare-class recall, while the paper uses balanced classes and retrieval without a reranker; the conditions are not directly comparable (sources: `results/current_experiment.csv`, `papers/synthetic-balanced-retrieval.md`).
+- **Key evidence:** The current comparison changes retrieval and the reranker together, whereas the paper's result changes retrieval under balanced classes; neither source isolates the current mechanism (sources: `results/current_experiment.csv`, `papers/synthetic-balanced-retrieval.md`).
+- **Blocker or help needed:** The current evidence cannot show whether retrieval, the reranker, or class balance explains the rare-class recall gain; the group should discuss the controlled ablation (sources: `results/current_experiment.csv`, `papers/synthetic-balanced-retrieval.md`).
+- **Next step:** Run retrieval without the reranker under the same seed protocol; artifact: `results/retrieval_only.csv`; success criterion: record macro-F1, rare-class recall, and median latency under controlled conditions.
 
 ## Current Research Progress
 
@@ -46,7 +46,7 @@ The fictional paper claims transfer across intent datasets. The supplied notes d
 
 Agreement in macro-F1 direction does not prove a shared mechanism. The fictional paper cannot validate the current rare-class explanation because it reports no rare-class setting.
 
-## Evidence Completeness And Gaps
+## Audit Appendix: Evidence Completeness And Gaps
 
 | Decision-critical result or claim | Checks present | Missing checks | Decision impact | Source |
 |---|---|---|---|---|

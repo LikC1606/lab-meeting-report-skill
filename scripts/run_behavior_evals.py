@@ -39,10 +39,18 @@ SKILL_FILES = {
     Path("references/lark-integration.md"),
     Path("references/meeting-lifecycle.md"),
     Path("references/mixed-report.md"),
+    Path("references/notion-integration.md"),
     Path("references/paper-review.md"),
+    Path("references/presentation-export.md"),
     Path("references/progress-report.md"),
 }
-LEGACY_SKILL_FILES = SKILL_FILES - {Path("references/meeting-lifecycle.md")}
+PREVIOUS_SKILL_FILES = SKILL_FILES - {
+    Path("references/notion-integration.md"),
+    Path("references/presentation-export.md"),
+}
+LEGACY_SKILL_FILES = PREVIOUS_SKILL_FILES - {
+    Path("references/meeting-lifecycle.md")
+}
 CONFIGURATION_SKILL_DIR = {
     "with_skill": "with_skill",
     "without_skill": "without_skill",
@@ -255,7 +263,7 @@ def _validate_skill(skill_root: Path) -> None:
         for path in skill_root.rglob("*")
         if path.is_file()
     }
-    if actual not in (SKILL_FILES, LEGACY_SKILL_FILES):
+    if actual not in (SKILL_FILES, PREVIOUS_SKILL_FILES, LEGACY_SKILL_FILES):
         missing = sorted(item.as_posix() for item in SKILL_FILES - actual)
         extra = sorted(item.as_posix() for item in actual - SKILL_FILES)
         raise ContractError(

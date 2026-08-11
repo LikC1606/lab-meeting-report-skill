@@ -25,7 +25,9 @@ EXPECTED_SKILL_FILES = {
     Path("references/lark-integration.md"),
     Path("references/meeting-lifecycle.md"),
     Path("references/mixed-report.md"),
+    Path("references/notion-integration.md"),
     Path("references/paper-review.md"),
+    Path("references/presentation-export.md"),
     Path("references/progress-report.md"),
 }
 EXAMPLE_FILES = {
@@ -35,6 +37,10 @@ EXAMPLE_FILES = {
     Path("examples/journal-club/report.md"),
     Path("examples/mixed/input-notes.md"),
     Path("examples/mixed/report.md"),
+    Path("examples/weekly-summary/paper-notes.md"),
+    Path("examples/weekly-summary/report.md"),
+    Path("examples/weekly-summary/slides.md"),
+    Path("examples/weekly-summary/weekly-notes.md"),
 }
 EXAMPLE_SOURCE_FILES = {
     Path("examples/research-progress/results/baseline.csv"),
@@ -43,6 +49,7 @@ EXAMPLE_SOURCE_FILES = {
     Path("examples/journal-club/papers/synthetic-retrieval-notes.md"),
     Path("examples/mixed/results/current_experiment.csv"),
     Path("examples/mixed/papers/synthetic-balanced-retrieval.md"),
+    Path("examples/weekly-summary/results.csv"),
 }
 EXAMPLE_NUMERIC_SOURCES = {
     Path("examples/research-progress/report.md"): {
@@ -59,6 +66,14 @@ EXAMPLE_NUMERIC_SOURCES = {
         Path("examples/mixed/input-notes.md"),
         Path("examples/mixed/results/current_experiment.csv"),
         Path("examples/mixed/papers/synthetic-balanced-retrieval.md"),
+    },
+    Path("examples/weekly-summary/report.md"): {
+        Path("examples/weekly-summary/weekly-notes.md"),
+        Path("examples/weekly-summary/paper-notes.md"),
+        Path("examples/weekly-summary/results.csv"),
+    },
+    Path("examples/weekly-summary/slides.md"): {
+        Path("examples/weekly-summary/report.md"),
     },
 }
 COMMUNITY_FILES = {
@@ -77,6 +92,8 @@ README_TERMS = {
     "journal club",
     "Feishu",
     "Lark",
+    "Notion",
+    "Marp",
     "CONTRIBUTING.md",
     "SECURITY.md",
     "## 中文说明",
@@ -118,33 +135,51 @@ OUTPUT_CONTRACT_GUARD_TERM = (
 MISSING_SOURCE_GUARD_TERM = (
     "If no usable source or explicit source scope is available"
 )
-DECISION_SNAPSHOT_GUARD_TERM = (
-    "begin the report body with a localized decision snapshot"
+WEEKLY_SNAPSHOT_GUARD_TERM = (
+    "Begin the report body with a localized weekly snapshot"
 )
 MEETING_LIFECYCLE_GUARD_TERMS = {
     "stage (`before`, `after`, or `both`)",
     "place `上次行动复盘` or its localized equivalent immediately after the snapshot",
-    "Run an evidence-completeness check for every decision-critical empirical result",
-    "add `会议决定与行动记录` using only decisions captured in the supplied meeting notes",
+    "Run an internal evidence-completeness check for every empirical result",
+    "add `会议决定与行动记录` using only supplied meeting notes",
     "one message per slide, its evidence source, the spoken interpretation, and the discussion question",
 }
-DECISION_SNAPSHOT_FIELDS = {
-    "**当前状态：**",
-    "**需要决策：**",
-    "**最强证据：**",
+WEEKLY_SNAPSHOT_FIELDS = {
+    "**本周进展：**",
+    "**关键证据：**",
+    "**阻塞与需协助：**",
     "**下一步：**",
 }
-EXAMPLE_DECISION_SNAPSHOT_FIELDS = {
-    "## Decision Snapshot",
-    "**Current status:**",
-    "**Decision needed:**",
-    "**Strongest evidence:**",
-    "**Next action:**",
+EXAMPLE_WEEKLY_SNAPSHOT_FIELDS = {
+    "## Weekly Snapshot",
+    "**Progress this week:**",
+    "**Key evidence:**",
+    "**Blocker or help needed:**",
+    "**Next step:**",
+}
+DEFAULT_WEEKLY_REPORT = Path("examples/weekly-summary/report.md")
+DEFAULT_WEEKLY_SLIDES = Path("examples/weekly-summary/slides.md")
+DEFAULT_WEEKLY_REPORT_FIELDS = {
+    "**本周进展：**",
+    "**关键证据：**",
+    "**阻塞与需协助：**",
+    "**下一步：**",
+}
+DEFAULT_WEEKLY_REPORT_FORBIDDEN_TERMS = {
+    "## Audit Appendix",
+    "## 审计附录",
+    "## 证据完整性审计",
+}
+MARP_SLIDE_FIELDS = {
+    "**Evidence:**",
+    "**Say:**",
+    "**Discuss:**",
 }
 LIFECYCLE_TEMPLATE_TERMS = {
+    "本周速览",
     "上次行动复盘",
-    "证据完整度与缺口",
-    "当前阻塞与决策包",
+    "当前阻塞与需协助",
     "会议决定与行动记录",
     "负责人",
     "截止时间",
@@ -154,15 +189,15 @@ MEETING_LIFECYCLE_REFERENCE_TERMS = {
     "| `after` |",
     "| `both` |",
     "## Continuity inventory",
-    "## Decision package",
+    "## Help request and decision package",
     "## Post-meeting record",
     "## Evidence completeness",
     "## Presenter outline",
 }
 EXAMPLE_LIFECYCLE_TERMS = {
     "## Previous Action Review",
-    "## Evidence Completeness And Gaps",
-    "## Blocker And Decision Package",
+    "## Audit Appendix: Evidence Completeness And Gaps",
+    "## Blocker And Help Request",
     "| Action | Owner | Due date |",
 }
 DEFAULT_PRIORITY_PATTERN = re.compile(r"\|\s*P[0-9]+\s*\|")
@@ -170,7 +205,7 @@ PREVIEW_SOURCE = Path("scripts/render_preview.py")
 PREVIEW_REQUIRED_TERMS = {
     "Expected outcome: not supplied",
     "The sources do not provide a priority rule.",
-    "From scattered notes to an evidence-grounded decision",
+    "From a week of scattered research to a meeting-ready summary",
 }
 PREVIEW_STALE_TERMS = {
     "Complete 75 manual reviews",
@@ -335,6 +370,55 @@ def validate_example_numbers(root: Path, errors: list[str]) -> None:
                 "Example report contains unexpected numeric values: "
                 f"{report_relative.as_posix()}: {', '.join(unexpected)}"
             )
+
+
+def validate_default_weekly_example(root: Path, errors: list[str]) -> None:
+    report_path = root / DEFAULT_WEEKLY_REPORT
+    if report_path.is_file():
+        report = read_utf8(report_path)
+        if "详细度：standard" not in report:
+            errors.append("Default weekly report must use standard detail")
+        for field in sorted(DEFAULT_WEEKLY_REPORT_FIELDS):
+            if field not in report:
+                errors.append(
+                    "Default weekly report missing snapshot field: " f"{field}"
+                )
+        for term in sorted(DEFAULT_WEEKLY_REPORT_FORBIDDEN_TERMS):
+            if term in report:
+                errors.append(
+                    "Default weekly report contains audit-only section: "
+                    f"{term}"
+                )
+
+    slides_path = root / DEFAULT_WEEKLY_SLIDES
+    if not slides_path.is_file():
+        return
+    frontmatter = parse_frontmatter(slides_path, errors)
+    if frontmatter is None:
+        return
+    if frontmatter.get("marp") is not True:
+        errors.append("Default weekly slides must enable Marp")
+
+    content = read_utf8(slides_path)
+    match = re.match(
+        r"\A---\r?\n.*?\r?\n---(?:\r?\n|\Z)", content, re.DOTALL
+    )
+    if match is None:
+        return
+    slides = [
+        slide.strip()
+        for slide in re.split(r"(?m)^---\s*$", content[match.end() :])
+        if slide.strip()
+    ]
+    if len(slides) < 2:
+        errors.append("Default weekly Marp deck must contain multiple slides")
+    for index, slide in enumerate(slides, start=1):
+        for field in sorted(MARP_SLIDE_FIELDS):
+            if field not in slide:
+                errors.append(
+                    "Default weekly slide missing presenter field: "
+                    f"slide {index}: {field}"
+                )
 
 
 def validate_evaluation_assets(root: Path, errors: list[str]) -> None:
@@ -680,10 +764,10 @@ def validate_repo(root: Path) -> list[str]:
                 "Missing source-required guard: "
                 f"{MISSING_SOURCE_GUARD_TERM}"
             )
-        if DECISION_SNAPSHOT_GUARD_TERM not in skill_text:
+        if WEEKLY_SNAPSHOT_GUARD_TERM not in skill_text:
             errors.append(
-                "Missing decision-snapshot guard: "
-                f"{DECISION_SNAPSHOT_GUARD_TERM}"
+                "Missing weekly-snapshot guard: "
+                f"{WEEKLY_SNAPSHOT_GUARD_TERM}"
             )
         for term in sorted(MEETING_LIFECYCLE_GUARD_TERMS):
             if term not in skill_text:
@@ -697,10 +781,10 @@ def validate_repo(root: Path) -> list[str]:
         if not path.is_file():
             continue
         template_text = read_utf8(path)
-        for field in sorted(DECISION_SNAPSHOT_FIELDS):
+        for field in sorted(WEEKLY_SNAPSHOT_FIELDS):
             if field not in template_text:
                 errors.append(
-                    "Missing decision-snapshot field in "
+                    "Missing weekly-snapshot field in "
                     f"{path.relative_to(root).as_posix()}: {field}"
                 )
         for term in sorted(LIFECYCLE_TEMPLATE_TERMS):
@@ -778,11 +862,11 @@ def validate_repo(root: Path) -> list[str]:
             continue
         if "Synthetic example" not in text:
             errors.append(f"Example lacks Synthetic example label: {relative.as_posix()}")
-        if path.name == "report.md":
-            for field in sorted(EXAMPLE_DECISION_SNAPSHOT_FIELDS):
+        if path.name == "report.md" and relative != DEFAULT_WEEKLY_REPORT:
+            for field in sorted(EXAMPLE_WEEKLY_SNAPSHOT_FIELDS):
                 if field not in text:
                     errors.append(
-                        "Example report missing decision-snapshot field in "
+                        "Example report missing weekly-snapshot field in "
                         f"{relative.as_posix()}: {field}"
                     )
         if relative == Path("examples/research-progress/report.md"):
@@ -809,6 +893,7 @@ def validate_repo(root: Path) -> list[str]:
             )
 
     validate_example_numbers(root, errors)
+    validate_default_weekly_example(root, errors)
 
     validate_preview_source(root, errors)
     validate_png(root / "assets" / "lab-meeting-report-preview.png", errors)

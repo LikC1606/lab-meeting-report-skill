@@ -1,0 +1,6 @@
+experiment,seed,batch_size,dice,iou,peak_gpu_memory_gb,status
+current,11,2,0.812,0.691,14.8,complete
+current,23,2,0.806,0.683,14.9,complete
+current,37,2,0.809,0.687,14.8,complete
+boundary_dropout,23,2,0.774,0.648,14.9,complete
+current,23,4,,,,oom

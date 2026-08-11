@@ -3,14 +3,14 @@
 > All names, data, paths, and results in this report are synthetic and exist only to demonstrate the skill workflow.
 
 > Date: 2026-07-12 | Report type: Research progress | Project: Low-resource intent classification
-> Meeting stage: Before | Audience: Lab group | Duration: 12 minutes
+> Meeting stage: Before | Audience: Lab group | Duration: 12 minutes | Detail: Audit
 
-## Decision Snapshot
+## Weekly Snapshot
 
-- **Current status:** The combined retrieval-plus-reranker system reached mean macro-F1 0.757 across three seeds with 19.4 ms median latency (sources: `results/retrieval_reranker.csv`, `examples/research-progress/input-notes.md`).
-- **Decision needed:** Choose between the latency ablation and completing the manual error review. Batching by intent did not resolve the missing category definitions; the group needs to choose the order and clarify who can approve those definitions (source: `examples/research-progress/input-notes.md`, Current blocker).
-- **Strongest evidence:** The combined result is above the supplied 0.712 baseline, but retrieval and reranking were changed together, so attribution remains unresolved (sources: `results/baseline.csv`, `results/retrieval_reranker.csv`).
-- **Next action:** Run retrieval without the reranker over three seeds; artifact: `results/retrieval_only.csv`; success criterion: mean macro-F1 at least 0.745 and median latency no more than 19.0 ms.
+- **Progress this week:** The combined retrieval-plus-reranker system reached mean macro-F1 0.757 across three seeds with 19.4 ms median latency (sources: `results/retrieval_reranker.csv`, `examples/research-progress/input-notes.md`).
+- **Key evidence:** The combined result is above the supplied 0.712 baseline, but retrieval and reranking were changed together, so attribution remains unresolved (sources: `results/baseline.csv`, `results/retrieval_reranker.csv`).
+- **Blocker or help needed:** Batching by intent did not resolve the missing category definitions; the group needs to choose between the latency ablation and completing the manual error review, then clarify who can approve those definitions (source: `examples/research-progress/input-notes.md`, Current blocker).
+- **Next step:** Run retrieval without the reranker over three seeds; artifact: `results/retrieval_only.csv`; success criterion: mean macro-F1 at least 0.745 and median latency no more than 19.0 ms.
 
 ## Previous Action Review
 
@@ -54,7 +54,7 @@ Individual retrieval-reranker seed results were 0.758, 0.764, and 0.749. The sup
 - **Alternative explanation:** the sources provide no alternative causal explanation for the combined-system result; the missing component ablation leaves attribution unresolved.
 - **Confidence boundary:** baseline seed variability and statistical uncertainty were not supplied.
 
-## Evidence Completeness And Gaps
+## Audit Appendix: Evidence Completeness And Gaps
 
 | Decision-critical result | Checks present | Missing checks | Decision impact | Source |
 |---|---|---|---|---|
@@ -69,7 +69,7 @@ Individual retrieval-reranker seed results were 0.758, 0.764, and 0.749. The sup
 
 The notes report the largest precision loss on the two rarest classes. The proposed boundary-blurring explanation remains a hypothesis until examples are reviewed.
 
-## Blocker And Decision Package
+## Blocker And Help Request
 
 | Problem | Impact | Attempted measure | Supplied options | Support or decision requested | Source |
 |---|---|---|---|---|---|

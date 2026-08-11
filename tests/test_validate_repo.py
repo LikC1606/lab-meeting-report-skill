@@ -111,6 +111,21 @@ class ValidateRepoTests(unittest.TestCase):
                 (result.stdout + result.stderr).lower(),
             )
 
+    def test_missing_optional_adapter_references_are_rejected(self) -> None:
+        for filename in ("notion-integration.md", "presentation-export.md"):
+            with self.subTest(filename=filename), tempfile.TemporaryDirectory() as temp_dir:
+                fixture = Path(temp_dir) / "repo"
+                copy_fixture(fixture)
+                (fixture / "lab-meeting-report" / "references" / filename).unlink()
+
+                result = run_validator(fixture)
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(
+                    "missing skill file",
+                    (result.stdout + result.stderr).lower(),
+                )
+
     def test_missing_community_file_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"
@@ -483,7 +498,7 @@ class ValidateRepoTests(unittest.TestCase):
             content = skill_file.read_text(encoding="utf-8")
             skill_file.write_text(
                 content.replace(
-                    "Run an evidence-completeness check for every decision-critical empirical result",
+                    "Run an internal evidence-completeness check for every empirical result",
                     "Review the available evidence before drafting",
                     1,
                 ),
@@ -511,7 +526,7 @@ class ValidateRepoTests(unittest.TestCase):
             content = template.read_text(encoding="utf-8")
             template.write_text(
                 content.replace(
-                    "## 当前阻塞与决策包（需要组内输入时保留）",
+                    "## 当前阻塞与需协助（存在时保留）",
                     "## 当前问题（需要组内输入时保留）",
                     1,
                 ),
@@ -549,7 +564,7 @@ class ValidateRepoTests(unittest.TestCase):
                 (result.stdout + result.stderr).lower(),
             )
 
-    def test_decision_snapshot_template_fields_are_required(self) -> None:
+    def test_weekly_snapshot_template_fields_are_required(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"
             copy_fixture(fixture)
@@ -561,7 +576,7 @@ class ValidateRepoTests(unittest.TestCase):
             )
             content = template.read_text(encoding="utf-8")
             template.write_text(
-                content.replace("**最强证据：**", "**关键结果：**", 1),
+                content.replace("**关键证据：**", "**关键结果：**", 1),
                 encoding="utf-8",
             )
 
@@ -569,18 +584,20 @@ class ValidateRepoTests(unittest.TestCase):
 
             self.assertNotEqual(result.returncode, 0)
             self.assertIn(
-                "decision-snapshot field",
+                "weekly-snapshot field",
                 (result.stdout + result.stderr).lower(),
             )
 
-    def test_decision_snapshot_example_fields_are_required(self) -> None:
+    def test_weekly_snapshot_example_fields_are_required(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"
             copy_fixture(fixture)
             report = fixture / "examples" / "mixed" / "report.md"
             content = report.read_text(encoding="utf-8")
             report.write_text(
-                content.replace("**Decision needed:**", "**Open question:**", 1),
+                content.replace(
+                    "**Blocker or help needed:**", "**Open question:**", 1
+                ),
                 encoding="utf-8",
             )
 
@@ -588,7 +605,64 @@ class ValidateRepoTests(unittest.TestCase):
 
             self.assertNotEqual(result.returncode, 0)
             self.assertIn(
-                "example report missing decision-snapshot field",
+                "example report missing weekly-snapshot field",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_default_weekly_report_rejects_audit_appendix(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            report = fixture / "examples" / "weekly-summary" / "report.md"
+            content = report.read_text(encoding="utf-8")
+            report.write_text(
+                content + "\n## Audit Appendix\n\nUnexpected audit content.\n",
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "audit-only section",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_default_weekly_slides_require_presenter_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            slides = fixture / "examples" / "weekly-summary" / "slides.md"
+            content = slides.read_text(encoding="utf-8")
+            slides.write_text(
+                content.replace("**Discuss:**", "**Question:**", 1),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "slide missing presenter field",
+                (result.stdout + result.stderr).lower(),
+            )
+
+    def test_default_weekly_slides_must_enable_marp(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            slides = fixture / "examples" / "weekly-summary" / "slides.md"
+            content = slides.read_text(encoding="utf-8")
+            slides.write_text(
+                content.replace("marp: true", "marp: false", 1),
+                encoding="utf-8",
+            )
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "must enable marp",
                 (result.stdout + result.stderr).lower(),
             )
 
@@ -628,8 +702,8 @@ class ValidateRepoTests(unittest.TestCase):
             content = template.read_text(encoding="utf-8")
             template.write_text(
                 content.replace(
-                    "| <动作> | <姓名或待补充> | <日期或待补充> | <结果或文件> | <可判断标准> | <依赖或风险> |",
-                    "| P0 | <动作> | <姓名或待补充> | <日期或待补充> | <结果或文件> | <可判断标准> | <依赖或风险> |",
+                    "| <动作> | <姓名或待补充> | <日期或待补充> | <结果或文件> | <判据> | <风险> |",
+                    "| P0 | <动作> | <姓名或待补充> | <日期或待补充> | <结果或文件> | <判据> | <风险> |",
                     1,
                 ),
                 encoding="utf-8",

@@ -1,4 +1,4 @@
 interface:
   display_name: "Lab Meeting Report"
-  short_description: "Create decision-ready research meeting reports"
-  default_prompt: "Use $lab-meeting-report to turn my scoped research notes into a meeting-ready Markdown report that reviews prior actions, checks evidence gaps, surfaces decisions, and records next actions."
+  short_description: "Turn weekly research material into a meeting-ready summary"
+  default_prompt: "Use $lab-meeting-report to turn this week's notes, papers, results, and figures into a concise Markdown lab-meeting summary with key evidence, blockers, and next steps."

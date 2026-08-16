@@ -15,6 +15,28 @@ The only required input is the weekly material. The skill extracts progress, key
 
 If this saves a lab-meeting preparation cycle, [star the repository](https://github.com/LikC1606/lab-meeting-report-skill) so other researchers can find it.
 
+## 60-Second Synthetic Demo
+
+> This is a synthetic microscopy-segmentation project used to demonstrate the workflow. Every project detail and result is fictional; it is not presented as a real PhD-student or user case study.
+
+The input is a small bundle of raw weekly material rather than a prepared report:
+
+- [weekly notes](examples/weekly-summary/weekly-notes.md) with three completed seeds, a failed branch, an OOM run, and a resource decision;
+- [experiment results](examples/weekly-summary/results.csv) with Dice, IoU, GPU memory, and run status;
+- [paper notes](examples/weekly-summary/paper-notes.md) about a potentially relevant method that has not been validated on the current data.
+
+The skill turns that bundle into:
+
+- a [meeting-ready Markdown report](examples/weekly-summary/report.md) whose first screen covers progress, evidence, the blocker, and the next action while retaining the failed experiment and avoiding invented significance;
+- a [seven-slide Marp deck](examples/weekly-summary/slides.md) covering the result table, negative result, OOM decision, literature boundary, and next-week deliverable.
+
+Reproduce the workflow with this request:
+
+```text
+Use $lab-meeting-report to read the weekly notes, results, and paper notes in
+examples/weekly-summary, then create a Chinese report and a 10-minute Marp deck.
+```
+
 ## Start Here
 
 Install from the public GitHub repository:

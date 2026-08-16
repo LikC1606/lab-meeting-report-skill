@@ -15,6 +15,28 @@
 
 如果它帮你节省了一次组会准备时间，可以给[这个仓库加 Star](https://github.com/LikC1606/lab-meeting-report-skill)，让更多研究者找到它。
 
+## 60 秒合成案例
+
+> 这是用于演示工作流的合成显微图像分割项目，所有项目细节和结果均为虚构内容，不冒充真实博士生或用户案例。
+
+输入不是整理好的周报，而是一周留下的几份原始材料：
+
+- [本周散记](examples/weekly-summary/weekly-notes.md)：三个随机种子已完成、一个失败分支、一次 OOM 和一个待讨论的资源选择；
+- [实验结果](examples/weekly-summary/results.csv)：Dice、IoU、GPU 内存与运行状态；
+- [论文笔记](examples/weekly-summary/paper-notes.md)：一个可能相关但尚未在当前数据上验证的方法。
+
+Skill 将它们整理为：
+
+- [可直接开会的 Markdown 周报](examples/weekly-summary/report.md)：首屏给出进展、证据、阻塞和下一步，保留失败实验，不编造显著性；
+- [7 页 Marp 演示稿](examples/weekly-summary/slides.md)：包含结果表、负面结果、OOM 决策问题、文献边界和下周交付。
+
+复现这个案例可以直接对 Agent 说：
+
+```text
+使用 $lab-meeting-report 读取 examples/weekly-summary 下的本周散记、
+实验结果和论文笔记，生成中文组会周报和 10 分钟 Marp 演示稿。
+```
+
 ## 快速开始
 
 从公开 GitHub 仓库安装：

@@ -173,7 +173,7 @@ Review the [evaluation design](docs/superpowers/specs/2026-07-13-lab-meeting-rep
 
 ## Feedback And Contributions
 
-- Use the [Chinese media and early-tester kit](docs/MEDIA_KIT.zh-CN.md) to share the synthetic demo or recruit initial users without presenting synthetic material as user evidence.
+- Use the [Chinese media kit](docs/MEDIA_KIT.zh-CN.md) to share the reproducible synthetic demo without requiring user testing or presenting synthetic material as user evidence.
 - Report a reproducible problem with the [bug form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=bug_report.yml).
 - Propose a reusable improvement with the [feature form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=feature_request.yml).
 - Share a synthetic or anonymized workflow with the [example form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=example_submission.yml).

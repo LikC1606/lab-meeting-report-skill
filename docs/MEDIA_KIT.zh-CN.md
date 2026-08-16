@@ -1,6 +1,6 @@
 # Lab Meeting Report 传播素材
 
-这份素材用于寻找真实试用者，而不是制造虚假的 Star 或用户证明。发布时可以改写语气，但不要删除合成案例和能力边界说明。
+这份素材用于在没有真人测试渠道的情况下公开展示可复现工作流，而不是制造虚假的 Star 或用户证明。发布时可以改写语气，但不要删除合成案例和能力边界说明。
 
 ## 可以公开使用的事实
 
@@ -48,7 +48,7 @@
 
 目前我还没有可以公开的真实博士生案例，所以仓库里明确放的是一个完全合成、可复现的显微图像分割案例，没有冒充用户反馈。
 
-我正在找 3 位愿意试用的博士生。未公开资料可以只在你自己的电脑和 Agent 里运行，不需要发给我；试完只反馈“哪里不好用”即可。愿意公开案例时，也只接受合成内容或得到许可的脱敏材料。
+仓库已经公开全部合成输入、生成结果和自动评测，任何人都可以在自己的电脑和 Agent 中复现，不需要把未公开研究资料交给维护者。
 
 GitHub：
 https://github.com/LikC1606/lab-meeting-report-skill
@@ -68,37 +68,44 @@ npx skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 3. 展示生成周报的本周速览、结果表和决策问题。
 4. 解释为什么不能让 Agent 补齐缺失数字、显著性或论文信息。
 5. 给出可复制的安装命令和提示词。
-6. 明确说明目前是合成演示，邀请真实试用者反馈。
+6. 明确说明目前是合成演示，并链接完整输入、输出和自动评测。
 
 ## 短消息
 
 ```text
-我开源了一个面向博士生组会的 Agent Skill：把散记、实验结果和论文笔记整理成有来源的 Markdown 周报和 Marp，保留失败实验，不补造数字。现在只有公开的合成案例，正在找 3 位真实试用者。https://github.com/LikC1606/lab-meeting-report-skill
+我开源了一个面向博士生组会的 Agent Skill：把散记、实验结果和论文笔记整理成有来源的 Markdown 周报和 Marp，保留失败实验，不补造数字。仓库包含完整的合成输入、输出和自动评测，可直接复现。https://github.com/LikC1606/lab-meeting-report-skill
 ```
 
-## 首批试用邀请
+## 无真人案例时的发布说明
 
 ```text
-招募 3 位需要准备组会的博士生试用一个开源 Agent Skill。
+这个项目目前没有可以公开的真实用户案例，因此不引用虚构反馈。
 
-你提供给自己的 Agent：本周散记、结果文件和论文笔记。
-它输出：组会 Markdown；需要时附 10 分钟 Marp。
+仓库使用一套完整的合成科研材料展示工作流：
+输入是本周散记、实验 CSV 和论文笔记；
+输出是有来源的 Markdown 周报和 7 页 Marp；
+自动评测检查数值、负面结果、来源和每页演讲结构。
 
-资料可以完全留在你的电脑上，不需要发给维护者。希望你试完后只回答三个问题：
-1. 哪一步最省事？
-2. 哪段输出最没用或最不可信？
-3. 下次还会不会用？为什么？
+所有材料都已公开，可以自行复现和检查，而不需要相信宣传文案。
 
 项目：https://github.com/LikC1606/lab-meeting-report-skill
 ```
 
+## 可自行完成的目录分发
+
+- `skills.sh` 当前仍使用旧快照，可跟踪或补充 [`vercel-labs/skills#1918`](https://github.com/vercel-labs/skills/issues/1918)。
+- `Awesome Claude Code` 接受已持续维护至少 14 天的项目，但要求作者本人通过网页表单推荐，不能使用 `gh` CLI 自动提交：[推荐表单](https://github.com/hesreallyhim/awesome-claude-code/issues/new?template=recommend-resource.yml)。
+- 推荐表单可使用这一句客观描述：`Creates source-grounded lab-meeting reports and presentation outlines from weekly research materials.`
+- `VoltAgent/awesome-agent-skills` 明确要求已有社区使用，不把它作为当前阶段的渠道。
+
 ## 第一阶段目标
 
-先衡量真实使用，不把 Star 当成唯一目标：
+这些目标不依赖主动寻找真人测试：
 
-1. 找到 3 位完成安装并实际生成一次周报的人；
-2. 收到至少 2 份可复现的问题或改进反馈；
-3. 在得到许可后形成 1 个脱敏案例，或者继续公开标注为合成案例；
-4. 有了真实使用证据后，再申请进入要求社区采用信号的 Awesome 列表。
+1. 为 GitHub 仓库上传 Social preview 图片；
+2. 在两个公开平台发布同一个可复现合成案例，而不是征集测试者；
+3. 推动 `skills.sh` 更新快照和搜索索引；
+4. 由仓库所有者提交 `Awesome Claude Code` 网页推荐表单；
+5. 观察 14 天的 GitHub 独立访问量、`skills.sh` 安装数和自然获得的 Star。
 
 不要购买 Star、参加互赞群、批量私信或把合成材料称为真实案例。这些行为不能证明产品有用，也会降低后续社区收录的可信度。

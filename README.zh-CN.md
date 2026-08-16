@@ -191,7 +191,7 @@ v1.2 的证据保护规则在 8 个公开合成科研进展场景上各运行 3 
 
 ## 反馈与贡献
 
-- 使用[传播素材](docs/MEDIA_KIT.zh-CN.md)发布合成演示或招募首批试用者；不要把合成内容包装成真实用户案例。
+- 使用[传播素材](docs/MEDIA_KIT.zh-CN.md)发布可复现的合成演示；不要求真人测试，也不要把合成内容包装成真实用户案例。
 - 使用 [Bug 表单](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=bug_report.yml)提交可复现问题。
 - 使用[功能建议表单](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=feature_request.yml)提出可复用改进。
 - 使用[示例投稿表单](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=example_submission.yml)分享合成或匿名工作流。

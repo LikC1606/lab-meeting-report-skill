@@ -9,7 +9,7 @@ Turn a PhD student's weekly experiment notes, paper notes, result files, figures
 
 The only required input is the weekly material. The skill extracts progress, key evidence, failed attempts, blockers, and next actions for a research progress report, paper review, or mixed report. Optional adapters can publish the validated report to Feishu/Lark or Notion and prepare Markdown, Marp, Quarto, or editable-PPTX content.
 
-![Scattered weekly research material transformed into a meeting-ready, source-grounded Markdown summary](assets/lab-meeting-report-preview.png)
+![Raw PhD weekly material transformed into a grounded lab-meeting report and seven-slide deck](assets/lab-meeting-report-social-preview.png)
 
 [中文文档](README.zh-CN.md) | [Complete examples](#complete-examples) | [Measured quality](#measured-quality) | [Contributing](CONTRIBUTING.md)
 
@@ -173,6 +173,7 @@ Review the [evaluation design](docs/superpowers/specs/2026-07-13-lab-meeting-rep
 
 ## Feedback And Contributions
 
+- Use the [Chinese media and early-tester kit](docs/MEDIA_KIT.zh-CN.md) to share the synthetic demo or recruit initial users without presenting synthetic material as user evidence.
 - Report a reproducible problem with the [bug form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=bug_report.yml).
 - Propose a reusable improvement with the [feature form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=feature_request.yml).
 - Share a synthetic or anonymized workflow with the [example form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=example_submission.yml).

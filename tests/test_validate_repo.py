@@ -163,6 +163,25 @@ class ValidateRepoTests(unittest.TestCase):
                 (result.stdout + result.stderr).lower(),
             )
 
+    def test_missing_social_preview_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = Path(temp_dir) / "repo"
+            copy_fixture(fixture)
+            preview = (
+                fixture
+                / "assets"
+                / "lab-meeting-report-social-preview.png"
+            )
+            preview.unlink()
+
+            result = run_validator(fixture)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "missing preview png",
+                (result.stdout + result.stderr).lower(),
+            )
+
     def test_missing_example_source_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             fixture = Path(temp_dir) / "repo"

@@ -9,9 +9,9 @@
 
 默认只需要告诉 Agent “这一周的资料在哪里”。Skill 会自动提取本周进展、关键证据、失败尝试、当前阻塞和下周计划；需要时还可以发布到飞书/Lark 或 Notion，并生成 Markdown、Marp、Quarto 或可编辑 PPTX 适配内容。
 
-![一周的散乱科研材料被整理为可汇报、可追溯的 Markdown 组会周报](assets/lab-meeting-report-preview.png)
+![博士生一周的原始材料被整理为有来源的组会周报和七页演示稿](assets/lab-meeting-report-social-preview.png)
 
-[English](README.md) | [完整示例](#完整示例) | [质量评测](#质量评测) | [参与贡献](CONTRIBUTING.md)
+[English](README.md) | [完整示例](#完整示例) | [传播素材](docs/MEDIA_KIT.zh-CN.md) | [质量评测](#质量评测) | [参与贡献](CONTRIBUTING.md)
 
 如果它帮你节省了一次组会准备时间，可以给[这个仓库加 Star](https://github.com/LikC1606/lab-meeting-report-skill)，让更多研究者找到它。
 
@@ -191,6 +191,7 @@ v1.2 的证据保护规则在 8 个公开合成科研进展场景上各运行 3 
 
 ## 反馈与贡献
 
+- 使用[传播素材](docs/MEDIA_KIT.zh-CN.md)发布合成演示或招募首批试用者；不要把合成内容包装成真实用户案例。
 - 使用 [Bug 表单](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=bug_report.yml)提交可复现问题。
 - 使用[功能建议表单](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=feature_request.yml)提出可复用改进。
 - 使用[示例投稿表单](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=example_submission.yml)分享合成或匿名工作流。

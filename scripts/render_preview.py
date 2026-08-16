@@ -16,6 +16,8 @@ from reportlab.pdfgen import canvas
 
 WIDTH = 1440
 HEIGHT = 960
+SOCIAL_WIDTH = 1280
+SOCIAL_HEIGHT = 640
 
 INK = "#17231f"
 GREEN = "#126b4b"
@@ -407,6 +409,188 @@ def render_preview(output: Path) -> None:
         pdf_path.unlink(missing_ok=True)
 
 
+def render_social_preview(output: Path) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_file:
+        pdf_path = Path(temp_file.name)
+
+    pdf = canvas.Canvas(
+        str(pdf_path), pagesize=(SOCIAL_WIDTH, SOCIAL_HEIGHT)
+    )
+    set_color(pdf, BACKGROUND)
+    pdf.rect(0, 0, SOCIAL_WIDTH, SOCIAL_HEIGHT, fill=1, stroke=0)
+    set_color(pdf, GREEN)
+    pdf.rect(0, SOCIAL_HEIGHT - 14, SOCIAL_WIDTH, 14, fill=1, stroke=0)
+
+    draw_text(
+        pdf,
+        "LAB MEETING REPORT",
+        52,
+        588,
+        size=13,
+        font="Helvetica-Bold",
+        color=GREEN,
+    )
+    draw_text(
+        pdf,
+        "Your PhD week, ready for lab meeting",
+        52,
+        540,
+        size=36,
+        font="Helvetica-Bold",
+    )
+    draw_text(
+        pdf,
+        "Notes + results + papers  ->  grounded Markdown report + 7-slide deck",
+        52,
+        506,
+        size=18,
+        color="#4f6059",
+    )
+
+    set_color(pdf, "#e7f1ed")
+    pdf.roundRect(1087, 558, 141, 34, 5, fill=1, stroke=0)
+    draw_text(
+        pdf,
+        "SYNTHETIC DEMO",
+        1102,
+        569,
+        size=11,
+        font="Helvetica-Bold",
+        color=GREEN,
+    )
+
+    left_x = 52
+    left_y = 142
+    left_width = 344
+    card_height = 322
+    right_x = 456
+    right_width = 772
+    draw_panel(
+        pdf,
+        left_x,
+        left_y,
+        left_width,
+        card_height,
+        "Weekly input",
+        "Raw research material",
+    )
+    draw_panel(
+        pdf,
+        right_x,
+        left_y,
+        right_width,
+        card_height,
+        "Generated output",
+        "A decision-ready meeting brief",
+    )
+
+    source_y = 352
+    source_y = draw_source(
+        pdf,
+        left_x + 20,
+        source_y,
+        "weekly-notes.md",
+        [("3 seeds completed", True), ("1 failed branch + 1 OOM", False)],
+    )
+    source_y = draw_source(
+        pdf,
+        left_x + 20,
+        source_y,
+        "results.csv",
+        [("Dice / IoU / GPU memory", True)],
+        accent=GREEN,
+    )
+    draw_source(
+        pdf,
+        left_x + 20,
+        source_y,
+        "paper-notes.md",
+        [("Candidate method, not validated", False)],
+        accent=GOLD,
+    )
+
+    set_color(pdf, GREEN, fill=False)
+    pdf.setLineWidth(3)
+    pdf.line(414, 302, 438, 302)
+    pdf.line(429, 311, 438, 302)
+    pdf.line(429, 293, 438, 302)
+    pdf.setLineWidth(1)
+
+    content_x = right_x + 20
+    content_width = right_width - 40
+    gap = 12
+    tile_width = (content_width - gap) / 2
+    tile_height = 74
+    tiles = [
+        ("PROGRESS", "3 reproducible runs", GREEN),
+        ("EVIDENCE", "Dice 0.812 / 0.806 / 0.809", INK),
+        ("NEGATIVE RESULT", "Dropout branch fell to 0.774", RED),
+        ("DECISION NEEDED", "24 GB GPU or accumulation?", GOLD),
+    ]
+    for index, (label, value, color) in enumerate(tiles):
+        column = index % 2
+        row = index // 2
+        x = content_x + column * (tile_width + gap)
+        y = 278 - row * (tile_height + 8)
+        set_color(pdf, "#f4f7f6")
+        set_color(pdf, BORDER, fill=False)
+        pdf.roundRect(x, y, tile_width, tile_height, 4, fill=1, stroke=1)
+        draw_text(
+            pdf,
+            label,
+            x + 14,
+            y + 50,
+            size=9,
+            font="Helvetica-Bold",
+            color=MUTED,
+        )
+        draw_text(
+            pdf,
+            value,
+            x + 14,
+            y + 22,
+            size=14,
+            font="Helvetica-Bold",
+            color=color,
+        )
+
+    set_color(pdf, "#e7f1ed")
+    pdf.roundRect(content_x, 151, content_width, 35, 4, fill=1, stroke=0)
+    draw_text(
+        pdf,
+        "Markdown report  |  Marp deck  |  Feishu / Notion optional",
+        content_x + 16,
+        163,
+        size=13,
+        font="Helvetica-Bold",
+        color=GREEN,
+    )
+
+    set_color(pdf, "#17231f")
+    pdf.roundRect(52, 48, 1176, 60, 6, fill=1, stroke=0)
+    draw_text(
+        pdf,
+        "npx skills add LikC1606/lab-meeting-report-skill --skill lab-meeting-report",
+        78,
+        71,
+        size=15,
+        font="Courier-Bold",
+        color="#ffffff",
+    )
+
+    pdf.showPage()
+    pdf.save()
+
+    document = fitz.open(pdf_path)
+    try:
+        pixmap = document[0].get_pixmap(alpha=False)
+        pixmap.save(output)
+    finally:
+        document.close()
+        pdf_path.unlink(missing_ok=True)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Render the README preview PNG")
     parser.add_argument(
@@ -414,8 +598,14 @@ def main() -> int:
         type=Path,
         default=Path("assets/lab-meeting-report-preview.png"),
     )
+    parser.add_argument(
+        "--social-output",
+        type=Path,
+        default=Path("assets/lab-meeting-report-social-preview.png"),
+    )
     args = parser.parse_args()
     render_preview(args.output)
+    render_social_preview(args.social_output)
     return 0
 
 

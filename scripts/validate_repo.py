@@ -338,7 +338,11 @@ def repository_text_files(root: Path) -> list[Path]:
     return files
 
 
-def validate_png(path: Path, errors: list[str]) -> None:
+def validate_png(
+    path: Path,
+    errors: list[str],
+    expected_dimensions: tuple[int, int] = (1440, 960),
+) -> None:
     if not path.is_file():
         errors.append(f"Missing preview PNG: {path.relative_to(path.parents[1])}")
         return
@@ -347,10 +351,14 @@ def validate_png(path: Path, errors: list[str]) -> None:
         errors.append(f"Invalid PNG signature: {path}")
         return
     width, height = struct.unpack(">II", data[16:24])
-    if (width, height) != (1440, 960):
+    if (width, height) != expected_dimensions:
+        expected_width, expected_height = expected_dimensions
         errors.append(
-            f"Unexpected preview dimensions: {width}x{height}; expected 1440x960"
+            f"Unexpected preview dimensions: {width}x{height}; expected "
+            f"{expected_width}x{expected_height}"
         )
+    if len(data) >= 1_000_000:
+        errors.append(f"Preview PNG must be under 1 MB: {path}")
 
 
 def validate_preview_source(root: Path, errors: list[str]) -> None:
@@ -990,6 +998,11 @@ def validate_repo(root: Path) -> list[str]:
 
     validate_preview_source(root, errors)
     validate_png(root / "assets" / "lab-meeting-report-preview.png", errors)
+    validate_png(
+        root / "assets" / "lab-meeting-report-social-preview.png",
+        errors,
+        expected_dimensions=(1280, 640),
+    )
     validate_evaluation_assets(root, errors)
     validate_weekly_workflow_eval(root, errors)
     validate_candidate_selection(root, errors)

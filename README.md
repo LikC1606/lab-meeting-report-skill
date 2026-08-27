@@ -11,7 +11,7 @@ Turn raw weekly research material into a source-grounded lab meeting report in o
 - Uses only supplied evidence; it does not invent metrics, citations, or explanations.
 - Outputs Markdown first, with optional Marp, Feishu/Lark, Notion, Quarto, or editable-PPTX adapters.
 
-The only required input is the weekly material: notes, results, figures, papers, or code changes.
+The only required input is the weekly material: notes, results, figures, papers, or code changes. Use it for a research progress report, journal club, or mixed report.
 
 ![Raw PhD weekly material transformed into a grounded lab-meeting report and seven-slide deck](assets/lab-meeting-report-social-preview.png)
 

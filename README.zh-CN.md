@@ -45,6 +45,12 @@ Skill 将它们整理为：
 npx skills add https://github.com/LikC1606/lab-meeting-report-skill --skill lab-meeting-report
 ```
 
+如果网络无法进行 GitHub 克隆，可以先[下载仓库 ZIP](https://github.com/LikC1606/lab-meeting-report-skill/archive/refs/heads/main.zip)，解压后从本地目录安装：
+
+```bash
+npx skills add ./lab-meeting-report-skill-main --skill lab-meeting-report --copy -y
+```
+
 macOS 或 Linux 全局、非交互安装：
 
 ```bash

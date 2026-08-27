@@ -15,7 +15,7 @@ The only required input is the weekly material: notes, results, figures, papers,
 
 ![Raw PhD weekly material transformed into a grounded lab-meeting report and seven-slide deck](assets/lab-meeting-report-social-preview.png)
 
-[中文文档](README.zh-CN.md) | [Complete examples](#complete-examples) | [Measured quality](#measured-quality) | [Contributing](CONTRIBUTING.md)
+[中文文档](README.zh-CN.md) | [60-second Demo discussion](https://github.com/LikC1606/lab-meeting-report-skill/discussions/1) | [Complete examples](#complete-examples) | [Measured quality](#measured-quality) | [Contributing](CONTRIBUTING.md)
 
 If this saves a lab-meeting preparation cycle, [star the repository](https://github.com/LikC1606/lab-meeting-report-skill) so other researchers can find it.
 

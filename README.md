@@ -5,9 +5,13 @@
 [![GitHub release](https://img.shields.io/github/v/release/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 
-Turn a PhD student's weekly experiment notes, paper notes, result files, figures, and work update into a Markdown lab meeting report that is ready to present, archive, and continue next week.
+Turn raw weekly research material into a source-grounded lab meeting report in one request.
 
-The only required input is the weekly material. The skill extracts progress, key evidence, failed attempts, blockers, and next actions for a research progress report, paper review, or mixed report. Optional adapters can publish the validated report to Feishu/Lark or Notion and prepare Markdown, Marp, Quarto, or editable-PPTX content.
+- Keeps failed experiments and negative results.
+- Uses only supplied evidence; it does not invent metrics, citations, or explanations.
+- Outputs Markdown first, with optional Marp, Feishu/Lark, Notion, Quarto, or editable-PPTX adapters.
+
+The only required input is the weekly material: notes, results, figures, papers, or code changes.
 
 ![Raw PhD weekly material transformed into a grounded lab-meeting report and seven-slide deck](assets/lab-meeting-report-social-preview.png)
 

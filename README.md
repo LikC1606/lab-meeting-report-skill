@@ -49,6 +49,12 @@ Install from the public GitHub repository:
 npx skills add https://github.com/LikC1606/lab-meeting-report-skill --skill lab-meeting-report
 ```
 
+If GitHub cloning is blocked on your network, [download the repository ZIP](https://github.com/LikC1606/lab-meeting-report-skill/archive/refs/heads/main.zip), unzip it, and install from the extracted folder:
+
+```bash
+npx skills add ./lab-meeting-report-skill-main --skill lab-meeting-report --copy -y
+```
+
 For a global, non-interactive installation on macOS or Linux:
 
 ```bash

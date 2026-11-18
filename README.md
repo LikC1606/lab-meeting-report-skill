@@ -1,200 +1,73 @@
+<!-- README_SYNC: source=f6c06b7388accc0eef6d59e10cfdb667e0fe6671; updated=2026-11-18 -->
+
+English · [简体中文](./README.zh-CN.md)
+
 # Lab Meeting Report
 
+Turn a week's research notes, figures, papers, and experiment files into a lab meeting report that keeps the results, failed attempts, and decisions traceable to the material you supplied. The first deliverable is a local Markdown file.
+
+If it saves you time before a meeting, [star the repository](https://github.com/LikC1606/lab-meeting-report-skill/stargazers) to find it again.
+
+[![Stars](https://img.shields.io/github/stars/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/stargazers)
 [![Validate skill](https://github.com/LikC1606/lab-meeting-report-skill/actions/workflows/validate-skill.yml/badge.svg)](https://github.com/LikC1606/lab-meeting-report-skill/actions/workflows/validate-skill.yml)
 [![skills.sh listing](https://skills.sh/b/LikC1606/lab-meeting-report-skill)](https://skills.sh/LikC1606/lab-meeting-report-skill)
 [![GitHub release](https://img.shields.io/github/v/release/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/releases)
-[![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-2ea44f.svg)](./LICENSE)
 
-Turn raw weekly research material into a source-grounded lab meeting report in one request.
-
-- Keeps failed experiments and negative results.
-- Uses only supplied evidence; it does not invent metrics, citations, or explanations.
-- Outputs Markdown first, with optional Marp, Feishu/Lark, Notion, Quarto, or editable-PPTX adapters.
-
-The only required input is the weekly material: notes, results, figures, papers, or code changes. Use it for a research progress report, journal club, or mixed report.
-
-![Raw PhD weekly material transformed into a grounded lab-meeting report and seven-slide deck](assets/lab-meeting-report-social-preview.png)
-
-[中文文档](README.zh-CN.md) | [60-second Demo discussion](https://github.com/LikC1606/lab-meeting-report-skill/discussions/1) | [Complete examples](#complete-examples) | [Measured quality](#measured-quality) | [Contributing](CONTRIBUTING.md)
-
-If this saves a lab-meeting preparation cycle, [star the repository](https://github.com/LikC1606/lab-meeting-report-skill) so other researchers can find it.
-
-## 60-Second Synthetic Demo
-
-> This is a synthetic microscopy-segmentation project used to demonstrate the workflow. Every project detail and result is fictional; it is not presented as a real PhD-student or user case study.
-
-The input is a small bundle of raw weekly material rather than a prepared report:
-
-- [weekly notes](examples/weekly-summary/weekly-notes.md) with three completed seeds, a failed branch, an OOM run, and a resource decision;
-- [experiment results](examples/weekly-summary/results.csv) with Dice, IoU, GPU memory, and run status;
-- [paper notes](examples/weekly-summary/paper-notes.md) about a potentially relevant method that has not been validated on the current data.
-
-The skill turns that bundle into:
-
-- a [meeting-ready Markdown report](examples/weekly-summary/report.md) whose first screen covers progress, evidence, the blocker, and the next action while retaining the failed experiment and avoiding invented significance;
-- a [seven-slide Marp deck](examples/weekly-summary/slides.md) covering the result table, negative result, OOM decision, literature boundary, and next-week deliverable.
-
-Reproduce the workflow with this request:
-
-```text
-Use $lab-meeting-report to read the weekly notes, results, and paper notes in
-examples/weekly-summary, then create a Chinese report and a 10-minute Marp deck.
-```
-
-## Start Here
-
-Install from the public GitHub repository:
+## Install and try it
 
 ```bash
 npx skills add https://github.com/LikC1606/lab-meeting-report-skill --skill lab-meeting-report
 ```
 
-If GitHub cloning is blocked on your network, [download the repository ZIP](https://github.com/LikC1606/lab-meeting-report-skill/archive/refs/heads/main.zip), unzip it, and install from the extracted folder:
+Ask the agent: “Use $lab-meeting-report to read ./weekly and my pasted update, then prepare this week's lab meeting summary.” Only the source is required. The standard output is a dated file at `reports/group-meeting/YYYY-MM-DD.md`. Its opening covers what changed, the evidence, what is blocked, and what to do next.
 
-```bash
-npx skills add ./lab-meeting-report-skill-main --skill lab-meeting-report --copy -y
-```
-
-For a global, non-interactive installation on macOS or Linux:
+For a global, non-interactive install on macOS or Linux:
 
 ```bash
 npx skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 ```
 
-On Windows PowerShell, use `npx.cmd`:
+On Windows PowerShell:
 
 ```powershell
 npx.cmd skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 ```
 
-Then use a natural request:
+If GitHub cloning is unavailable, [download the ZIP](https://github.com/LikC1606/lab-meeting-report-skill/archive/refs/heads/main.zip), extract it, then install from that directory:
 
-```text
-Use $lab-meeting-report to read ./weekly and the update I pasted above,
-then create this week's lab meeting summary in English.
+```bash
+npx skills add ./lab-meeting-report-skill-main --skill lab-meeting-report --copy -y
 ```
 
-The source is the only required field. Pasted text, attachments, directories, papers, results, and figures all count. Mode, language, date, and path can be inferred. The default output is a real file:
+## Try the synthetic demo
 
-```text
-reports/group-meeting/YYYY-MM-DD.md
-```
+![Comparison of raw synthetic weekly notes with a report and seven-slide deck](./assets/lab-meeting-report-social-preview.png)
 
-## Default Output
+The [60-second demo](https://github.com/LikC1606/lab-meeting-report-skill/discussions/1) uses a fictional microscopy-segmentation project. Give the agent its [weekly notes](./examples/weekly-summary/weekly-notes.md), [results CSV](./examples/weekly-summary/results.csv), and [paper notes](./examples/weekly-summary/paper-notes.md), and ask for a report and a 10-minute Marp deck. Compare with the [sample report](./examples/weekly-summary/report.md) and [seven-slide deck](./examples/weekly-summary/slides.md): both preserve the failed branch and the resource decision, without treating the paper's method as a validated result on the demo data.
 
-The first screen answers four questions:
+| Mode | Example |
+| --- | --- |
+| research progress report | [Experiments, results, and blockers](./examples/research-progress/report.md) |
+| journal club | [Paper evidence and limits](./examples/journal-club/report.md) |
+| mixed | [Research progress connected to a paper](./examples/mixed/report.md) |
 
-1. What meaningful progress happened this week?
-2. What result, figure, paper finding, or artifact supports it?
-3. What is blocked, and what help or discussion is needed?
-4. What happens next, with what artifact and success criterion?
+The examples are synthetic. Real inputs can also include results, figures, code changes, and explicitly selected cloud files when the host can read them. With sparse material the skill can return a brief report; use `audit` when you want claim-level provenance. In the `after` or `both` meeting stages it keeps the pre-meeting record and adds explicitly recorded decisions and actions.
 
-The remaining sections are selected from the material and normally cover completed work, key results and figures, relevant paper insights, failed attempts, blockers, next-week actions, and sources. Empty sections are omitted.
+## Optional exports
 
-Sparse material automatically produces a brief report. Full claim provenance and evidence-completeness tables appear only when `audit` detail is requested or the evidence materially conflicts.
+The [Skill](./lab-meeting-report/SKILL.md) builds and validates local Markdown before using an adapter. Feishu/Lark uses [lark-cli](https://github.com/larksuite/cli) and the relevant Lark skills. Notion uses the [Notion MCP](https://developers.notion.com/guides/mcp/overview). Publishing requires a request and a defined destination; the adapter reads the saved page back and records its verified link. A failed export does not invalidate the local report.
 
-## One Request, Optional Destinations
+[Marp](https://github.com/marp-team/marp-cli) handles quick decks; [Quarto](https://quarto.org/docs/presentations/) supports academic slides and equations. For editable PowerPoint, use an existing tested [PptxGenJS](https://github.com/gitbrent/PptxGenJS) layout adapter. Slidev is an option for projects that already use it or explicitly choose it. When a dependency is missing, keep the Markdown deck and report the missing tool.
 
-```text
-Use $lab-meeting-report to read this week's experiments, paper notes, and figures.
-Create the Markdown report, publish it to Feishu, and prepare a 10-minute Marp deck.
-```
+## Evidence and evaluation
 
-```text
-Use $lab-meeting-report to summarize ./weekly and publish the result under
-this Notion page: <page URL>.
-```
-
-Every remote or presentation artifact is derived from the validated local Markdown. A failed export or cloud write never invalidates the local report.
-
-## Report Modes
-
-| Mode | Best for | Core content |
-|---|---|---|
-| Research progress report | Experiments, implementations, ongoing projects | Weekly work, results, failed attempts, blockers, next actions |
-| Paper review / journal club | Paper reading and literature discussion | Question, method, evidence, limitations, relevance to current work |
-| Mixed | Connecting current work to literature | Current results, literature mapping, comparison boundaries, validation plan |
-
-Supported inputs include pasted notes, Markdown, text, PDF, CSV, Excel, figures, screenshots, code changes, and explicitly selected Feishu/Lark or Notion resources. Availability depends on the host agent's tools.
-
-## Feishu/Lark And Notion
-
-Local Markdown generation has no cloud dependency. Remote publishing always follows: local generation, quality validation, authorized write, remote fetch verification, and verified-link writeback.
-
-Feishu/Lark uses the official [`lark-cli`](https://github.com/larksuite/cli) and the applicable Lark skills. It reads only explicitly scoped resources, uses user identity, and does not silently overwrite or delete remote content.
-
-Notion uses the official [Notion MCP](https://developers.notion.com/guides/mcp/overview) with OAuth. The adapter can create, update, and verify pages through `notion-create-pages`, `notion-update-page`, and `notion-fetch`. It does not ask users to paste API tokens into chat or scan an entire workspace by default.
-
-## Presentation Adapters
-
-Presentation output is optional and modular:
-
-| Need | Preferred adapter | Boundary |
-|---|---|---|
-| Talking points | Plain Markdown | No extra tool required |
-| Fast HTML, PDF, or simple PPTX | [Marp CLI](https://github.com/marp-team/marp-cli) | Standard PPTX is usually not fully editable |
-| Equations, citations, academic formats | [Quarto](https://quarto.org/docs/presentations/) | Supports reveal.js, PPTX, and Beamer |
-| Natively editable PowerPoint | [PptxGenJS](https://github.com/gitbrent/PptxGenJS) | Requires an existing tested layout adapter |
-| Interactive web deck | [Slidev](https://github.com/slidevjs/slidev) | Used only when explicitly selected or already in the project |
-
-The skill never installs these tools silently. If an adapter is unavailable, it keeps a usable Markdown deck and reports the missing dependency.
-
-## Before And After The Meeting
-
-The source remains the only required input. Stage, audience, duration, and previous actions are optional.
-
-| Stage | Behavior |
-|---|---|
-| `before` (default) | Create the weekly snapshot, evidence, blockers, and next steps |
-| `after` | Preserve the pre-meeting report and append only explicit recorded decisions and actions |
-| `both` | Create the pre-meeting report, then add separately attributed post-meeting records |
-
-When a recorded meeting decision resolves a pre-meeting blocker, the report retains it for traceability but labels it as resolved instead of presenting it as current.
-
-## Evidence Safeguards
-
-Lightweight input does not remove research safeguards. The skill continues to:
-
-- avoid inventing results, metrics, citations, authors, venues, DOI values, or causal explanations;
-- preserve supplied measurements and units;
-- retain failed experiments, negative results, and unresolved conflicts;
-- separate facts, interpretations, and hypotheses;
-- protect manual content and UTF-8 encoding when updating reports;
-- surface only consequential gaps by default and reserve full audit tables for `audit` detail.
-
-Read the complete workflow in [`lab-meeting-report/SKILL.md`](lab-meeting-report/SKILL.md).
-
-## Complete Examples
-
-All example data, paper notes, and results are synthetic. Start with the weekly-summary example to see the concise `standard` workflow and its Marp companion. The other bundled examples use `audit` detail to demonstrate evidence boundaries.
-
-| Workflow | Source material | Generated report |
-|---|---|---|
-| Default weekly summary | [Weekly notes](examples/weekly-summary/weekly-notes.md), [paper notes](examples/weekly-summary/paper-notes.md), and [results](examples/weekly-summary/results.csv) | [Concise report](examples/weekly-summary/report.md) and [Marp deck](examples/weekly-summary/slides.md) |
-| Research progress | [Notes](examples/research-progress/input-notes.md) and [result files](examples/research-progress/results) | [Report](examples/research-progress/report.md) |
-| Journal club | [Input notes](examples/journal-club/input-notes.md) and [paper notes](examples/journal-club/papers/synthetic-retrieval-notes.md) | [Report](examples/journal-club/report.md) |
-| Progress plus literature | [Combined notes](examples/mixed/input-notes.md), [results](examples/mixed/results/current_experiment.csv), and [paper notes](examples/mixed/papers/synthetic-balanced-retrieval.md) | [Report](examples/mixed/report.md) |
-
-## Measured Quality
-
-The v1.2 evidence safeguards passed the strict gate in 24/24 runs across eight public synthetic research-progress cases; the frozen v1.1 baseline passed 0/24. v1.3 retains those evaluated evidence rules while redesigning the default input, output, and optional adapters. A separate [Chinese mixed weekly-workflow case](evals/weekly-workflow/cases/chinese-mixed-decision) now exercises the default report plus Marp path and checks slide structure, source coverage, negative-result retention, and numeric closed-world behavior. This deterministic gate still does not establish real PhD-student preference or cloud-publishing reliability.
-
-Review the [evaluation design](docs/superpowers/specs/2026-07-13-lab-meeting-report-v1.2-quality-evaluation-design.md), [public cases](evals/research-progress/cases), [versioned benchmark](benchmarks/v1.1-v1.2/benchmark.md), and [claim-level self-audit](benchmarks/v1.1-v1.2/semantic-review-final.json).
-
-## Feedback And Contributions
-
-- Use the [Chinese media kit](docs/MEDIA_KIT.zh-CN.md) to share the reproducible synthetic demo without requiring user testing or presenting synthetic material as user evidence.
-- Report a reproducible problem with the [bug form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=bug_report.yml).
-- Propose a reusable improvement with the [feature form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=feature_request.yml).
-- Share a synthetic or anonymized workflow with the [example form](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=example_submission.yml).
-- Ask questions and compare workflows in [Discussions](https://github.com/LikC1606/lab-meeting-report-skill/discussions).
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
+The workflow retains negative results, conflicting measurements, and manual edits. It separates hypotheses from measured results and keeps units and source boundaries. The [evaluation design](./docs/superpowers/specs/2026-07-13-lab-meeting-report-v1.2-quality-evaluation-design.md), [versioned benchmark](./benchmarks/v1.1-v1.2/benchmark.md), and [claim-level self-audit](./benchmarks/v1.1-v1.2/semantic-review-final.json) document checks on eight [public synthetic progress cases](./evals/research-progress/cases). A separate [mixed weekly case](./evals/weekly-workflow/cases/chinese-mixed-decision) checks report and Marp structure, numeric fidelity, and failure retention. These evaluations do not measure real student preference or cloud publishing reliability.
 
 ## 中文说明
 
-完整中文安装、示例、能力边界和贡献说明见 [README.zh-CN.md](README.zh-CN.md)。
+[中文文档](./README.zh-CN.md) covers the same installation options and workflow. Use the [Chinese media kit](./docs/MEDIA_KIT.zh-CN.md) to share the labeled synthetic demo.
 
-## License
+See [CONTRIBUTING.md](./CONTRIBUTING.md) and [SECURITY.md](./SECURITY.md). Bring a reproducible example to [Issues](https://github.com/LikC1606/lab-meeting-report-skill/issues), or compare workflows in [Discussions](https://github.com/LikC1606/lab-meeting-report-skill/discussions).
 
-[MIT](LICENSE)
+Released under the [MIT License](./LICENSE).

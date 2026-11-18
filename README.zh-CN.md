@@ -1,210 +1,71 @@
-# Lab Meeting Report
+<!-- README_SYNC: source=f6c06b7388accc0eef6d59e10cfdb667e0fe6671; updated=2026-11-18 -->
 
+[English](./README.md) · 简体中文
+
+# Lab Meeting Report · 组会周报
+
+把一周的笔记、论文、图表和实验文件整理成有据可查的组会周报。先交付本地 Markdown，保留关键结果、失败尝试和待讨论的决定。
+
+如果它帮你节省了组会准备时间，可以 [Star 收藏](https://github.com/LikC1606/lab-meeting-report-skill/stargazers)。
+
+[![Stars](https://img.shields.io/github/stars/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/stargazers)
 [![Validate skill](https://github.com/LikC1606/lab-meeting-report-skill/actions/workflows/validate-skill.yml/badge.svg)](https://github.com/LikC1606/lab-meeting-report-skill/actions/workflows/validate-skill.yml)
 [![skills.sh listing](https://skills.sh/b/LikC1606/lab-meeting-report-skill)](https://skills.sh/LikC1606/lab-meeting-report-skill)
 [![GitHub release](https://img.shields.io/github/v/release/LikC1606/lab-meeting-report-skill)](https://github.com/LikC1606/lab-meeting-report-skill/releases)
-[![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-2ea44f.svg)](./LICENSE)
 
-把博士生一周的实验记录、论文笔记、结果文件、图片和工作说明，整理成一份可以直接开组会、归档和继续追踪的 Markdown 周报。
-
-默认只需要告诉 Agent “这一周的资料在哪里”。Skill 会自动提取本周进展、关键证据、失败尝试、当前阻塞和下周计划；需要时还可以发布到飞书/Lark 或 Notion，并生成 Markdown、Marp、Quarto 或可编辑 PPTX 适配内容。
-
-![博士生一周的原始材料被整理为有来源的组会周报和七页演示稿](assets/lab-meeting-report-social-preview.png)
-
-[English](README.md) | [完整示例](#完整示例) | [传播素材](docs/MEDIA_KIT.zh-CN.md) | [质量评测](#质量评测) | [参与贡献](CONTRIBUTING.md)
-
-如果它帮你节省了一次组会准备时间，可以给[这个仓库加 Star](https://github.com/LikC1606/lab-meeting-report-skill)，让更多研究者找到它。
-
-## 60 秒合成案例
-
-> 这是用于演示工作流的合成显微图像分割项目，所有项目细节和结果均为虚构内容，不冒充真实博士生或用户案例。
-
-输入不是整理好的周报，而是一周留下的几份原始材料：
-
-- [本周散记](examples/weekly-summary/weekly-notes.md)：三个随机种子已完成、一个失败分支、一次 OOM 和一个待讨论的资源选择；
-- [实验结果](examples/weekly-summary/results.csv)：Dice、IoU、GPU 内存与运行状态；
-- [论文笔记](examples/weekly-summary/paper-notes.md)：一个可能相关但尚未在当前数据上验证的方法。
-
-Skill 将它们整理为：
-
-- [可直接开会的 Markdown 周报](examples/weekly-summary/report.md)：首屏给出进展、证据、阻塞和下一步，保留失败实验，不编造显著性；
-- [7 页 Marp 演示稿](examples/weekly-summary/slides.md)：包含结果表、负面结果、OOM 决策问题、文献边界和下周交付。
-
-复现这个案例可以直接对 Agent 说：
-
-```text
-使用 $lab-meeting-report 读取 examples/weekly-summary 下的本周散记、
-实验结果和论文笔记，生成中文组会周报和 10 分钟 Marp 演示稿。
-```
-
-## 快速开始
-
-从公开 GitHub 仓库安装：
+## 安装和试用
 
 ```bash
 npx skills add https://github.com/LikC1606/lab-meeting-report-skill --skill lab-meeting-report
 ```
 
-如果网络无法进行 GitHub 克隆，可以先[下载仓库 ZIP](https://github.com/LikC1606/lab-meeting-report-skill/archive/refs/heads/main.zip)，解压后从本地目录安装：
+安装后可以直接说：「用 $lab-meeting-report 读 ./weekly 和我补充的进展，写一份本周组会总结。」来源是唯一必填项。默认产物是 `reports/group-meeting/YYYY-MM-DD.md`，首屏交代进展、关键证据、阻塞和下一步。
 
-```bash
-npx skills add ./lab-meeting-report-skill-main --skill lab-meeting-report --copy -y
-```
-
-macOS 或 Linux 全局、非交互安装：
+macOS 或 Linux 全局非交互安装：
 
 ```bash
 npx skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 ```
 
-Windows PowerShell 使用 `npx.cmd`：
+Windows PowerShell：
 
 ```powershell
 npx.cmd skills add LikC1606/lab-meeting-report-skill@lab-meeting-report -g -y
 ```
 
-安装后，最简单的用法是：
+GitHub 克隆受网络影响时，可先[下载 ZIP](https://github.com/LikC1606/lab-meeting-report-skill/archive/refs/heads/main.zip)，解压后从本地安装：
 
-```text
-使用 $lab-meeting-report 读取 ./weekly 和我上面补充的工作说明，
-生成本周中文组会总结。
+```bash
+npx skills add ./lab-meeting-report-skill-main --skill lab-meeting-report --copy -y
 ```
 
-来源是唯一必填项。粘贴的文字、附件、目录、论文、结果和图片都可以作为来源；报告类型、语言、日期和保存路径可以自动判断。默认创建真实文件：
+## 从合成案例看效果
 
-```text
-reports/group-meeting/YYYY-MM-DD.md
-```
+![合成周记录与输出的组会周报及七页演示稿](./assets/lab-meeting-report-social-preview.png)
 
-## 默认会得到什么
+[60 秒演示](https://github.com/LikC1606/lab-meeting-report-skill/discussions/1)使用虚构的显微图像分割项目。让 Agent 读[本周散记](./examples/weekly-summary/weekly-notes.md)、[实验结果](./examples/weekly-summary/results.csv)和[论文笔记](./examples/weekly-summary/paper-notes.md)，生成周报和 10 分钟 Marp 演示稿。对照[示例周报](./examples/weekly-summary/report.md)和[七页演示稿](./examples/weekly-summary/slides.md)，可以看到失败分支和资源取舍怎样被保留，以及论文方法为什么没有被写成已在本项目验证的结果。
 
-报告第一屏固定回答四个问题：
+| 模式 | 示例 |
+| --- | --- |
+| 科研进展 | [实验、结果和阻塞](./examples/research-progress/report.md) |
+| 论文阅读 | [论文证据与局限](./examples/journal-club/report.md) |
+| 混合报告 | [研究进展结合文献](./examples/mixed/report.md) |
 
-1. 本周最重要的进展是什么；
-2. 最能支持它的结果、图表或论文证据在哪里；
-3. 当前卡在哪里，需要组内讨论或帮助什么；
-4. 下一步做什么，产物和成功判据是什么。
+示例均为合成材料。实际任务还可以提供图表、代码变更和明确选定的云端资料，能否读取取决于宿主工具。材料少时可产出简报；想追查逐条论断的来源时用 `audit`。会后阶段 `after` 或 `both` 保留会前记录，仅按会议记录补上决定和行动。
 
-后续内容根据材料自动选择，通常包括：
+## 需要时再导出
 
-- 本周完成的工作及实际产物；
-- 关键结果、图表和论文启发；
-- 失败尝试、负面结果和可信度边界；
-- 当前阻塞与具体的协助请求；
-- 下周计划；
-- 来源与附件。
+[Skill](./lab-meeting-report/SKILL.md)先生成和检查本地 Markdown。飞书/Lark 适配依赖 [lark-cli](https://github.com/larksuite/cli) 和对应的 Lark Skills；Notion 适配使用 [Notion MCP](https://developers.notion.com/guides/mcp/overview)。明确要求发布并给出目标后才写入，保存后回读并记录验证过的链接。导出失败时，本地报告仍可用。
 
-不会为了填满模板而生成空洞章节。输入较少时自动使用简报；只有明确要求 `audit`、`审计` 或 `追溯` 时，才展开逐声明来源和完整证据检查表。
+[Marp](https://github.com/marp-team/marp-cli)适合快速生成组会演示稿；学术公式和引用可用 [Quarto](https://quarto.org/docs/presentations/)。可编辑 PowerPoint 需要已有且通过检查的 [PptxGenJS](https://github.com/gitbrent/PptxGenJS) 版式适配。Slidev 仅用于项目已使用或用户明确选用的场景。缺依赖时保留 Markdown 演示稿，并指出缺少的工具。
 
-## 一句话完成更多事情
+## 证据与评测
 
-发布到飞书并准备演示稿：
+流程保留负面结果、冲突测量和手写内容，区分假设和实测，保留原始数值、单位与适用边界。[评测设计](./docs/superpowers/specs/2026-07-13-lab-meeting-report-v1.2-quality-evaluation-design.md)、[版本化基准](./benchmarks/v1.1-v1.2/benchmark.md)和[逐声明自审](./benchmarks/v1.1-v1.2/semantic-review-final.json)记录了八个[公开合成科研进展案例](./evals/research-progress/cases)的检查。另有[中文混合周报案例](./evals/weekly-workflow/cases/chinese-mixed-decision)，检查周报和 Marp 结构、数值忠实度及失败记录。这些评测不衡量真实研究者偏好或云端发布成功率。
 
-```text
-使用 $lab-meeting-report 读取本周实验、论文笔记和图片，
-生成组会 Markdown，发布到飞书，并准备一个 10 分钟的 Marp 演示稿。
-```
+## 参与贡献
 
-发布到 Notion：
+[传播素材](./docs/MEDIA_KIT.zh-CN.md)可用于分享带明确标注的合成演示。贡献与安全报告方式见 [CONTRIBUTING.md](./CONTRIBUTING.md) 和 [SECURITY.md](./SECURITY.md)。欢迎在 [Issues](https://github.com/LikC1606/lab-meeting-report-skill/issues)提交最小复现，或到 [Discussions](https://github.com/LikC1606/lab-meeting-report-skill/discussions)交流组会流程。
 
-```text
-使用 $lab-meeting-report 读取 ./weekly，生成中文组会总结，
-发布到这个 Notion 页面下面：<页面 URL>。
-```
-
-生成审计级报告：
-
-```text
-使用 $lab-meeting-report 读取 ./notes ./results/*.csv，
-生成 audit 级科研进展报告，逐声明列出来源和可能改变结论的证据缺口。
-```
-
-## 报告模式
-
-| 模式 | 适用场景 | 主要内容 |
-|---|---|---|
-| 科研进展 | 实验、实现和持续项目 | 本周工作、结果、失败尝试、阻塞、下周动作 |
-| 论文阅读 | Journal Club、论文研读、文献讨论 | 研究问题、方法、关键证据、局限、与当前工作的关系 |
-| 混合 | 用文献解释或规划当前研究 | 当前结果、文献对应关系、冲突边界、验证计划 |
-
-支持粘贴笔记、Markdown、文本、PDF、CSV、Excel、图片、截图、代码变更，以及明确选定的飞书/Lark 或 Notion 资源。具体可读取类型取决于宿主 Agent 提供的工具。
-
-## 飞书/Lark 与 Notion
-
-本地 Markdown 生成功能不依赖任何云平台。远程发布始终遵循“本地生成 → 质量检查 → 用户授权写入 → 回读验证 → 写回链接”。
-
-飞书/Lark 使用官方 [`lark-cli`](https://github.com/larksuite/cli) 及相应的 Lark Skills，以用户身份读取或创建文档。Skill 不会扫描整个飞书空间、静默切换机器人身份、整篇覆盖已有文档或删除远程内容。
-
-Notion 优先使用官方 [Notion MCP](https://developers.notion.com/guides/mcp/overview) 和 OAuth。它可以通过 `notion-create-pages`、`notion-update-page` 与 `notion-fetch` 创建、更新并验证页面。Skill 不要求用户在聊天中提供 API Token，也不会在没有明确目标页面或发布请求时写入工作区。
-
-任一云平台发布失败，都不会影响已经生成的本地 Markdown。
-
-## 演示稿接口
-
-演示稿是报告之后的可选出口，不是核心依赖：
-
-| 需要 | 推荐接口 | 说明 |
-|---|---|---|
-| 口头提纲 | 纯 Markdown | 无需额外安装，始终可用 |
-| 快速 HTML、PDF 或简单 PPTX | [Marp CLI](https://github.com/marp-team/marp-cli) | Markdown 路径最短；普通 PPTX 通常不是完全可编辑 |
-| 公式、引用和学术演示 | [Quarto](https://quarto.org/docs/presentations/) | 支持 reveal.js、PPTX 和 Beamer |
-| 原生可编辑 PowerPoint | [PptxGenJS](https://github.com/gitbrent/PptxGenJS) | 需要已有、经过测试的排版适配器 |
-| 交互式网页演示 | [Slidev](https://github.com/slidevjs/slidev) | 仅在用户明确选择或项目已经使用时启用 |
-
-Skill 不会静默安装这些项目。工具不存在时，会保留可直接使用的 Markdown 演示稿并说明缺少的适配器。
-
-## 会前与会后
-
-来源仍是唯一必填项；会议阶段、听众、时长和上次行动都可以省略。
-
-| 阶段 | 行为 |
-|---|---|
-| `before` / 会前（默认） | 生成本周速览、结果、阻塞与下一步 |
-| `after` / 会后 | 保留会前报告，只追加会议记录中明确存在的决定和行动 |
-| `both` / 两者 | 先生成会前报告，再追加来源明确的会后记录 |
-
-如果会前阻塞已被会议决定解决，报告会保留旧问题用于追溯，但明确标记为“会前问题，已由会议决定解决”，不会继续把它展示成当前阻塞。
-
-## 证据保护
-
-轻量输入不等于降低科研严谨性。Skill 在后台继续执行这些保护：
-
-- 不编造结果、指标、引用、作者、期刊会议、DOI 或因果解释；
-- 精确复制来源中的数值和单位；
-- 保留失败实验、负面结果和冲突值；
-- 区分事实、解释与假设；
-- 更新已有报告时保护手写内容和 UTF-8 编码；
-- 缺失信息只在影响结论或下一步时展示，完整表格留给 `audit` 模式。
-
-完整工作流见 [`lab-meeting-report/SKILL.md`](lab-meeting-report/SKILL.md)。
-
-## 完整示例
-
-所有示例数据、论文笔记和结果都是合成内容。建议先看“默认周总结”，它展示简洁的 `standard` 周报和对应 Marp 演示稿；其余示例使用 `audit` 详细程度展示证据边界。
-
-| 工作流 | 输入材料 | 生成报告 |
-|---|---|---|
-| 默认周总结 | [本周散记](examples/weekly-summary/weekly-notes.md)、[论文笔记](examples/weekly-summary/paper-notes.md)和[实验结果](examples/weekly-summary/results.csv) | [简洁周报](examples/weekly-summary/report.md)和[Marp 演示稿](examples/weekly-summary/slides.md) |
-| 科研进展 | [实验笔记](examples/research-progress/input-notes.md)和[结果文件](examples/research-progress/results) | [报告](examples/research-progress/report.md) |
-| Journal Club | [输入笔记](examples/journal-club/input-notes.md)和[论文笔记](examples/journal-club/papers/synthetic-retrieval-notes.md) | [报告](examples/journal-club/report.md) |
-| 进展与文献混合 | [混合笔记](examples/mixed/input-notes.md)、[实验结果](examples/mixed/results/current_experiment.csv)和[论文笔记](examples/mixed/papers/synthetic-balanced-retrieval.md) | [报告](examples/mixed/report.md) |
-
-## 质量评测
-
-v1.2 的证据保护规则在 8 个公开合成科研进展场景上各运行 3 次，严格门槛通过 24/24；冻结的 v1.1 基线为 0/24。v1.3 保留这些已评测的防编造规则，并重新设计默认输入输出和可选适配层。新增的[中文混合周工作流场景](evals/weekly-workflow/cases/chinese-mixed-decision)会同时验证默认周报与 Marp，检查每页结构、来源覆盖、负面结果保留和数值闭集。这个确定性门槛仍不能证明真实博士生偏好或云平台发布成功率。
-
-可查看[评测设计](docs/superpowers/specs/2026-07-13-lab-meeting-report-v1.2-quality-evaluation-design.md)、[公开场景](evals/research-progress/cases)、[版本化基准](benchmarks/v1.1-v1.2/benchmark.md)和[逐声明自审](benchmarks/v1.1-v1.2/semantic-review-final.json)。
-
-## 反馈与贡献
-
-- 使用[传播素材](docs/MEDIA_KIT.zh-CN.md)发布可复现的合成演示；不要求真人测试，也不要把合成内容包装成真实用户案例。
-- 使用 [Bug 表单](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=bug_report.yml)提交可复现问题。
-- 使用[功能建议表单](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=feature_request.yml)提出可复用改进。
-- 使用[示例投稿表单](https://github.com/LikC1606/lab-meeting-report-skill/issues/new?template=example_submission.yml)分享合成或匿名工作流。
-- 在 [Discussions](https://github.com/LikC1606/lab-meeting-report-skill/discussions)讨论科研汇报流程。
-
-开发与 PR 流程见 [CONTRIBUTING.md](CONTRIBUTING.md)，安全问题私下报告方式见 [SECURITY.md](SECURITY.md)。
-
-## 许可证
-
-[MIT](LICENSE)
+使用 [MIT License](./LICENSE)。

@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use Lab Meeting Report Skill in your research workflow, please cite this repository."
+type: software
+title: "Lab Meeting Report: Evidence-Grounded Research Progress and Reading Summaries"
+authors:
+  - family-names: Liu
+    given-names: Zhenhao
+    affiliation: "WestlakeNLP, Westlake University"
+    website: https://likc1606.github.io/
+repository-code: https://github.com/LikC1606/lab-meeting-report-skill
+url: https://skills.sh/LikC1606/lab-meeting-report-skill
+license: MIT
+keywords:
+  - agent-skills
+  - lab-meeting
+  - academic-research
+  - scientific-writing

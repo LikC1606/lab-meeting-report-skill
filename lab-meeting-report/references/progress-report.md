@@ -2,84 +2,60 @@
 
 Use this structure for experiment, implementation, or project-centered weekly reports. Adapt it to the available material; omit empty sections instead of making the report look like a form.
 
-```markdown
-# 组会周报：<主题>
+## Ordinary report: explain the result
 
-> 日期：<日期>｜汇报人：<姓名或待补充>｜范围：<本周或用户指定周期>
-> 会议阶段：<会前/会后/两者>｜来源：<主要目录、笔记或结果文件>
+For brief and standard reports, lead with the supported outcome and show the main comparisons in one table. Follow with a short explanation of what the results permit the group to conclude, the failed attempt or boundary that changes that conclusion, and the supplied next action or help request. Do not turn the full template below into an obligatory list of sections. Use action tables only when several actions actually need tracking.
+
+```markdown
+# <本周最重要的研究进展或待解决问题>
+
+> <日期或来源中的周期；仅保留有用的元信息>
 
 ## 本周速览
 
-- **本周进展：** <最重要的结果、变化或阶段状态>
-- **关键证据：** <最能支持本周进展的结果、图表或产物>（来源：<路径和定位>）
-- **阻塞与需协助：** <卡点、已尝试措施和希望讨论或获得的支持；没有则简短说明>
-- **下一步：** <动作>；产物：<文件、结果或实验>；成功判据：<可判断标准>
+- **本周进展：** <一句话说明完成了什么，以及目前能得出什么判断>
+- **关键证据：** <最有代表性的一条证据；不要只写“见下表”>
+- **阻塞与需协助：** <需要解决的具体问题；没有则简短说明>
+- **下一步：** <来源中的下一项动作；必要时说明产物与完成标准>
 
-## 上次行动复盘（有来源时保留）
+来源：<上述判断对应的文件或定位>
 
-| 行动 | 状态 | 负责人 | 截止时间 | 当前产物或证据 | 缺口或变化 |
-|---|---|---|---|---|---|
-| <原行动> | <完成/进行中/受阻/未开始/待核验> | <姓名或待补充> | <日期或待补充> | <来源和定位> | <变化> |
+## <主要实验回答了什么>
 
-## 本周完成的工作
+<先说明这个实验想检验的问题和比较条件，再展示结果。方法变化只保留影响理解的内容。>
 
-| 工作或问题 | 本周产物 | 结果或变化 | 来源 |
-|---|---|---|---|
-| <做了什么及目的> | <代码、数据、实验或笔记> | <支持的结果，不只写活动> | <路径和定位> |
+| 配置或实验 | <关键指标及单位> | <必要的另一指标及单位> |
+|---|---:|---:|
+| <来源中的对照> | <原始数值> | <原始数值> |
+| <来源中的方法> | <原始数值> | <原始数值> |
 
-## 关键结果与图表
+来源：<结果文件及定位>
 
-| 实验或对照 | 指标或观察 | 结果 | 解释边界 | 来源 |
-|---|---|---|---|---|
-| <名称> | <指标> | <数值或观察> | <重复、统计、对照或外推限制> | <文件、表格或图> |
+<解释比较能支持什么。把影响解释的限制放在这里，不在每行重复写。>
 
-![<图题>](<相对路径>)
+## <失败尝试或阻塞为什么影响下一步>
 
-*图：<图题>。来源：<来源>。说明：<该图直接支持什么，以及不能支持什么。>*
+<尝试了什么、实际发生了什么、已做哪些处理、仍需要什么帮助。只有来源提供原因时才写原因。多个无关阻塞可以用短列表。>
 
-## 方法或方案变化（有实质变化时保留）
+来源：<对应记录>
 
-- **原方案：** <内容>
-- **本周变化：** <方法、数据、参数或实现变化>
-- **变化原因：** <来源明确提供的原因；未提供则省略>
-- **可能影响：** <有证据的解释，或标为待验证假设>
+## 接下来做什么
 
-## 失败尝试与负面结果
+<来源中的行动，以及提供的产物和完成标准。没有计划时明确说尚未提供；只有明确请求建议时才补充标为建议的方案。不要把待讨论选择写成已决定。>
 
-| 尝试 | 来源提供的预期 | 实际结果 | 已知边界或原因 | 后续处理 | 来源 |
-|---|---|---|---|---|---|
-| <尝试> | <预期或未提供> | <结果> | <仅写来源支持的原因或待验证解释> | <重试、停止或调整> | <路径和定位> |
-
-## 当前阻塞与需协助（存在时保留）
-
-| 问题 | 影响 | 已尝试措施 | 希望获得的讨论、资源或决定 | 来源 |
-|---|---|---|---|---|
-| <具体问题> | <对结果或进度的影响> | <措施及结果> | <具体请求；来源未说明则待补充> | <路径和定位> |
-
-## 下周计划
-
-| 动作 | 负责人 | 截止时间 | 预期产物 | 成功判据 | 依赖或风险 |
-|---|---|---|---|---|---|
-| <动作> | <姓名或待补充> | <日期或待补充> | <文件、结果或实验> | <可判断标准> | <依赖或风险> |
-
-## 会议决定与行动记录（会后或两者阶段保留）
-
-> 会议记录来源：<会议纪要、逐字稿或明确的会后笔记路径>
-
-| 决定或行动 | 类型 | 负责人 | 截止时间 | 预期产物 | 完成判据 | 状态 | 来源定位 |
-|---|---|---|---|---|---|---|---|
-| <明确记录的决定或行动> | <决定/行动> | <姓名或待补充> | <日期或待补充> | <产物或待补充> | <判据或待补充> | <未开始/进行中/完成> | <定位> |
+来源：<对应记录>
 
 ## 来源与附件
 
-- <本地相对路径、仓库链接或已核验引用>
-
-## 审计附录（仅 audit）
-
-| 关键主张 | 证据类型 | 已核对项目 | 缺失项目及影响 | 来源 |
-|---|---|---|---|---|
-| <主张> | <事实/计算/解释/假设> | <数据、方法、对照、重复、统计、单位、定位> | <缺失及其决策影响> | <路径和定位> |
+<列出未在正文链接的必要材料；已在正文完整链接时可省略本节>
 ```
+
+## Optional continuity and audit
+
+Use `meeting-lifecycle.md` for 上次行动复盘, 当前阻塞与需协助, and 会议决定与行动记录 when relevant. Include 负责人 and 截止时间 only in an action-tracking context; preserve them when supplied. If tracking requires an absent value, mark it unknown in the report language. Do not create columns of unknowns for an ordinary report.
+
+For an explicitly requested audit, add claim-level provenance, evidence-completeness checks, conflicts, and unreadable inputs. Keep ordinary reports readable without dropping consequential uncertainty.
+
 
 Writing rules:
 
@@ -98,7 +74,7 @@ Writing rules:
 - Do not infer an expected outcome from an experiment name or method. Write `未提供` when the missing expectation matters.
 - Treat previous-action review and post-meeting records as optional lifecycle sections.
 - Turn blockers into specific help requests. Add options only when supplied.
-- Keep owner and due-date cells as `待补充` when absent.
+- Omit owner and due-date columns from ordinary reports unless action tracking needs them. Preserve supplied values; localize unknowns when required.
 
 <!-- P1 -->
 - Treat duplicated or translated notes about the same run as repeated provenance for one run, not independent replication or additional sample count. State the full boundary directly without calculating a counterfactual count. In Chinese, use the unambiguous form `同一次运行的重复来源，并非独立复现`; translate that complete meaning in other report languages.

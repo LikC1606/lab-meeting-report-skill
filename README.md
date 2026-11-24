@@ -19,6 +19,55 @@ The only required input is the weekly material: notes, results, figures, papers,
 
 If this saves a lab-meeting preparation cycle, [star the repository](https://github.com/LikC1606/lab-meeting-report-skill) so other researchers can find it.
 
+## Try it in three steps
+
+1. **Install once** in your agent's terminal:
+
+   ```bash
+   npx skills add https://github.com/LikC1606/lab-meeting-report-skill --skill lab-meeting-report
+   ```
+
+   In Windows PowerShell, use `npx.cmd` instead of `npx`. If you downloaded this skill from Agensi, use your agent's local skill installation method instead. This is an agent instruction package, not a standalone app.
+
+2. **Give your agent the material.** Paste rough notes, attach files, or point to a folder it can access. You do not need to organize the notes first.
+
+   ```text
+   Use lab-meeting-report to turn these notes and attached results into this week's lab meeting report.
+   ```
+
+   If your agent supports `$` skill commands, you can use `$lab-meeting-report`. You do not need to choose a report mode or fill in parameters.
+
+3. **Read the report.** It starts with progress, evidence, blockers, and next steps. By default, it is saved to `reports/group-meeting/YYYY-MM-DD.md`. You can ask for edits in the same conversation.
+
+### No files? Paste notes
+
+```text
+Use lab-meeting-report to prepare a short report from these notes:
+- Finished the baseline run; the results are in the attached CSV.
+- The larger batch ran out of GPU memory.
+- Next week I plan to retry with a smaller batch.
+```
+
+This is an illustrative request, not a real experiment. Missing measurements stay missing; the skill does not fill them in.
+
+### Need something else?
+
+| Want | Say to your agent |
+|---|---|
+| Report in another language | "Write the report in Chinese." |
+| Journal club | "Summarize this attached paper for a lab meeting." |
+| Presentation | "Also prepare a 10-minute slide outline." |
+| Meeting follow-up | "Update this report with the attached meeting decisions." |
+| Cloud copy | "Publish the finished report under this Notion page: <URL>." |
+
+Core reporting needs an agent that can read your material and write Markdown, with no cloud account or API key required. Slides and cloud publishing are optional. Missing export tools or connectors do not prevent a local report.
+
+### If it doesn't work
+
+- **Skill not found:** check that it is installed in the agent you are using and available in the current session. Follow that agent's reload instructions if needed.
+- **File not found:** attach it, or give an accessible path. A local folder path only works when the agent can access that computer.
+- **PDF or spreadsheet cannot be read:** supply exported text or CSV; unreadable content will not be guessed.
+
 ## 60-Second Synthetic Demo
 
 > This is a synthetic microscopy-segmentation project used to demonstrate the workflow. Every project detail and result is fictional; it is not presented as a real PhD-student or user case study.
@@ -40,6 +89,9 @@ Reproduce the workflow with this request:
 Use $lab-meeting-report to read the weekly notes, results, and paper notes in
 examples/weekly-summary, then create a Chinese report and a 10-minute Marp deck.
 ```
+
+<details>
+<summary>Advanced options and setup details</summary>
 
 ## Start Here
 
@@ -164,7 +216,11 @@ Lightweight input does not remove research safeguards. The skill continues to:
 
 Read the complete workflow in [`lab-meeting-report/SKILL.md`](lab-meeting-report/SKILL.md).
 
+</details>
+
 ## Complete Examples
+
+For concise, presentation-oriented output references, see [the three clear-report examples](examples/clear-reports/README.md). These are editorial examples, not new benchmark runs.
 
 All example data, paper notes, and results are synthetic. Start with the weekly-summary example to see the concise `standard` workflow and its Marp companion. The other bundled examples use `audit` detail to demonstrate evidence boundaries.
 
@@ -176,6 +232,8 @@ All example data, paper notes, and results are synthetic. Start with the weekly-
 | Progress plus literature | [Combined notes](examples/mixed/input-notes.md), [results](examples/mixed/results/current_experiment.csv), and [paper notes](examples/mixed/papers/synthetic-balanced-retrieval.md) | [Report](examples/mixed/report.md) |
 
 ## Measured Quality
+
+These results describe earlier revisions. The simplified instructions in this working copy have not been re-evaluated with the full agent benchmark.
 
 The v1.2 evidence safeguards passed the strict gate in 24/24 runs across eight public synthetic research-progress cases; the frozen v1.1 baseline passed 0/24. v1.3 retains those evaluated evidence rules while redesigning the default input, output, and optional adapters. A separate [Chinese mixed weekly-workflow case](evals/weekly-workflow/cases/chinese-mixed-decision) now exercises the default report plus Marp path and checks slide structure, source coverage, negative-result retention, and numeric closed-world behavior. This deterministic gate still does not establish real PhD-student preference or cloud-publishing reliability.
 

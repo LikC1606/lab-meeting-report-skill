@@ -2,83 +2,55 @@
 
 Use this structure when current research progress and literature both matter. Keep their provenance separate, then show how the paper changes the interpretation or next experiment.
 
-```markdown
-# 组会周报：<研究主题>
+## Ordinary mixed report: connect without conflating
 
-> 日期：<日期>｜汇报人：<姓名或待补充>｜报告类型：进展与文献混合
-> 会议阶段：<会前/会后/两者>｜来源：<当前工作与文献范围>
+Lead with the current-work result and the question it leaves open. Show current measurements together. Explain the paper's relevant finding in prose, followed immediately by the differences in data, method, or conditions that prevent direct transfer. Avoid copying all literature metrics into the opening. If the user asks which experiment to run, label the proposed control and expected distinction as a recommendation; preserve supplied values and do not invent expected scores or claim the experiment was agreed.
+
+```markdown
+# <当前结果与尚未回答的核心问题>
+
+> <日期或来源中的周期；合成材料必须明确标注>
 
 ## 本周速览
 
-- **本周进展：** <当前工作与文献阅读共同带来的核心进展>
-- **关键证据：** <最重要的当前结果和相关论文证据，分别注明来源>
-- **阻塞与需协助：** <当前解释、实验或迁移卡点，以及具体请求>
-- **下一步：** <验证动作>；产物：<结果或文件>；成功判据：<判据>
+- **本周进展：** <一句话说明完成了什么，以及目前能得出什么判断>
+- **关键证据：** <最有代表性的一条证据；不要只写“见下表”>
+- **阻塞与需协助：** <需要解决的具体问题；没有则简短说明>
+- **下一步：** <来源中的下一项动作；必要时说明产物与完成标准>
 
-## 上次行动复盘（有来源时保留）
+来源：<上述判断对应的文件或定位>
 
-| 行动 | 状态 | 负责人 | 截止时间 | 当前产物或证据 | 缺口或变化 |
-|---|---|---|---|---|---|
-| <原行动> | <状态> | <姓名或待补充> | <日期或待补充> | <来源> | <变化> |
+## 当前实验告诉了我们什么
 
-## 当前研究进展
+<交代任务与比较条件，把关键指标放在一个表或短段落中。区分整体系统收益与单个组件的贡献。>
 
-| 当前问题 | 本周方法或实验 | 结果 | 解释边界 | 来源 |
-|---|---|---|---|---|
-| <问题> | <方法> | <数值或观察> | <限制> | <文件、表格或图> |
+来源：<当前实验记录和结果定位>
 
-### 失败尝试与负面结果
+<解释结果支持的判断，以及仍需保留的失败、冲突或不确定性。>
 
-- <尝试、实际结果、来源支持的原因边界及后续处理>
+## 论文能提供什么，哪些不能直接迁移
 
-## 本周论文与关键启发
+<保留完整论文标题。说明与当前问题有关的方法或结果，随后解释数据、组件、指标或运行条件差异。不要把两组不可比数字放在一起排名。>
 
-| 论文 | 关键主张 | 支持证据 | 局限性 | 与当前问题的关系 |
-|---|---|---|---|---|
-| <标题或引用> | <主张> | <图表或结果> | <边界> | <关联> |
+来源：<论文定位及当前实验定位，明确各自支持什么>
 
-## 当前结果与文献的对应关系
+## 下一步要回答的问题
 
-| 当前观察 | 文献证据 | 一致、冲突或不可比 | 解释边界 | 下一验证动作 |
-|---|---|---|---|---|
-| <观察及来源> | <论文证据及来源> | <关系> | <条件、指标或人群差异> | <动作> |
+<记录来源中的问题与下一步。用户明确请求实验建议时，可以给出最小可行对照，解释它能区分什么、仍排除不了什么，标明是建议。不要编造预计分数、时间、资源或已达成的决定。>
 
-Do not merge a correlation in the paper with a causal claim in current work. Keep incompatible metrics, datasets, and conditions visible.
-
-## 当前阻塞与需协助（存在时保留）
-
-| 问题 | 影响 | 已尝试措施 | 希望讨论或获得的支持 | 来源 |
-|---|---|---|---|---|
-| <问题> | <对解释、迁移或实验的影响> | <措施及结果> | <具体请求> | <当前来源或文献定位> |
-
-## 下周验证计划
-
-| 验证动作 | 负责人 | 截止时间 | 预期产物 | 成功判据 | 依赖或风险 |
-|---|---|---|---|---|---|
-| <动作> | <姓名或待补充> | <日期或待补充> | <结果或文件> | <判据> | <风险> |
-
-## 会议决定与行动记录（会后或两者阶段保留）
-
-| 决定或行动 | 负责人 | 截止时间 | 预期产物 | 完成判据 | 来源定位 |
-|---|---|---|---|---|---|
-| <明确记录的内容> | <姓名或待补充> | <日期或待补充> | <产物或待补充> | <判据或待补充> | <定位> |
+来源：<提供该问题或计划的记录>
 
 ## 来源与附件
 
-### 当前研究来源
-
-- <实验记录、代码、表格或图片路径>
-
-### 文献来源
-
-- <已核验引用、DOI、URL 或本地 PDF 路径>
-
-## 审计附录（仅 audit）
-
-| 关键结果或主张 | 证据类型 | 已核对项目 | 缺失项目及影响 | 来源 |
-|---|---|---|---|---|
-| <当前结果或文献主张> | <当前事实/文献事实/解释/假设> | <项目> | <缺失与影响> | <来源> |
+<列出未在正文链接的必要材料；已在正文完整链接时可省略本节>
 ```
+
+## Optional continuity and audit
+
+Use `meeting-lifecycle.md` for 上次行动复盘, 当前阻塞与需协助, and 会议决定与行动记录 when relevant. Include 负责人 and 截止时间 only in an action-tracking context; preserve them when supplied. If tracking requires an absent value, mark it unknown in the report language. Do not create columns of unknowns for an ordinary report.
+
+For an explicitly requested audit, add claim-level provenance, evidence-completeness checks, conflicts, and unreadable inputs. Keep ordinary reports readable without dropping consequential uncertainty.
+
 
 Writing rules:
 
@@ -91,4 +63,4 @@ Writing rules:
 - Avoid repeating metrics without adding a new implication.
 - Do not add alternative causal explanations from general knowledge unless requested.
 - Keep full evidence-completeness tables for `audit`; surface only decision-changing gaps otherwise.
-- Keep owner and due-date cells as `待补充` when absent.
+- Omit owner and due-date columns from ordinary reports unless action tracking needs them. Preserve supplied values; localize unknowns when required.

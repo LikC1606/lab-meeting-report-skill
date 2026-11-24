@@ -1,103 +1,85 @@
 ---
 name: lab-meeting-report
-description: Turn a PhD student's weekly notes, papers, experiment results, figures, code changes, and explicitly scoped cloud sources into a concise, source-grounded Markdown lab-meeting summary. Use for weekly research summaries, progress reports, journal club notes, experiment retrospectives, meeting follow-up, optional Feishu/Lark or Notion publishing, and optional Markdown or PPT presentation preparation. Preserve negative results and manual edits, accept natural-language input without a form, and never publish without an explicit request.
+description: Turn research notes, papers, and experiment results into a clear lab meeting report. Use for weekly research updates, journal club, or updating a report after a meeting.
 ---
 
-# Weekly Research Meeting Summaries
+# Lab Meeting Report
 
-Turn the user's scattered weekly research material into a report they can present, discuss, and archive. Keep the default interaction lightweight: the user supplies the material; infer the structure. Apply evidence safeguards in the background instead of making the user complete an audit form.
+Help the user explain what changed, what supports it, what is stuck, and what happens next. Create a concise local Markdown report from the material they provide.
 
-Choose the output language in this order: follow an explicit language request, otherwise match the language of the user's request, and use English only when a genuinely mixed-language request is ambiguous. Preserve technical terms, model names, abbreviations, metric names, equations, citations, and identifiers in their source form.
+## Start with the material
 
-## Input contract
+Accept a natural-language request without forcing the user to fill a form. Pasted notes, attachments, and a named folder are all enough to start. Do not ask the user to select a report mode, detail level, cloud service, or slide tool.
 
-Accept a natural-language request without forcing the user to fill a form. Treat the source scope as the only required input. Pasted notes, a description of this week's work, and attached material count as sources. Resolve relative paths and globs against the active project.
-
-Extract these optional preferences when supplied:
-
-- **Sources:** pasted updates, notes, papers, results, figures, screenshots, code changes, or explicitly scoped Feishu/Lark and Notion resources;
-- **Focus:** the message, question, or problem the user wants the group to understand;
-- **Mode:** research progress, paper review, or mixed;
-- **Meeting context:** stage (`before`, `after`, or `both`), audience, duration, previous actions, and meeting notes;
-- **Output:** language, date, detail (`brief`, `standard`, or `audit`), and destination path;
-- **Publishing:** local only, Feishu/Lark, Notion, or both;
-- **Presentation:** plain Markdown outline, Marp, Quarto, or editable PPTX when a compatible adapter is available.
-
-Use these defaults when preferences are absent: infer the mode, use the current local date, match the request language, use `before`, write `reports/group-meeting/YYYY-MM-DD.md`, and use `standard`. For sparse input, use `brief` automatically. Infer `after` only when the sources clearly contain meeting decisions or assigned actions. Ask at most one focused clarification question, and only when the answer changes the report's conclusions, source boundary, or remote write target; otherwise mark the gap as `待补充` and continue.
-
-If no usable source or explicit source scope is available, ask one focused question requesting the weekly material and do not draft evidence claims. A stated goal is not evidence.
-
-A sufficient request is:
+Example requests:
 
 ```text
-读取本周的笔记、实验结果、论文和图片，生成中文组会总结。
+Use $lab-meeting-report to turn these notes into this week's lab meeting report.
 ```
-
-Optional destinations can be added naturally:
 
 ```text
-读取 ./weekly 和我上面的补充说明，生成本周组会 Markdown，
-发布到飞书，并准备一个 10 分钟的 Marp 演示稿。
+使用 $lab-meeting-report，把 ./weekly 里的笔记、结果和图片整理成中文组会周报。
 ```
 
-## Output contract
+If no usable source or explicit source scope is available, ask one short question in the user's language requesting pasted notes, attachments, or a folder to read. Do not draft evidence claims from a goal alone.
 
-Create and validate a local Markdown file before any cloud publication or slide export. The local report is the source of truth.
+Read only supplied material or the explicitly scoped files, directories, and cloud resources. For a large folder, choose relevant notes, results, figures, papers, and code changes; skip caches and dependencies. Do not search for more literature unless requested. Unreadable files remain unknown: name them and continue with usable sources.
 
-Begin the report body with a localized weekly snapshot containing these fields in order:
+For language, follow an explicit language request; otherwise match the language of the user's request; use English only when a genuinely mixed-language request is ambiguous. Translate headings and labels into that language. Use localized wording for unknowns, rather than Chinese placeholders in an English report.
 
-1. **Progress this week:** the most important supported outcome, not an activity list;
-2. **Key evidence:** the strongest result, figure, paper finding, or artifact with its source;
-3. **Blocker or help needed:** what is stuck and the concrete discussion, resource, or decision needed; if none was supplied, say so briefly;
-4. **Next step:** the next action, expected artifact, and success criterion.
+## Make the report easy to present
 
-Use localized labels such as `本周进展`, `关键证据`, `阻塞与需协助`, and `下一步`. If the sources cannot support a progress judgment, mark it `待补充` and state what is missing.
+Begin the report body with a localized weekly snapshot:
 
-For `standard`, organize the remaining material around what a researcher normally needs to present and retain:
+1. **Progress this week:** the most important supported outcome.
+2. **Key evidence:** one concrete supporting comparison, observation, figure, or paper finding and its source. A pointer such as "see the table" is not evidence by itself.
+3. **Blocker or help needed:** the supplied problem and requested help; briefly state when none was supplied.
+4. **Next step:** the supplied action, artifact, and success criterion. Do not invent missing commitments.
 
-- completed work and material changes since the previous report;
-- key results, figures, and relevant paper insights;
-- failed attempts, negative results, uncertainty, and limitations;
-- blockers and the specific help or discussion needed;
-- next-week actions;
-- sources and attachments.
+Make the first screen decision-useful: summarize the current state, the strongest evidence, any help needed, and the next action.
 
-Omit empty or duplicative sections. Do not make the user-facing report resemble a completed questionnaire.
+After the snapshot, include only useful sections: results, paper insights, failed attempts, blockers, next actions, and sources. Prefer short prose; use a table when it makes several results easier to compare. Do not fill a template with empty sections or repeated missing-information cells.
 
-- For `brief`, keep the weekly snapshot, non-duplicative key evidence, failed attempts or blockers that affect interpretation, next actions, and sources.
-- For `standard`, use the selected mode reference, target a readable meeting report, and surface only evidence gaps that could change the conclusion. After the snapshot and any previous-action review, normally use no more than four non-empty content sections. Combine overlapping result, literature, limitation, and blocker material instead of restating the same claim in several sections.
-- For `audit`, add a claim-level provenance table, the full evidence-completeness table, unresolved conflicts, and skipped or unreadable sources.
+For sparse source material, target 1-2 rendered pages. Normally use no more than four non-empty content sections after the snapshot and any previous-action review. Keep a shared limitation beside the affected results once. Do not repeat the same missing dataset, split, configuration, repetition, uncertainty, or statistical-test inventory in every row and again later.
 
-Place a source path, identifier, or precise locator next to every decision-relevant claim. Avoid repeating the same metric unless a later occurrence adds comparison, uncertainty, or a new implication. Keep facts, interpretations, and hypotheses distinct. Label recommendations as recommendations; do not turn a requested choice into a decided outcome.
+### Write a useful explanation, not a source inventory
 
-When continuity material is supplied, place `上次行动复盘` or its localized equivalent immediately after the snapshot. Preserve action wording, status, owner, due date, artifact, and source. Never infer completion from a related positive result.
+Choose the main message from the supplied evidence before drafting: what the group should understand or decide. Use an informative title such as "Current configuration completes; larger batch remains blocked" rather than "Weekly report." If no clear outcome is supported, say what was done and what remains unknown without manufacturing progress.
 
-For `after` or `both`, add `会议决定与行动记录` using only supplied meeting notes. When a pre-meeting blocker was resolved by a recorded meeting decision, label it as a pre-meeting issue resolved by that decision and retain it for traceability; do not present it as an active blocker. Keep missing owners or due dates as `待补充`.
+Use the snapshot as a short opening, not a second copy of the full result table. Keep exact measurements in one evidence table when useful; the opening can describe the supported comparison qualitatively. A failed branch deserves enough detail to explain why it changes the next action, not just a "negative results" label.
 
-## Workflow
+For each result cluster, connect the observation to its practical meaning and boundary: what happened, what it supports, and what it does not yet establish. Do not invent a mechanism to make the narrative feel complete. For a paper, explain the question and method in ordinary language before presenting its evidence; distinguish the authors' claims from the supplied evidence and the reporter's assessment.
 
-### 1. Collect the weekly material
+Use short descriptive headings. Prefer prose for methods, implications, limitations, and discussion; tables work best for comparable measurements or several concrete actions. Do not create a bibliography-status table full of unknown values in an ordinary paper discussion. State consequential missing information once. Preserve earlier manual sections when updating an existing report.
 
-- Combine pasted context with user-scoped files, directories, and cloud resources.
-- Prioritize `.md`, `.txt`, `.pdf`, `.csv`, `.xlsx`, common raster images, and relevant code diffs or logs.
-- For a large directory, list candidate files and read only material relevant to the report. Exclude caches, dependencies, archives, and unrelated generated output.
-- Inspect figures when they carry experimental evidence. Use structured parsers for tables when available.
-- Record sources used, skipped, and unreadable.
-- Do not search for additional literature unless the user explicitly requests it.
+Keep sources easy to inspect: attach one source line to a paragraph or table sharing the same evidence, or cite a paper's figure/section beside the claim. Do not add a source column repeating the same file on every row. Split source attribution when claims come from different files or conflict. A final source list alone is insufficient for decision-relevant claims.
 
-Read `references/lark-integration.md` when the user supplies a Feishu/Lark resource or requests Feishu/Lark publishing. Read `references/notion-integration.md` when the user supplies a Notion page or requests Notion publishing. Read only the resources the user places in scope.
+Close with supplied next actions or the question the group needs to resolve. When the user explicitly asks for an experiment or decision proposal, provide a concrete recommendation, label it as proposed, and state what evidence it would distinguish; do not report it as an agreed commitment. Otherwise do not add speculative experiments, owners, deadlines, priorities, or success thresholds.
 
-### 2. Build the evidence inventory
+Infer the report type and read only its relevant reference. Treat the structures as examples, not mandatory forms:
 
-Extract supported information:
+- Experiments or project work: [progress-report.md](references/progress-report.md).
+- Paper discussion: [paper-review.md](references/paper-review.md).
+- Substantial project work and literature together: [mixed-report.md](references/mixed-report.md).
 
-- research objective and current hypothesis;
-- work completed and artifacts created;
-- experimental or implementation setup;
-- results, figures, observations, and paper findings;
-- failed attempts, negative results, uncertainty, and blockers;
-- requested discussion, support, or decision;
-- next actions and supplied success criteria.
+Default to a concise standard report, and shorten it for sparse input. If the user asks for a detailed audit, add claim-level provenance, conflicts, and the full evidence-completeness table. Keep those checks internal for ordinary reports; surface gaps only when they change a conclusion or next action.
+
+## Edit the draft for the listener
+
+Before saving, read the report as someone who has not seen the input. Check that the task, comparison, result, and remaining question are understandable without reopening every source. Briefly explain a specialist term only when it is necessary for the stated audience; do not turn the report into a tutorial.
+
+- Make the snapshot compact. Use a representative comparison or observation there; keep the full measurements in the body. Repetition is justified only when it lets the opening stand alone or adds a new implication.
+- Replace empty claims such as "significant progress," "promising results," and "further optimization needed" with the supported outcome or specific unresolved question.
+- Use an informative, evidence-bounded heading rather than overstating success. "Current runs completed" does not mean "reproducibility established" or "performance improved."
+- Include a limitation where it changes interpretation or a decision. Avoid a disclaimer after every sentence; never remove a consequential caveat just to shorten the report.
+- Use one result table for a related comparison, with units in the headers and identifiers preserved. Add columns only when they support understanding or the meeting decision; retain other important supplied measurements in a linked appendix if needed.
+- Keep the next-action section concrete and short. Do not repeat the full blocker narrative or add artificial owners, dates, priorities, or completion criteria.
+
+The default output is the report itself, without a long explanation of how it was generated. Add an oral script or deck only when requested.
+
+## Keep evidence trustworthy
+
+Before drafting, apply these checks internally. Do not ask the user to complete the ledger or audit.
 
 <!-- E1 -->
 Before drafting, build an internal evidence ledger for each decision-relevant claim. Record its source path, exact value and unit when numeric, evidence type (`source fact`, `derived calculation`, `interpretation`, or `hypothesis`), conflicts, and linked negative evidence. Preserve source identifiers exactly; do not assign sequence numbers, seed labels, run IDs, or priority ranks that the source did not supply. Use the ledger for control; include it only in `audit` or when it materially improves traceability.
@@ -112,62 +94,35 @@ Create an internal must-retain list for failed experiments, negative results, bl
 
 Never invent a result, value, citation, author, venue, DOI, URL, method, or causal explanation. Mark essential unsupported fields as `待补充` and unverified citation details as `未核验`.
 
-### 3. Select the report mode
+A source author's causal explanation is an attributed claim unless an isolating test supports it. Duplicate or translated notes about one run are not independent repetitions. Missing statistical tests mean significance is untested, not that a result is statistically insignificant.
 
-- **Research progress:** Use for experiments, implementation, or project progress. Read `references/progress-report.md`.
-- **Paper review:** Use for paper reading or journal club. Read `references/paper-review.md`.
-- **Mixed:** Use when current work and literature both matter. Read `references/mixed-report.md`.
+## Save and check
 
-Prefer mixed mode only when both evidence types are substantial. Read `references/meeting-lifecycle.md` when previous actions, post-meeting notes, or a presentation are in scope.
-
-### 4. Draft for the meeting
-
-- Lead with the weekly snapshot. Make the first screen decision-useful: summarize the current state, the strongest evidence, any help needed, and the next action.
-- Report outcomes before method detail. Keep chronological activity only when it explains a change or failure.
-- Use the selected mode reference as adaptable structure, not text to copy mechanically.
-- Translate headings and labels into the selected report language while preserving their meaning and order.
-- For sparse source material, target 1-2 rendered pages. Use 3-5 pages only when the evidence volume warrants it.
-- Keep figures near their interpretations. Use relative image paths, captions, sources, and one-sentence evidence boundaries.
-- Keep negative results visible because they constrain future work.
-- Turn a blocker into a concrete help request: problem, impact, attempted measures, and requested discussion or resource. Include options only when the user or source supplied them.
-- Make next actions concrete with an artifact and success criterion; include owners and dates only when supplied.
-- In `brief` and `standard`, keep evidence-completeness auditing in the background and surface only missing checks that could change what the group concludes or does next.
-- In `standard`, state a shared evidence limitation once after the relevant table or result cluster. Do not repeat the same missing dataset, split, configuration, repetition, uncertainty, or statistical-test inventory in every row and again in later sections.
-
-### 5. Write safely to disk
+Use the user's destination when supplied; otherwise save to `reports/group-meeting/YYYY-MM-DD.md` using the current local date. If file writing is unavailable, deliver the complete Markdown in chat and say that no file was saved. Do not claim a file exists without verifying it.
 
 <!-- E4 -->
 Before editing an existing report, locate and read the authorized source report even when the requested destination does not yet exist. If the source copy is under the supplied input tree, use it as the merge base rather than reconstructing the report from only the new evidence. Inventory manual headings, unrecognized content, earlier evidence, and claims not explicitly superseded, and treat that inventory as protected content. Treat text encoding as protected content. Decode and encode Markdown and text sources with explicit UTF-8. Before overwriting, verify every protected string exactly; if protected text changed or became mojibake, leave the original unchanged and write a revised file. Record supersession with both the earlier and replacement sources instead of erasing history.
 
 Resolve the active project from the user's explicit project root or the current working directory. Create `reports/group-meeting/YYYY-MM-DD.md` by default. If the same-date file exists, read and safely merge it; when a safe merge is ambiguous, write `YYYY-MM-DD-revised.md` and preserve the original.
 
-### 6. Run the quality gate
-
-Run an internal evidence-completeness check for every empirical result that could change a conclusion or action. Check the objective, data or sample and split, method and configuration, comparator, repetitions, uncertainty or statistical test, units, figure/table locator, and method source. In `brief` and `standard`, report only missing checks with decision impact; in `audit`, include the full table. A missing check is not a negative result.
+Run an internal evidence-completeness check for every empirical result that could change a conclusion or action: objective, data and split, configuration, comparator, repetitions, uncertainty, units, figure/table locator, and method source. Show only consequential gaps unless a detailed audit was requested.
 
 <!-- E5 -->
 Run a claim audit before completion: match every experimental number to a source fact or explicitly requested calculation, confirm every must-retain negative or conflict item is present, and relabel or remove causal, significance, bibliographic, or mechanism claims not supported by the supplied evidence. State missing checks directly. For a source that cannot be decoded or parsed reliably, report only that it was unreadable and its contents remain unknown.
 
 Verify that the report stands alone, has consistent headings and links, keeps manual content, preserves recorded meeting history, and contains no unsupported result or citation.
 
-### 7. Publish only when requested
+## Optional requests
 
-Finish and validate the local report first.
+Do not advertise or require these setup steps during an ordinary report request.
 
-- For Feishu/Lark, follow `references/lark-integration.md`.
-- For Notion, follow `references/notion-integration.md`.
-- When both are requested, publish and verify them independently; one platform's failure must not invalidate the local report or create a duplicate on the other platform.
+- **Previous actions or meeting notes:** read [meeting-lifecycle.md](references/meeting-lifecycle.md). Infer stage (`before`, `after`, or `both`); default to before. When continuity material is supplied, place `上次行动复盘` or its localized equivalent immediately after the snapshot. Preserve supplied status, owners, deadlines, and artifacts. For after/both, add `会议决定与行动记录` using only supplied meeting notes. Mark resolved pre-meeting blockers as resolved; a proposed action is not a recorded decision.
+- **Slides:** read [presentation-export.md](references/presentation-export.md). Derive the deck from the checked report: one message per slide, its evidence source, the spoken interpretation, and the discussion question. For "make slides" without a format, create a Markdown slide outline. Choose export tooling only for an explicitly requested format. If unavailable, keep the outline and state what could not be exported. Never describe ordinary Marp PPTX as fully editable.
+- **Feishu/Lark sources or publishing:** read [lark-integration.md](references/lark-integration.md).
+- **Notion sources or publishing:** read [notion-integration.md](references/notion-integration.md).
 
-Never publish silently. Use the user's authorized identity and requested scope. Write a remote URL back into the local report only after verification.
+Cloud publishing requires an explicit request and an authorized target. Validate the local report first, verify the remote result, then write back its URL. If a connector is unavailable, keep the local report and name the missing connection without claiming success. Do not scan a whole cloud workspace, silently overwrite or delete remote content, switch identities, or install tools silently. Do not generate DOCX; HTML, PDF, and PPTX require a requested presentation export.
 
-### 8. Prepare a presentation only when requested
+## Finish briefly
 
-Read `references/presentation-export.md`. Create a companion Markdown deck from the validated report rather than resynthesizing the raw sources. Keep one message per slide, its evidence source, the spoken interpretation, and the discussion question. Use an installed adapter only when the requested output needs it; do not install packages silently.
-
-### 9. Report completion
-
-Tell the user the local report path, selected mode and stage, sources used, skipped material, unresolved gaps, created presentation files, selected adapter, verified cloud URLs, and partial publishing failures.
-
-## Scope boundaries
-
-Keep Markdown as the canonical report. Do not scan whole cloud workspaces, publish without request, overwrite remote pages by default, delete remote content, switch identities as a fallback, install presentation tools silently, or search the web for new slide generators during an ordinary report run. Do not generate DOCX. Generate HTML, PDF, or PPTX only through an explicitly requested presentation adapter and clearly report editability limits.
+Give the report link and a short description of what it covers. Mention unreadable inputs, consequential unresolved gaps, and any requested export or publication that failed. Include verified presentation paths and cloud URLs when created. Do not expose internal modes, adapter names, or audit mechanics unless they help the user use the output.

@@ -15,6 +15,55 @@
 
 如果它帮你节省了一次组会准备时间，可以给[这个仓库加 Star](https://github.com/LikC1606/lab-meeting-report-skill)，让更多研究者找到它。
 
+## 三步开始
+
+1. **安装一次**：在你使用的 Agent 终端运行：
+
+   ```bash
+   npx skills add https://github.com/LikC1606/lab-meeting-report-skill --skill lab-meeting-report
+   ```
+
+   Windows PowerShell 请把 `npx` 换成 `npx.cmd`。如果从 Agensi 下载了技能，请按你的 Agent 的本地技能安装方式导入。这是一份给 Agent 使用的指令包，不是独立应用。
+
+2. **直接给材料**：粘贴散记、上传附件，或告诉 Agent 一个它能访问的文件夹。不需要先整理成周报。
+
+   ```text
+   使用 lab-meeting-report，把这些笔记和附件整理成本周中文组会周报。
+   ```
+
+   Agent 支持 `$` 技能命令时，也可以写 `$lab-meeting-report`。不用选择模式，也不用填写参数。
+
+3. **查看报告**：开头会说明进展、证据、阻塞和下一步，默认保存到 `reports/group-meeting/YYYY-MM-DD.md`。想修改时，继续在同一对话里说即可。
+
+### 没有文件？直接粘贴
+
+```text
+使用 lab-meeting-report，把下面的散记整理成简短组会周报：
+- 基线实验已完成，结果在附件 CSV 中。
+- 增大 batch 后显存不足，没跑完。
+- 下周计划减小 batch 后重试。
+```
+
+这是用法示例，不是真实实验。没有提供的数值不会被补造。
+
+### 想要其他输出？直接说
+
+| 需要 | 对 Agent 说 |
+|---|---|
+| 英文报告 | “把报告写成英文。” |
+| 论文分享 | “把附件论文整理成组会汇报。” |
+| 演示提纲 | “再准备一个 10 分钟的演示提纲。” |
+| 会后更新 | “用附件中的会议决定更新这份报告。” |
+| 云端副本 | “把完成的报告发布到这个 Notion 页面下面：<链接>。” |
+
+核心功能只需要 Agent 能读取材料和写 Markdown，不需要云账号或 API Key。幻灯片导出和云发布是可选功能；缺少对应工具时，仍能得到本地报告。
+
+### 遇到问题怎么办
+
+- **找不到技能**：确认它安装在当前使用的 Agent 中，并已在当前会话可用；需要时按该 Agent 的说明重新加载。
+- **找不到文件**：上传附件或提供可访问的路径。只有能访问你电脑的 Agent 才能读取本地文件夹。
+- **PDF 或 Excel 读不了**：提供导出的文字或 CSV；技能不会猜测无法读取的内容。
+
 ## 60 秒合成案例
 
 > 这是用于演示工作流的合成显微图像分割项目，所有项目细节和结果均为虚构内容，不冒充真实博士生或用户案例。
@@ -36,6 +85,9 @@ Skill 将它们整理为：
 使用 $lab-meeting-report 读取 examples/weekly-summary 下的本周散记、
 实验结果和论文笔记，生成中文组会周报和 10 分钟 Marp 演示稿。
 ```
+
+<details>
+<summary>高级选项与详细配置（按需展开）</summary>
 
 ## 快速开始
 
@@ -178,7 +230,11 @@ Skill 不会静默安装这些项目。工具不存在时，会保留可直接�
 
 完整工作流见 [`lab-meeting-report/SKILL.md`](lab-meeting-report/SKILL.md)。
 
+</details>
+
 ## 完整示例
+
+先看[三类更清楚的报告示例](examples/clear-reports/README.md)：实验进展、论文分享、进展与文献混合。这些是编辑编写的输出参考，不是新增行为评测结果。
 
 所有示例数据、论文笔记和结果都是合成内容。建议先看“默认周总结”，它展示简洁的 `standard` 周报和对应 Marp 演示稿；其余示例使用 `audit` 详细程度展示证据边界。
 
@@ -190,6 +246,8 @@ Skill 不会静默安装这些项目。工具不存在时，会保留可直接�
 | 进展与文献混合 | [混合笔记](examples/mixed/input-notes.md)、[实验结果](examples/mixed/results/current_experiment.csv)和[论文笔记](examples/mixed/papers/synthetic-balanced-retrieval.md) | [报告](examples/mixed/report.md) |
 
 ## 质量评测
+
+以下结果来自历史版本。本次简化后的指令尚未重新运行完整 Agent 行为评测。
 
 v1.2 的证据保护规则在 8 个公开合成科研进展场景上各运行 3 次，严格门槛通过 24/24；冻结的 v1.1 基线为 0/24。v1.3 保留这些已评测的防编造规则，并重新设计默认输入输出和可选适配层。新增的[中文混合周工作流场景](evals/weekly-workflow/cases/chinese-mixed-decision)会同时验证默认周报与 Marp，检查每页结构、来源覆盖、负面结果保留和数值闭集。这个确定性门槛仍不能证明真实博士生偏好或云平台发布成功率。
 

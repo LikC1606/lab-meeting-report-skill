@@ -1,4 +1,4 @@
 interface:
   display_name: "Lab Meeting Report"
-  short_description: "Turn weekly research material into a meeting-ready summary"
-  default_prompt: "Use $lab-meeting-report to turn this week's notes, papers, results, and figures into a concise Markdown lab-meeting summary with key evidence, blockers, and next steps."
+  short_description: "Turn notes and results into a clear lab meeting report"
+  default_prompt: "Use $lab-meeting-report to turn my notes and attached material into this week's lab meeting report."

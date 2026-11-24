@@ -545,8 +545,8 @@ class ValidateRepoTests(unittest.TestCase):
             content = template.read_text(encoding="utf-8")
             template.write_text(
                 content.replace(
-                    "## 当前阻塞与需协助（存在时保留）",
-                    "## 当前问题（需要组内输入时保留）",
+                    "当前阻塞与需协助",
+                    "当前问题",
                     1,
                 ),
                 encoding="utf-8",
@@ -720,11 +720,7 @@ class ValidateRepoTests(unittest.TestCase):
             )
             content = template.read_text(encoding="utf-8")
             template.write_text(
-                content.replace(
-                    "| <动作> | <姓名或待补充> | <日期或待补充> | <结果或文件> | <判据> | <风险> |",
-                    "| P0 | <动作> | <姓名或待补充> | <日期或待补充> | <结果或文件> | <判据> | <风险> |",
-                    1,
-                ),
+                content + "\n| Priority | Action |\n|---|---|\n| P0 | Proposed action |\n",
                 encoding="utf-8",
             )
 
